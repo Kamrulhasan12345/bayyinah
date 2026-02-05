@@ -1,0 +1,43 @@
+DE & System Files ---
+.settings/
+.project
+.classpath
+.factorypath
+.mvn/wrapper/maven-wrapper.jar
+*.swp
+*.DS_Store
+Thumbs.db
+
+# --- Java / Maven ---
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+# If you don't want to share your Maven wrapper executables
+# mvnw
+# mvnw.cmd
+
+# --- Node.js / TypeScript ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+dist/
+out/
+
+# --- Environment Secrets ---
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# --- Database / Data ---
+# Keeping the folder, but ignoring the large binary DB file
+data/*.db
