@@ -2,6 +2,7 @@ package com.ks.bayyinah.core.repository;
 
 import com.ks.bayyinah.core.models.*;
 import com.ks.bayyinah.core.dto.VerseView;
+
 import java.util.List;
 import java.util.Optional;
 

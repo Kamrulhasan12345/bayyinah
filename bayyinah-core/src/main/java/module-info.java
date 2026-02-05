@@ -4,6 +4,8 @@ module bayyinah.core {
   exports com.ks.bayyinah.core.models;
   exports com.ks.bayyinah.core.repository;
 
+  requires java.sql;
+
   // If you use reflection (like Jackson/JSON or Hibernate), add 'opens'
   // opens com.ks.bayyinah.core.models to com.fasterxml.jackson.databind;
 }

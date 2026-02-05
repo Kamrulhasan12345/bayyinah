@@ -11,4 +11,12 @@ public class VerseView {
     this.arabic = arabic;
     this.translation = translation;
   }
+
+  public Verse getVerse() {
+    return arabic;
+  }
+
+  public Translation getTranslation() {
+    return translation;
+  }
 };

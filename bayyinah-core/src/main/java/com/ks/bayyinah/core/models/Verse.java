@@ -17,4 +17,32 @@ public class Verse {
     this.text_uthmani = text_uthmani;
     this.text_indopak = text_indopak;
   }
+
+  public int getId() {
+    return this.id;
+  }
+
+  public int getSurahId() {
+    return this.surah_id;
+  }
+
+  public int getVerseNumber() {
+    return this.verse_number;
+  }
+
+  public String getVerseKey() {
+    return this.verse_key;
+  }
+
+  public String getTextUthmani() {
+    return this.text_uthmani;
+  }
+
+  public String getTextIndopak() {
+    return this.text_indopak;
+  }
+
+  public String getText() {
+    return this.text_uthmani; // Default to Uthmani text
+  }
 };
