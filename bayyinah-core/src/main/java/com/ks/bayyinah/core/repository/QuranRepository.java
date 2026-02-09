@@ -21,6 +21,8 @@ public interface QuranRepository {
 
   List<Verse> getVersesByChapter(int chapterId);
 
+  List<Verse> getPaginatedVersesByChapter(int chapterId, int pageNumber, int pageSize);
+
   // --- Translation Operations ---
   List<Translation> getAvailableTranslations();
 
@@ -34,4 +36,6 @@ public interface QuranRepository {
   // Returns a full chapter with a specific translation (Great for the reader
   // view)
   List<VerseView> getChapterWithTranslation(int chapterId, int translationId);
+
+  List<VerseView> getPaginatedChapterWithTranslation(int chapterId, int translationId, int pageNumber, int pageSize);
 }

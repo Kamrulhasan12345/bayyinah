@@ -40,6 +40,11 @@ public class RemoteQuranRepository implements QuranRepository {
   }
 
   @Override
+  public List<Verse> getPaginatedVersesByChapter(int chapterId, int pageNumber, int pageSize) {
+    return List.of(); // Placeholder return
+  }
+
+  @Override
   public List<Translation> getAvailableTranslations() {
     return List.of(); // Placeholder return
   }
@@ -56,6 +61,12 @@ public class RemoteQuranRepository implements QuranRepository {
 
   @Override
   public List<VerseView> getChapterWithTranslation(int chapterId, int translationId) {
+    return List.of(); // Placeholder return
+  }
+
+  @Override
+  public List<VerseView> getPaginatedChapterWithTranslation(int chapterId, int translationId, int pageNumber,
+      int pageSize) {
     return List.of(); // Placeholder return
   }
 }
