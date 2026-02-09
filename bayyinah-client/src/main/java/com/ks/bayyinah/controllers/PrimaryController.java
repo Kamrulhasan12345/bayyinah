@@ -1,4 +1,4 @@
-package com.ks.bayyinah;
+package com.ks.bayyinah.controllers;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
@@ -16,7 +16,7 @@ public class PrimaryController {
   private void switchToSecondary() throws IOException {
     // App.setRoot("secondary");
 
-    QuranRepository repository = new LocalQuranRepository("E:/bayyinah/data/quran.db");
+    QuranRepository repository = new LocalQuranRepository(System.getProperty("user.dir")+"/db/quran.db");
 
     repository.getVerseByKey("1:1").ifPresent(vv -> {
       System.out.println("Verse: " + vv.getText());
