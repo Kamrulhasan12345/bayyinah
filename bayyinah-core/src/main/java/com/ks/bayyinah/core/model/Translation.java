@@ -1,4 +1,4 @@
-package com.ks.bayyinah.core.models;
+package com.ks.bayyinah.core.model;
 
 public class Translation {
   private int id;
@@ -25,5 +25,10 @@ public class Translation {
 
   public String getName() {
     return this.author_name + " (" + this.language + ")";
+  }
+
+  @Override
+  public String toString() {
+    return "Translation{id=" + id + ", author_name='" + author_name + "', language='" + language + "'}";
   }
 }

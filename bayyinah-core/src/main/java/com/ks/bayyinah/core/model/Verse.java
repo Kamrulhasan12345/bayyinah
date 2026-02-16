@@ -1,4 +1,4 @@
-package com.ks.bayyinah.core.models;
+package com.ks.bayyinah.core.model;
 
 public class Verse {
   private int id;
@@ -44,5 +44,11 @@ public class Verse {
 
   public String getText() {
     return this.text_uthmani; // Default to Uthmani text
+  }
+
+  @Override
+  public String toString() {
+    return "Verse{id=" + id + ", surah_id=" + surah_id + ", verse_number=" + verse_number + ", verse_key='"
+        + verse_key + "', text_uthmani='" + text_uthmani + "', text_indopak='" + text_indopak + "'}";
   }
 };

@@ -1,43 +1,33 @@
 package com.ks.bayyinah.core.dto;
 
-import com.ks.bayyinah.core.models.Verse;
-import com.ks.bayyinah.core.models.Translation;
-import com.ks.bayyinah.core.models.TranslationText;
+import com.ks.bayyinah.core.model.*;
 
 public class VerseView {
-  private Verse arabic;
-  private TranslationText translation;
+  private Verse verse;
+  private TranslationText translation_text;
 
-  public VerseView(Verse arabic, TranslationText translation) {
-    this.arabic = arabic;
-    this.translation = translation;
+  public VerseView(Verse verse, TranslationText translation_text) {
+    this.verse = verse;
+    this.translation_text = translation_text;
   }
 
   public Verse getVerse() {
-    return arabic;
-  }
-
-  public TranslationText getTranslation() {
-    return translation;
-  }
-
-  public String getVerseKey() {
-    return arabic.getVerseKey();
-  }
-
-  public String getArabicText() {
-    return arabic.getText();
+    return verse;
   }
 
   public TranslationText getTranslationText() {
-    return translation;
+    return translation_text;
   }
 
-  public void setArabic(Verse arabic) {
-    this.arabic = arabic;
+  public String getArabicText() {
+    return verse != null ? verse.getText() : null;
   }
 
-  public void setTranslation(TranslationText translation) {
-    this.translation = translation;
+  public String getTranslatedText() {
+    return translation_text != null ? translation_text.getText() : null;
+  }
+
+  public String getVerseKey() {
+    return verse != null ? verse.getVerseKey() : null;
   }
 };
