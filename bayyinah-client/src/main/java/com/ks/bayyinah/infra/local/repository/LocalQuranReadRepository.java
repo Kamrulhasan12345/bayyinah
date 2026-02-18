@@ -185,7 +185,7 @@ public class LocalQuranReadRepository extends LocalRespository implements QuranR
           var statement = connection.prepareStatement(
               "SELECT c.id as chapter_id, c.name_simple, c.name_arabic, c.verse_count, c.revelation_place, t.translated_name, t.full_text, t.short_text, t.id as i18n_id"
                   +
-                  "FROM chapters c " +
+                  " FROM chapters c " +
                   "LEFT JOIN chapters_i18n t ON c.id = t.chapter_id AND t.lang_code = ? " +
                   "WHERE c.id = ?")) {
         statement.setString(1, langCode);
