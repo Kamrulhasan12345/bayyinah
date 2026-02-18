@@ -1,43 +1,28 @@
 package com.ks.bayyinah.core.dto;
 
-import com.ks.bayyinah.core.models.Verse;
-import com.ks.bayyinah.core.models.Translation;
-import com.ks.bayyinah.core.models.TranslationText;
+import com.ks.bayyinah.core.model.Verse;
+import com.ks.bayyinah.core.model.TranslationText;
 
+import lombok.*;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class VerseView {
-  private Verse arabic;
-  private TranslationText translation;
+  private Verse verse;
+  private TranslationText translationText;
 
-  public VerseView(Verse arabic, TranslationText translation) {
-    this.arabic = arabic;
-    this.translation = translation;
+  public String getArabicText() {
+    return verse != null ? verse.getText() : null;
   }
 
-  public Verse getVerse() {
-    return arabic;
-  }
-
-  public TranslationText getTranslation() {
-    return translation;
+  public String getTranslatedText() {
+    return translationText != null ? translationText.getText() : null;
   }
 
   public String getVerseKey() {
-    return arabic.getVerseKey();
-  }
-
-  public String getArabicText() {
-    return arabic.getText();
-  }
-
-  public TranslationText getTranslationText() {
-    return translation;
-  }
-
-  public void setArabic(Verse arabic) {
-    this.arabic = arabic;
-  }
-
-  public void setTranslation(TranslationText translation) {
-    this.translation = translation;
+    return verse != null ? verse.getVerseKey() : null;
   }
 };
