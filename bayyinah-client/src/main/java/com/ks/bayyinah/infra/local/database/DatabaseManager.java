@@ -1,6 +1,6 @@
 package com.ks.bayyinah.infra.local.database;
 
-import com.ks.bayyinah.core.exception.DatabaseException;
+import com.ks.bayyinah.infra.exception.DatabaseException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DatabaseManager {
+public final class DatabaseManager {
 
   private static HikariDataSource dataSource;
   private static String currentDatabasePath;

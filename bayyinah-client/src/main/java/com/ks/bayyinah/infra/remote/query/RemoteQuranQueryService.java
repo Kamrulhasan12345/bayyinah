@@ -32,21 +32,21 @@ public class RemoteQuranQueryService implements QuranQueryService {
   }
 
   @Override
-  public Optional<VerseView> getVerse(String verseKey, int translationId, String langCode) {
+  public Optional<VerseView> getVerse(String verseKey, int translationId) {
     // Implement logic to fetch specific verse details with translation and
     // localization from backend api
     return Optional.empty(); // Placeholder
   }
 
   @Override
-  public List<VerseView> getChapterVerses(int chapterId, int translationId, String langCode) {
+  public List<VerseView> getChapterVerses(int chapterId, int translationId) {
     // Implement logic to fetch all verses of a chapter with translation and
     // localization from backend api
     return null; // Placeholder
   }
 
   @Override
-  public Page<VerseView> getChapterVerses(int chapterId, int translationId, String langCode, PageRequest pageRequest) {
+  public Page<VerseView> getChapterVerses(int chapterId, int translationId, PageRequest pageRequest) {
     // Implement logic to fetch verses of a chapter with pagination, translation,
     // version, and localization from backend api
     return null; // Placeholder

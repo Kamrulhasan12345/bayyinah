@@ -6,6 +6,8 @@ module bayyinah.core {
   exports com.ks.bayyinah.core.query;
   exports com.ks.bayyinah.core.repository;
 
+  requires lombok;
+
   // If you use reflection (like Jackson/JSON or Hibernate), add 'opens'
   // opens com.ks.bayyinah.core.models to com.fasterxml.jackson.databind;
 }

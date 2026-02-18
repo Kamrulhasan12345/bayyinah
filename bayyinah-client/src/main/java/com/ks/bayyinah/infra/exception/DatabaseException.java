@@ -1,4 +1,4 @@
-package com.ks.bayyinah.core.exception;
+package com.ks.bayyinah.infra.exception;
 
 public class DatabaseException extends RuntimeException {
   public DatabaseException(String message) {

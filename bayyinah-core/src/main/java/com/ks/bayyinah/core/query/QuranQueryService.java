@@ -21,18 +21,15 @@ public interface QuranQueryService {
 
   Optional<VerseView> getVerse(
       String verseKey,
-      int translationId,
-      String langCode);
+      int translationId);
 
   List<VerseView> getChapterVerses(
       int chapterId,
-      int translationId,
-      String langCode);
+      int translationId);
 
   Page<VerseView> getChapterVerses(
       int chapterId,
       int translationId,
-      String langCode,
       PageRequest pageRequest);
 
   /* -------- Translation -------- */
