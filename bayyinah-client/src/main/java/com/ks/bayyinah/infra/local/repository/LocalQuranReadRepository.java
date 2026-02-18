@@ -103,7 +103,7 @@ public class LocalQuranReadRepository extends LocalRespository implements QuranR
         statement.setInt(1, translationId);
         statement.setInt(2, chapterId);
         statement.setInt(3, pageRequest.getPageSize());
-        statement.setInt(4, pageRequest.getPage() * pageRequest.getPageSize());
+        statement.setInt(4, (pageRequest.getPage() - 1) * pageRequest.getPageSize());
         int totalElements = countVersesByChapter(chapterId);
         try (var resultSet = statement.executeQuery()) {
           List<VerseView> verseViews = new java.util.ArrayList<>();
