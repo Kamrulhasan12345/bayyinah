@@ -126,7 +126,7 @@ public class LocalVerseRepository extends LocalRespository implements VerseRepos
       int offset = (pageRequest.getPage() - 1) * pageRequest.getPageSize();
       try (var connection = getConnection();
           var statement = connection.prepareStatement(
-              "SELECT * as total_elements FROM verses WHERE surah_id = ? ORDER BY verse_number LIMIT ? OFFSET ?")) {
+              "SELECT * FROM verses WHERE surah_id = ? ORDER BY verse_number LIMIT ? OFFSET ?")) {
         statement.setInt(1, chapterId);
         statement.setInt(2, pageRequest.getPageSize());
         statement.setInt(3, offset);
