@@ -72,7 +72,7 @@ public class LocalTranslationTextRepository extends LocalRespository implements 
               "JOIN verses v ON tt.verse_id = v.id" + "WHERE surah_id = ? LIMIT ? OFFSET ?");) {
         pstmt.setInt(1, chapterId);
         pstmt.setInt(2, pageRequest.getPageSize());
-        pstmt.setInt(3, pageRequest.getPage() * pageRequest.getPageSize());
+        pstmt.setInt(3, (pageRequest.getPage() - 1) * pageRequest.getPageSize());
         int totalElements = countTranslationsByChapterId(chapterId);
         try (var resultSet = pstmt.executeQuery()) {
           List<TranslationText> translations = new ArrayList<>();
