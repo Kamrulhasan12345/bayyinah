@@ -30,7 +30,7 @@ public class App extends Application {
   @Override
   public void stop() throws Exception {
     super.stop();
-    DBExecutor.run(() -> DatabaseManager.close());
+    DatabaseManager.close();
     DBExecutor.close();
   }
 

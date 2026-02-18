@@ -103,7 +103,7 @@ public class LocalQuranReadRepository extends LocalRespository implements QuranR
         statement.setInt(1, translationId);
         statement.setInt(2, chapterId);
         statement.setInt(3, pageRequest.getPageSize());
-        statement.setInt(4, pageRequest.getPage() * pageRequest.getPageSize());
+        statement.setInt(4, (pageRequest.getPage() - 1) * pageRequest.getPageSize());
         int totalElements = countVersesByChapter(chapterId);
         try (var resultSet = statement.executeQuery()) {
           List<VerseView> verseViews = new java.util.ArrayList<>();
@@ -143,7 +143,7 @@ public class LocalQuranReadRepository extends LocalRespository implements QuranR
           var statement = connection.prepareStatement(
               "SELECT c.id as chapter_id, c.name_simple, c.name_arabic, c.verse_count, c.revelation_place, t.translated_name, t.full_text, t.short_text, t.id as i18n_id"
                   +
-                  "FROM chapters c " +
+                  " FROM chapters c " +
                   "LEFT JOIN chapters_i18n t ON c.id = t.chapter_id AND t.lang_code = ? " +
                   "ORDER BY c.id")) {
         statement.setString(1, langCode);
@@ -185,7 +185,7 @@ public class LocalQuranReadRepository extends LocalRespository implements QuranR
           var statement = connection.prepareStatement(
               "SELECT c.id as chapter_id, c.name_simple, c.name_arabic, c.verse_count, c.revelation_place, t.translated_name, t.full_text, t.short_text, t.id as i18n_id"
                   +
-                  "FROM chapters c " +
+                  " FROM chapters c " +
                   "LEFT JOIN chapters_i18n t ON c.id = t.chapter_id AND t.lang_code = ? " +
                   "WHERE c.id = ?")) {
         statement.setString(1, langCode);

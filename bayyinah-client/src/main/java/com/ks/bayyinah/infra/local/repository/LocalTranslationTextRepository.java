@@ -42,8 +42,8 @@ public class LocalTranslationTextRepository extends LocalRespository implements 
   public List<TranslationText> findTranslationsByChapterId(int chapterId) {
     try {
       try (var connection = getConnection();
-          var pstmt = connection.prepareStatement("SELECT tt.* from translation_text tt" +
-              "JOIN verses v ON tt.verse_id = v.id" + "WHERE surah_id = ?");) {
+          var pstmt = connection.prepareStatement("SELECT tt.* from translation_text tt " +
+              "JOIN verses v ON tt.verse_id = v.id " + "WHERE surah_id = ?");) {
         pstmt.setInt(1, chapterId);
         try (var resultSet = pstmt.executeQuery()) {
           List<TranslationText> translations = new ArrayList<>();
