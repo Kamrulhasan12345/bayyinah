@@ -42,7 +42,7 @@ public class LocalTranslationRepository extends LocalRespository implements Tran
           if (resultSet.next()) {
             Translation translation = new Translation();
             translation.setId(resultSet.getInt("id"));
-            translation.setAuthorName(resultSet.getString("name"));
+            translation.setAuthorName(resultSet.getString("author_name"));
             translation.setLanguage(resultSet.getString("language"));
             return Optional.of(translation);
           }
