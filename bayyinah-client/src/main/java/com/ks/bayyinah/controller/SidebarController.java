@@ -35,7 +35,6 @@ public class SidebarController {
     QuranQueryService quranQueryService = new LocalQuranQueryService();
 
     DBExecutor.run(() -> {
-      DatabaseManager.initialize(System.getProperty("user.home") + "/.bayyinah/quran.db");
       // Ensure DB is initialized before querying
       List<ChapterView> chaptersData = quranQueryService.getAllChapters("en");
       System.out.println(
