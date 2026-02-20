@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="200.0" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.SidebarController">
+   <children>
+      <Label prefHeight="20.0" prefWidth="269.0" stylesheets="@../css/stylesheet.css" text="Surah">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <VBox.margin>
+            <Insets bottom="10.0" />
+         </VBox.margin>
+      </Label>
+      <TextField fx:id="searchField" promptText="Search Surah" stylesheets="@../css/stylesheet.css">
+         <VBox.margin>
+            <Insets bottom="10.0" />
+         </VBox.margin>
+      </TextField>
+      <Label prefHeight="18.0" prefWidth="241.0" stylesheets="@../css/stylesheet.css" text="Most Read">
+         <VBox.margin>
+            <Insets bottom="5.0" />
+         </VBox.margin>
+      </Label>
+      <FlowPane prefHeight="45.0" prefWidth="179.0" stylesheets="@../css/stylesheet.css">
+         <VBox.margin>
+            <Insets bottom="5.0" />
+         </VBox.margin>
+      </FlowPane>
+      <ListView id="chaptersListSidebar" fx:id="chaptersListView" prefHeight="530.0" prefWidth="179.0" stylesheets="@../css/stylesheet.css" />
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</VBox>

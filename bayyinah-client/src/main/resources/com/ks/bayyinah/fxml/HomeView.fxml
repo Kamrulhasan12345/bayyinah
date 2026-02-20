@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox fx:id="homeContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="20.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.HomeController">
+   <children>
+      <BorderPane prefHeight="396.0" prefWidth="560.0">
+         <bottom>
+            <TextField fx:id="searchFieldHero" promptText="Search anything from the Holy Quran" BorderPane.alignment="CENTER" />
+         </bottom>
+         <center>
+            <ImageView fx:id="logoImg" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+               <image>
+                  <Image url="@../images/wordmark.png" />
+               </image>
+            </ImageView>
+         </center>
+      </BorderPane>
+      <Label text="Last Read">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <FlowPane fx:id="lastReadFP" prefHeight="200.0" prefWidth="200.0" />
+   </children>
+   <padding>
+      <Insets left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>
