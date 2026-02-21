@@ -28,7 +28,7 @@
       <HBox prefHeight="26.0">
          <children>
             <ImageView fx:id="avatar" fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="username" contentDisplay="CENTER" prefHeight="26.0" prefWidth="142.0" text="Mohammad Kamrul Hasan" />
+            <Label fx:id="username" contentDisplay="CENTER" prefHeight="26.0" prefWidth="142.0" text="Username" />
             <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
                   <Insets />
