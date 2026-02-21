@@ -62,8 +62,6 @@ public class ChaptersController {
   }
 
   public void setChapter(ChapterView chapter) {
-    System.out.println("Loading chapter: " + chapter.toString());
-
     Chapter chaptersData = chapter.getChapter();
     Chapter_i18n chapterI18n = chapter.getChapterI18N();
     nameArabic.setText(chaptersData.getNameArabic());

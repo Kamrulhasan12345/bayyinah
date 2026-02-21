@@ -29,9 +29,9 @@
                   <Font size="19.0" />
                </font>
             </Label>
-            <Label fx:id="translationMetadata" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" nodeOrientation="RIGHT_TO_LEFT" text="- Saheeh International">
+            <Label fx:id="translationMetadata" alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" text="- Saheeh International" textAlignment="RIGHT" wrapText="true">
                <font>
-                  <Font size="9.0" />
+                  <Font size="14.0" />
                </font>
             </Label>
          </children>
