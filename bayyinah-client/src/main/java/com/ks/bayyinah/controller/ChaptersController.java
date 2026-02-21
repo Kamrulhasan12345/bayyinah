@@ -37,28 +37,56 @@ public class ChaptersController {
 
   private BrowsingController browsingController;
 
+  private Runnable onLoadComplete;
+
   public void setBrowsingController(BrowsingController browsingController) {
     this.browsingController = browsingController;
+  }
+
+  public void setOnLoadComplete(Runnable callback) {
+    this.onLoadComplete = callback;
   }
 
   public void showVerses(int chapterId) {
     LocalQuranQueryService quranQueryService = new LocalQuranQueryService();
 
     DBExecutor.run(() -> {
-      // Ensure DB is initialized before querying
-      List<VerseView> versesData = quranQueryService.getChapterVerses(chapterId, 20);
+      try {
+        // Ensure DB is initialized before querying
+        List<VerseView> verses = quranQueryService.getChapterVerses(chapterId, 20);
 
-      System.out.println(
-          "Fetched " +
-              versesData.size() +
-              " verses for chapter " +
-              chapterId);
+        System.out.println(
+            "Fetched " +
+                verses.size() +
+                " verses for chapter " +
+                chapterId);
 
-      ObservableList<VerseView> verses = FXCollections.observableArrayList(versesData);
-      Platform.runLater(() -> verseListView.setItems(verses));
+        Platform.runLater(() -> {
+          if (verseListView != null) {
+            verseListView.setItems(FXCollections.observableArrayList(verses));
+          }
+
+          System.out.println("Loaded " + verses.size() + " verses");
+
+          // ✅ Notify that loading is complete
+          if (onLoadComplete != null) {
+            onLoadComplete.run();
+          }
+        });
+      } catch (Exception e) {
+        e.printStackTrace();
+
+        Platform.runLater(() -> {
+          // ✅ Hide loading even on error
+          if (onLoadComplete != null) {
+            onLoadComplete.run();
+          }
+        });
+      }
     });
 
     verseListView.setCellFactory(listView -> new VerseCell());
+
   }
 
   public void setChapter(ChapterView chapter) {
