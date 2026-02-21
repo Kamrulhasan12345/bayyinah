@@ -33,9 +33,10 @@
       <HBox prefHeight="32.0" spacing="5.0">
          <children>
             <FontIcon iconLiteral="mdi2a-account" iconSize="16" />
-            <Label fx:id="username" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefHeight="18.0" prefWidth="314.0" text="Mohammad Kamrul Hasan" HBox.hgrow="ALWAYS" />
+            <Label fx:id="username" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefHeight="18.0" prefWidth="314.0" text="Username" HBox.hgrow="ALWAYS" />
             <FontIcon iconLiteral="mdi2c-cog" iconSize="16" />
             <FontIcon iconLiteral="mdi2d-dock-left" iconSize="16" textAlignment="RIGHT" HBox.hgrow="ALWAYS" />
+
          </children>
          <VBox.margin>
             <Insets />
