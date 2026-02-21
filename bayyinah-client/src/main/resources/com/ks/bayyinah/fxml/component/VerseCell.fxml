@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<HBox maxHeight="1.7976931348623157E308" prefWidth="596.0" spacing="20.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.VerseController">
+   <children>
+      <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" spacing="10.0">
+         <children>
+            <Label fx:id="verseNumber" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="18.0" prefWidth="19.0" text="220" textAlignment="CENTER">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
+            <FontIcon iconLiteral="mdi2b-bookmark-outline" iconSize="32" />
+         </children>
+      </VBox>
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="504.0" spacing="10.0" HBox.hgrow="ALWAYS">
+         <children>
+            <Label fx:id="arabicText" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" nodeOrientation="RIGHT_TO_LEFT" text="بِبِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ|بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِبِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ|بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِبِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ|بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِبِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ|بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ|بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِ" wrapText="true" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font size="27.0" />
+               </font></Label>
+            <Label fx:id="translatedText" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" text="In the name of Allāh,&lt;sup foot_note=227140&gt;1&lt;/sup&gt; the Entirely Merciful, the Especially Merciful.&lt;sup foot_note=227141&gt;2&lt;/sup&gt;" wrapText="true" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+            <Label fx:id="translationMetadata" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" nodeOrientation="RIGHT_TO_LEFT" text="- Saheeh International">
+               <font>
+                  <Font size="9.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</HBox>

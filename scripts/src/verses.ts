@@ -4,7 +4,6 @@ import { withTransaction } from './db.js';
 
 type VerseRow = {
   id: number;
-  chapterId: number;
   verseNumber: number;
   verseKey: string;
   textUthmani?: string;
@@ -24,7 +23,10 @@ async function fetchAllVersesByChapter(client: QuranClient, chapterId: number, p
       },
     })) as VerseRow[];
 
+    console.log(`Fetched ${batch.length} verses for chapter ${chapterId} (page ${page})`);
+
     verses.push(...batch);
+    if (batch.length === 0) break;
     if (batch.length < perPage) break;
     page++;
   }
@@ -51,7 +53,7 @@ export async function populateVerses(db: Db, client: QuranClient, opts: { perPag
       for (const v of verses) {
         insert.run(
           v.id,
-          Number(v.chapterId),
+          chapterId,
           v.verseNumber,
           v.verseKey,
           v.textUthmani ?? null,
