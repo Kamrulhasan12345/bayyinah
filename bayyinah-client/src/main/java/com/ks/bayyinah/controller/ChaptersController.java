@@ -48,7 +48,7 @@ public class ChaptersController {
   }
 
   public void showVerses(int chapterId) {
-    LocalQuranQueryService quranQueryService = new LocalQuranQueryService();
+    LocalQuranQueryService quranQueryService = LocalQuranQueryService.getInstance();
 
     DBExecutor.run(() -> {
       try {
