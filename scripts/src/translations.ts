@@ -1,6 +1,7 @@
 import type { QuranClient } from '@quranjs/api';
 import type { Db } from './db.js';
 import { withTransaction } from './db.js';
+import { sanitizeTranslationText } from './utils.js';
 
 type TranslationResource = {
   id: number;
@@ -74,7 +75,7 @@ export async function populateTranslationText(
         for (const v of verses) {
           const tr = v.translations?.find((t) => t.resourceId === translationId);
           if (!tr) continue;
-          upsert.run(v.id, translationId, tr.text ?? null);
+          upsert.run(v.id, translationId, sanitizeTranslationText(tr.text));
           count++;
         }
         return count;

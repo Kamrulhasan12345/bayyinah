@@ -1,3 +1,29 @@
 .overlay {
   -fx-background-color: rgba(0, 0, 0, 0.5);
 }
+
+.list-view .scroll-bar:vertical {
+    -fx-opacity: 0;
+    -fx-max-width: 0;
+}
+
+.list-view .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-max-height: 0;
+}
+
+/* Disable divider interaction */
+.split-pane-divider {
+    -fx-background-color: #ccc;   /* keep visible if you want */
+    -fx-cursor: default;          /* no resize cursor */
+    -fx-max-width: 1px;             /* optional: collapse divider width */
+    /*-fx-max-height: 0;*/            /* optional: collapse divider height */
+    -fx-opacity: 1;               /* keep visible, or set 0 to hide */
+    -fx-pointer-events: none; /* ignores mouse events */
+}
+
+.split-pane-divider:hover {
+    -fx-cursor: default;          /* prevent drag cursor */
+}
+
+

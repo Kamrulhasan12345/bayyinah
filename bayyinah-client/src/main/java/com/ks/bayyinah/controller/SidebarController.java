@@ -34,43 +34,37 @@ public class SidebarController {
       // Ensure DB is initialized before querying
       List<ChapterView> chaptersData = quranQueryService.getAllChapters("en");
       System.out.println(
-        "Fetched " +
-          chaptersData.size() +
-          " chapters from DB" +
-          chaptersData.get(0).getChapter().getNameSimple()
-      );
+          "Fetched " +
+              chaptersData.size() +
+              " chapters from DB");
       ObservableList<ChapterView> chapters = FXCollections.observableArrayList(
-        chaptersData
-      );
+          chaptersData);
       Platform.runLater(() -> chaptersListView.setItems(chapters));
     });
 
     chaptersListView.setCellFactory(listView -> new ChapterSidebarCell());
 
     chaptersListView
-      .getSelectionModel()
-      .selectedItemProperty()
-      .addListener((obs, old, selected) -> {
-        if (selected != null) {
-          System.out.println(
-            "Selected chapter: " + selected.getChapter().getNameSimple()
-          );
-          onChapterSelected.accept(selected);
-        }
-      });
+        .getSelectionModel()
+        .selectedItemProperty()
+        .addListener((obs, old, selected) -> {
+          if (selected != null) {
+            System.out.println(
+                "Selected chapter: " + selected.getChapter().getNameSimple());
+            onChapterSelected.accept(selected);
+          }
+        });
 
     searchField
-      .textProperty()
-      .addListener((obs, oldText, newText) -> {
-        DBExecutor.run(() -> {
-          List<ChapterView> filteredData = quranQueryService.searchChapter(
-            newText,
-            "en"
-          );
-          ObservableList<ChapterView> filtered =
-            FXCollections.observableArrayList(filteredData);
-          Platform.runLater(() -> chaptersListView.setItems(filtered));
+        .textProperty()
+        .addListener((obs, oldText, newText) -> {
+          DBExecutor.run(() -> {
+            List<ChapterView> filteredData = quranQueryService.searchChapter(
+                newText,
+                "en");
+            ObservableList<ChapterView> filtered = FXCollections.observableArrayList(filteredData);
+            Platform.runLater(() -> chaptersListView.setItems(filtered));
+          });
         });
-      });
   }
 }

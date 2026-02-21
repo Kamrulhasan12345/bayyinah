@@ -10,12 +10,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox fx:id="homeContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="20.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.HomeController">
+<VBox fx:id="homeContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="905.0" spacing="20.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.HomeController">
    <children>
       <BorderPane prefHeight="396.0" prefWidth="560.0">
          <bottom>
-            <TextField fx:id="searchFieldHero" promptText="Search anything from the Holy Quran" BorderPane.alignment="CENTER" />
+            <TextField fx:id="searchFieldHero" maxWidth="600.0" prefHeight="35.0" prefWidth="600.0" promptText="Search anything from the Holy Quran" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="40.0" right="40.0" />
+               </BorderPane.margin></TextField>
          </bottom>
          <center>
             <ImageView fx:id="logoImg" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
@@ -25,12 +27,26 @@
             </ImageView>
          </center>
       </BorderPane>
-      <Label text="Last Read">
-         <font>
-            <Font size="19.0" />
-         </font>
-      </Label>
-      <FlowPane fx:id="lastReadFP" prefHeight="200.0" prefWidth="200.0" />
+      <VBox prefHeight="207.0" prefWidth="780.0" spacing="20.0" VBox.vgrow="ALWAYS">
+         <children>
+            <Label text="Last Read">
+               <font>
+                  <Font size="19.0" />
+               </font>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Label>
+            <FlowPane fx:id="lastReadFP" prefHeight="262.0" prefWidth="780.0">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </FlowPane>
+         </children>
+         <VBox.margin>
+            <Insets left="40.0" right="40.0" />
+         </VBox.margin>
+      </VBox>
    </children>
    <padding>
       <Insets left="20.0" right="20.0" top="20.0" />

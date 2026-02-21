@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.StackPane;
+import javafx.beans.value.ObservableValue;
 
 public class BrowsingController {
 
@@ -30,6 +31,15 @@ public class BrowsingController {
 
   @FXML
   public void initialize() {
+    // make the split pane divider fixed at 20%
+    SplitPane.Divider divider = splitPane.getDividers().get(0);
+
+    divider.positionProperty().addListener(
+        (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+          divider.setPosition(0.2);
+        });
+    ;
+
     showHome();
 
     // TODO: sidebarController
@@ -39,8 +49,7 @@ public class BrowsingController {
   private void showHome() {
     try {
       FXMLLoader loader = new FXMLLoader(
-        App.class.getResource("fxml/HomeView.fxml")
-      );
+          App.class.getResource("fxml/HomeView.fxml"));
       Node homeView = loader.load();
       HomeController homeController = loader.getController();
       homeController.setBrowsingController(this);
@@ -53,8 +62,7 @@ public class BrowsingController {
   private void showChapter(ChapterView chapter) {
     try {
       FXMLLoader loader = new FXMLLoader(
-        App.class.getResource("fxml/ChaptersView.fxml")
-      );
+          App.class.getResource("fxml/ChaptersView.fxml"));
       Node chaptersView = loader.load();
       ChaptersController chaptersController = loader.getController();
       chaptersController.setChapter(chapter);
