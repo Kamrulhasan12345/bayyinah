@@ -1,22 +1,19 @@
 package com.ks.bayyinah.controller;
 
+import com.ks.bayyinah.controller.cell.VerseCell;
 import com.ks.bayyinah.core.dto.ChapterView;
 import com.ks.bayyinah.core.dto.VerseView;
 import com.ks.bayyinah.core.model.Chapter;
 import com.ks.bayyinah.core.model.Chapter_i18n;
-import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
 import com.ks.bayyinah.infra.local.database.DBExecutor;
-import com.ks.bayyinah.controller.cell.VerseCell;
-
+import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
+import java.util.List;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.application.Platform;
-
-import java.util.List;
 
 public class ChaptersController {
 
@@ -48,18 +45,20 @@ public class ChaptersController {
   }
 
   public void showVerses(int chapterId) {
-    LocalQuranQueryService quranQueryService = LocalQuranQueryService.getInstance();
+    LocalQuranQueryService quranQueryService =
+      LocalQuranQueryService.getInstance();
 
     DBExecutor.run(() -> {
       try {
         // Ensure DB is initialized before querying
-        List<VerseView> verses = quranQueryService.getChapterVerses(chapterId, 20);
+        List<VerseView> verses = quranQueryService.getChapterVerses(
+          chapterId,
+          20
+        );
 
         System.out.println(
-            "Fetched " +
-                verses.size() +
-                " verses for chapter " +
-                chapterId);
+          "Fetched " + verses.size() + " verses for chapter " + chapterId
+        );
 
         Platform.runLater(() -> {
           if (verseListView != null) {
@@ -68,7 +67,6 @@ public class ChaptersController {
 
           System.out.println("Loaded " + verses.size() + " verses");
 
-          // ✅ Notify that loading is complete
           if (onLoadComplete != null) {
             onLoadComplete.run();
           }
@@ -77,7 +75,6 @@ public class ChaptersController {
         e.printStackTrace();
 
         Platform.runLater(() -> {
-          // ✅ Hide loading even on error
           if (onLoadComplete != null) {
             onLoadComplete.run();
           }
@@ -86,7 +83,6 @@ public class ChaptersController {
     });
 
     verseListView.setCellFactory(listView -> new VerseCell());
-
   }
 
   public void setChapter(ChapterView chapter) {
@@ -98,5 +94,4 @@ public class ChaptersController {
 
     showVerses(chaptersData.getId());
   }
-
 }

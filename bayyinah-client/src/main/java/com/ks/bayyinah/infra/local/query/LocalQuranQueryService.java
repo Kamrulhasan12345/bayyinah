@@ -31,11 +31,15 @@ public class LocalQuranQueryService implements QuranQueryService {
     this.quranReadRepository = new LocalQuranReadRepository();
   }
 
-  public static synchronized LocalQuranQueryService getInstance() {
-    if (instance == null) {
-      instance = new LocalQuranQueryService();
-    }
-    return instance;
+  // ensure thread-safety to prevent race-conditions
+  private static class Holder {
+
+    private static final LocalQuranQueryService INSTANCE =
+      new LocalQuranQueryService();
+  }
+
+  public static LocalQuranQueryService getInstance() {
+    return Holder.INSTANCE;
   }
 
   @Override
@@ -46,21 +50,24 @@ public class LocalQuranQueryService implements QuranQueryService {
 
   public List<ChapterView> searchChapter(String keyword, String langCode) {
     List<ChapterView> chapterViews = quranReadRepository.findAllChapters(
-        langCode);
+      langCode
+    );
     if (keyword == null || keyword.isBlank()) {
       return chapterViews;
     }
 
     String loweredKeyword = keyword.toLowerCase();
     return chapterViews
-        .stream()
-        .filter(chapterView -> {
-          Chapter chapter = chapterView.getChapter();
-          String nameSimple = chapter != null ? chapter.getNameSimple() : null;
-          return (nameSimple != null &&
-              nameSimple.toLowerCase().contains(loweredKeyword));
-        })
-        .collect(Collectors.toList());
+      .stream()
+      .filter(chapterView -> {
+        Chapter chapter = chapterView.getChapter();
+        String nameSimple = chapter != null ? chapter.getNameSimple() : null;
+        return (
+          nameSimple != null &&
+          nameSimple.toLowerCase().contains(loweredKeyword)
+        );
+      })
+      .collect(Collectors.toList());
   }
 
   @Override
@@ -86,21 +93,24 @@ public class LocalQuranQueryService implements QuranQueryService {
 
   @Override
   public Page<VerseView> getChapterVerses(
-      int chapterId,
-      int translationId,
-      PageRequest pageRequest) {
+    int chapterId,
+    int translationId,
+    PageRequest pageRequest
+  ) {
     // Implement logic to fetch verses of a chapter with pagination, translation,
     // and localization from local data source
     return quranReadRepository.findChapterView(
-        chapterId,
-        translationId,
-        pageRequest); // Placeholder
+      chapterId,
+      translationId,
+      pageRequest
+    ); // Placeholder
   }
 
   @Override
   public List<TranslationView> getAvailableTranslations() {
     // Implement logic to fetch all available translations from local data source
-    List<Translation> translations = translationRepository.findAllTranslations();
+    List<Translation> translations =
+      translationRepository.findAllTranslations();
     List<TranslationView> translationViews = new ArrayList<>();
     translations.forEach(translation -> {
       TranslationView view = new TranslationView();

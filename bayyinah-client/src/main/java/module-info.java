@@ -7,6 +7,8 @@ module com.ks.bayyinah {
 
   requires bayyinah.core;
   requires lombok;
+  requires org.kordamp.ikonli.javafx;
+  requires org.kordamp.ikonli.materialdesign2;
 
   opens com.ks.bayyinah to javafx.fxml;
   opens com.ks.bayyinah.controller to javafx.fxml;

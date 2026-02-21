@@ -15,7 +15,7 @@ public class RootController {
   private StackPane mainContainer;
   @FXML
   private VBox overlay;
-  // TODO: header controller here @FXML private
+
 
   private Node browsingView;
   // TODO: private Node settingsView;

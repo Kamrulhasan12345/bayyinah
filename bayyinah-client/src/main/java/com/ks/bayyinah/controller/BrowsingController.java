@@ -3,20 +3,22 @@ package com.ks.bayyinah.controller;
 import com.ks.bayyinah.App;
 import com.ks.bayyinah.core.dto.ChapterView;
 import java.io.IOException;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.SplitPane;
-import javafx.scene.layout.StackPane;
-import javafx.beans.value.ObservableValue;
-import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.SplitPane;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.geometry.Pos;
-// import javafx.scene.layout.Pane;
-// import javafx.scene.layout.Region;
-// import javafx.scene.layout.Priority;
+import javafx.util.Duration;
 
 public class BrowsingController {
 
@@ -26,37 +28,38 @@ public class BrowsingController {
   @FXML
   private SidebarController sidebarController;
 
-  // TODO: @FXML private HeaderController headerController;
   @FXML
   private StackPane contentArea;
 
+  @FXML
+  private AnchorPane sidebarContainer;
+
   private RootController rootController;
   private int currentShownChapterId;
+  private boolean isSidebarVisible = true;
 
   private VBox loadingOverlay;
 
   public void setRootController(RootController rootController) {
     this.rootController = rootController;
-    // TODO: this.headerController.setRootController(rootController);
   }
 
   @FXML
   public void initialize() {
     // make the split pane divider fixed at 20%
-    SplitPane.Divider divider = splitPane.getDividers().get(0);
-
-    divider.positionProperty().addListener(
-        (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-          divider.setPosition(0.2);
-        });
-    ;
+    setupSidebar();
 
     createLoadingOverlay();
 
     showHome();
 
-    // TODO: sidebarController
+    sidebarController.setOnHomeBtnClick(this::handleHomeClicked);
     sidebarController.setOnChapterSelected(this::showChapter);
+  }
+
+  private void handleHomeClicked() {
+    System.out.println("Home button clicked in BrowsingController");
+    showHome();
   }
 
   private void createLoadingOverlay() {
@@ -92,10 +95,23 @@ public class BrowsingController {
     });
   }
 
+  private void setupSidebar() {
+    SplitPane.Divider divider = splitPane.getDividers().get(0);
+
+    divider
+      .positionProperty()
+      .addListener((observable, oldValue, newValue) -> {
+        double clamped =
+          newValue.doubleValue() > 0.2 ? 0.2 : newValue.doubleValue();
+        divider.setPosition(clamped);
+      });
+  }
+
   private void showHome() {
     try {
       FXMLLoader loader = new FXMLLoader(
-          App.class.getResource("fxml/HomeView.fxml"));
+        App.class.getResource("fxml/HomeView.fxml")
+      );
       Node homeView = loader.load();
       HomeController homeController = loader.getController();
       homeController.setBrowsingController(this);
@@ -109,7 +125,10 @@ public class BrowsingController {
   private void showChapter(ChapterView chapter) {
     if (currentShownChapterId == chapter.getChapter().getId()) {
       System.out.println(
-          "Chapter " + chapter.getChapter().getId() + " is already shown, skipping");
+        "Chapter " +
+          chapter.getChapter().getId() +
+          " is already shown, skipping"
+      );
       return;
     }
 
@@ -117,7 +136,8 @@ public class BrowsingController {
 
     try {
       FXMLLoader loader = new FXMLLoader(
-          App.class.getResource("fxml/ChaptersView.fxml"));
+        App.class.getResource("fxml/ChaptersView.fxml")
+      );
       Node chaptersView = loader.load();
       ChaptersController chaptersController = loader.getController();
 
