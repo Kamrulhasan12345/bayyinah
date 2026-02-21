@@ -19,12 +19,10 @@ public class App extends Application {
 
   @Override
   public void start(Stage stage) throws IOException {
-    scene = new Scene(loadFXML("fxml/home"), 640, 480);
+    DatabaseManager.initialize(System.getProperty("user.home") + "/.bayyinah/quran.db");
+    scene = new Scene(loadFXML("fxml/RootLayout"), 1200, 700);
     stage.setScene(scene);
     stage.show();
-    DBExecutor.run(() -> {
-      DatabaseManager.initialize(System.getProperty("user.home") + "/.bayyinah/quran.db");
-    });
   }
 
   @Override

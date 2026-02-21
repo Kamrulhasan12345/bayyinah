@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="180.0" stylesheets="@../../css/stylesheet.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.ChapterSidebarController">
+   <children>
+      <StackPane prefHeight="30.0" prefWidth="33.0" stylesheets="@../../css/stylesheet.css">
+         <children>
+            <Circle fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Label id="chapterId" fx:id="chapterId" stylesheets="@../../css/stylesheet.css" text="1" />
+         </children>
+      </StackPane>
+      <Label id="nameSimple" fx:id="nameSimple" prefHeight="30.0" prefWidth="72.0" stylesheets="@../../css/stylesheet.css" text="Al-Fatihah" />
+      <Label id="nameArabic" fx:id="nameArabic" nodeOrientation="RIGHT_TO_LEFT" prefHeight="30.0" prefWidth="74.0" stylesheets="@../../css/stylesheet.css" text="الفاتحة" />
+   </children>
+   <padding>
+      <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+   </padding>
+</HBox>

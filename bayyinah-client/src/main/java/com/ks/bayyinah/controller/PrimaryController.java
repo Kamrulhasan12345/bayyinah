@@ -1,4 +1,4 @@
-package com.ks.bayyinah.controllers;
+package com.ks.bayyinah.controller;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
