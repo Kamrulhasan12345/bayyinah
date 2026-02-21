@@ -1,21 +1,22 @@
 package com.ks.bayyinah.controller;
 
-import com.ks.bayyinah.core.dto.ChapterView;
 import com.ks.bayyinah.App;
-
+import com.ks.bayyinah.core.dto.ChapterView;
+import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.Node;
-
-import java.io.IOException;
 
 public class BrowsingController {
+
   @FXML
   private SplitPane splitPane;
+
   @FXML
   private SidebarController sidebarController;
+
   // TODO: @FXML private HeaderController headerController;
   @FXML
   private StackPane contentArea;
@@ -37,7 +38,9 @@ public class BrowsingController {
 
   private void showHome() {
     try {
-      FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/HomeView.fxml"));
+      FXMLLoader loader = new FXMLLoader(
+        App.class.getResource("fxml/HomeView.fxml")
+      );
       Node homeView = loader.load();
       HomeController homeController = loader.getController();
       homeController.setBrowsingController(this);
@@ -49,7 +52,9 @@ public class BrowsingController {
 
   private void showChapter(ChapterView chapter) {
     try {
-      FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/ChaptersView.fxml"));
+      FXMLLoader loader = new FXMLLoader(
+        App.class.getResource("fxml/ChaptersView.fxml")
+      );
       Node chaptersView = loader.load();
       ChaptersController chaptersController = loader.getController();
       chaptersController.setChapter(chapter);
