@@ -32,7 +32,7 @@ public class VerseCell extends ListCell<VerseView> {
           region
               .prefWidthProperty()
               .bind(getListView().widthProperty().subtract(20));
-          region.maxWidth(Double.MAX_VALUE);
+          region.setMaxWidth(Double.MAX_VALUE);
         } catch (IOException e) {
           e.printStackTrace();
         }
