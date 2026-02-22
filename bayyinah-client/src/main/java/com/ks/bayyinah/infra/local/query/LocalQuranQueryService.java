@@ -29,6 +29,17 @@ public class LocalQuranQueryService implements QuranQueryService {
     this.quranReadRepository = new LocalQuranReadRepository();
   }
 
+  // ensure thread-safety to prevent race-conditions
+  private static class Holder {
+
+    private static final LocalQuranQueryService INSTANCE =
+      new LocalQuranQueryService();
+  }
+
+  public static LocalQuranQueryService getInstance() {
+    return Holder.INSTANCE;
+  }
+
   @Override
   public List<ChapterView> getAllChapters(String langCode) {
     // Implement logic to fetch all chapters with localized names/info from local
