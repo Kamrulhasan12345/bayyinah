@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 
 public class LocalQuranQueryService implements QuranQueryService {
 
-  private static LocalQuranQueryService instance;
-
   private VerseRepository verseRepository; // Local repository for verses
   private ChapterRepository chapterRepository; // Local repository for chapters
   private TranslationTextRepository translationTextRepository; // Local repository for translations
