@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 import com.ks.bayyinah.infra.local.database.*;
+import com.ks.bayyinah.config.ConfigManager;
 
 /**
  * JavaFX App
@@ -19,7 +20,7 @@ public class App extends Application {
 
   @Override
   public void start(Stage stage) throws IOException {
-    DatabaseManager.initialize(System.getProperty("user.home") + "/.bayyinah/quran.db");
+    DatabaseManager.initialize(ConfigManager.getConfig().getQuran().getDatabasePath());
     scene = new Scene(loadFXML("fxml/RootLayout"), 1200, 700);
     stage.setScene(scene);
     stage.show();
