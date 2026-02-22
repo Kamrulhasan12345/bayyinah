@@ -130,11 +130,7 @@ public class SidebarController {
         }
       });
 
-      // Hover effect
-      // homeBtn.setOnMouseEntered(e ->
-      //   homeBtn.setStyle("-fx-cursor: hand; -fx-opacity: 0.7;")
-      // );
-      // homeBtn.setOnMouseExited(e -> homeBtn.setStyle("-fx-opacity: 1.0;"));
+      // TODO: Add a hover effect for the home button if desired (e.g., change cursor/opacity on hover).
     }
   }
 

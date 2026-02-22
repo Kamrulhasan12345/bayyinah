@@ -3,9 +3,7 @@ package com.ks.bayyinah.controller;
 import com.ks.bayyinah.App;
 import com.ks.bayyinah.core.dto.ChapterView;
 import java.io.IOException;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -36,7 +34,7 @@ public class BrowsingController {
 
   private RootController rootController;
   private int currentShownChapterId;
-  private boolean isSidebarVisible = true;
+
 
   private VBox loadingOverlay;
 
@@ -59,6 +57,9 @@ public class BrowsingController {
 
   private void handleHomeClicked() {
     System.out.println("Home button clicked in BrowsingController");
+    if (sidebarController != null) {
+      sidebarController.clearSelection();
+    }
     showHome();
   }
 
