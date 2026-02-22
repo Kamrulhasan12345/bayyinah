@@ -14,6 +14,9 @@ public class ConfigManager {
   private static MainConfig mainConfig;
 
   public static MainConfig getConfig() {
+    if (mainConfig == null) {
+      loadConfig();
+    }
     return mainConfig;
   }
 

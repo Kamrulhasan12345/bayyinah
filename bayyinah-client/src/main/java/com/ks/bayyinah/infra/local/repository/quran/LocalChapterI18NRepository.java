@@ -1,12 +1,13 @@
-package com.ks.bayyinah.infra.local.repository;
+package com.ks.bayyinah.infra.local.repository.quran;
 
 import com.ks.bayyinah.core.exception.RepositoryException;
 import com.ks.bayyinah.core.model.Chapter_i18n;
 import com.ks.bayyinah.core.repository.ChapterI18NRepository;
+import com.ks.bayyinah.infra.local.repository.LocalRepository;
 
 import java.util.Optional;
 
-public class LocalChapterI18NRepository extends LocalRespository implements ChapterI18NRepository {
+public class LocalChapterI18NRepository extends LocalRepository implements ChapterI18NRepository {
   @Override
   public Optional<Chapter_i18n> getChapterInfo(int chapterId, String langCode) {
     try {

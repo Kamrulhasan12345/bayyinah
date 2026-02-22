@@ -1,15 +1,16 @@
-package com.ks.bayyinah.infra.local.repository;
+package com.ks.bayyinah.infra.local.repository.quran;
 
 import com.ks.bayyinah.core.repository.VerseRepository;
 import com.ks.bayyinah.core.model.Verse;
 import com.ks.bayyinah.core.dto.Page;
 import com.ks.bayyinah.core.dto.PageRequest;
 import com.ks.bayyinah.core.exception.RepositoryException;
+import com.ks.bayyinah.infra.local.repository.LocalRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public class LocalVerseRepository extends LocalRespository implements VerseRepository {
+public class LocalVerseRepository extends LocalRepository implements VerseRepository {
   // Fetches a verse by its unique key (e.g., "2:255")
   @Override
   public Optional<Verse> findVerseByKey(String verseKey) {

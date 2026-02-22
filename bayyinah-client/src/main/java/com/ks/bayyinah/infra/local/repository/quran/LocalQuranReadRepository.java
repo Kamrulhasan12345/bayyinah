@@ -1,14 +1,15 @@
-package com.ks.bayyinah.infra.local.repository;
+package com.ks.bayyinah.infra.local.repository.quran;
 
 import com.ks.bayyinah.core.query.QuranReadRepository;
 import com.ks.bayyinah.core.dto.*;
 import com.ks.bayyinah.core.model.*;
 import com.ks.bayyinah.core.exception.RepositoryException;
+import com.ks.bayyinah.infra.local.repository.LocalRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public class LocalQuranReadRepository extends LocalRespository implements QuranReadRepository {
+public class LocalQuranReadRepository extends LocalRepository implements QuranReadRepository {
   @Override
   public Optional<VerseView> findVerseView(String verseKey, int translationId) {
     try {

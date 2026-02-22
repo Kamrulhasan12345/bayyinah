@@ -1,15 +1,16 @@
-package com.ks.bayyinah.infra.local.repository;
+package com.ks.bayyinah.infra.local.repository.quran;
 
 import com.ks.bayyinah.core.repository.TranslationTextRepository;
 import com.ks.bayyinah.core.model.TranslationText;
 import com.ks.bayyinah.core.dto.Page;
 import com.ks.bayyinah.core.dto.PageRequest;
+import com.ks.bayyinah.infra.local.repository.LocalRepository;
 
 import java.util.Optional;
 import java.util.List;
 import java.util.ArrayList;
 
-public class LocalTranslationTextRepository extends LocalRespository implements TranslationTextRepository {
+public class LocalTranslationTextRepository extends LocalRepository implements TranslationTextRepository {
   // Fetches specific translation text for a verse
   @Override
   public Optional<TranslationText> findTranslation(int verseId, int translationId) {

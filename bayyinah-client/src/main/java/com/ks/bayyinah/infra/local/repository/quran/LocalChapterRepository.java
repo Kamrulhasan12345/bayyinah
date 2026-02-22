@@ -1,13 +1,14 @@
-package com.ks.bayyinah.infra.local.repository;
+package com.ks.bayyinah.infra.local.repository.quran;
 
 import com.ks.bayyinah.core.exception.RepositoryException;
 import com.ks.bayyinah.core.model.Chapter;
 import com.ks.bayyinah.core.repository.ChapterRepository;
+import com.ks.bayyinah.infra.local.repository.LocalRepository;
 
 import java.util.Optional;
 import java.util.List;
 
-public class LocalChapterRepository extends LocalRespository implements ChapterRepository {
+public class LocalChapterRepository extends LocalRepository implements ChapterRepository {
   // Fetches a chapter by its unique ID
   @Override
   public Optional<Chapter> findChapterById(int chapterId) {
