@@ -3,6 +3,7 @@ package com.ks.bayyinah.controller;
 import com.ks.bayyinah.controller.cell.ChapterSidebarCell;
 import com.ks.bayyinah.core.dto.ChapterView;
 import com.ks.bayyinah.infra.local.database.DBExecutor;
+import com.ks.bayyinah.infra.local.database.DbAsync;
 import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
 import java.util.List;
 import java.util.function.Consumer;
@@ -48,47 +49,39 @@ public class SidebarController {
 
   @FXML
   public void initialize() {
-    LocalQuranQueryService quranQueryService =
-      LocalQuranQueryService.getInstance();
+    LocalQuranQueryService quranQueryService = LocalQuranQueryService.getInstance();
 
     searchDebounce = new PauseTransition(Duration.millis(300));
 
     setupHomeButton();
 
-    DBExecutor.run(() -> {
-      // Ensure DB is initialized before querying
-      allChapters = quranQueryService.getAllChapters("en");
-      System.out.println("Fetched " + allChapters.size() + " chapters from DB");
-
-      ObservableList<ChapterView> chapters = FXCollections.observableArrayList(
-        allChapters
-      );
-      Platform.runLater(() -> chaptersListView.setItems(chapters));
-    });
+    DbAsync.runWithUi(() -> quranQueryService.getAllChapters("en"),
+        chapters -> {
+          allChapters = chapters;
+          chaptersListView.setItems(FXCollections.observableArrayList(chapters));
+          System.out.println("Loaded " + chapters.size() + " chapters");
+        });
 
     chaptersListView.setCellFactory(listView -> new ChapterSidebarCell());
 
     chaptersListView
-      .getSelectionModel()
-      .selectedItemProperty()
-      .addListener((obs, old, selected) -> {
-        if (
-          selected != null &&
-          selected.getChapter().getId() != currentlySelectedChapterId
-        ) {
-          System.out.println(
-            "Selected chapter: " + selected.getChapter().getNameSimple()
-          );
-          onChapterSelected.accept(selected);
-        }
-      });
+        .getSelectionModel()
+        .selectedItemProperty()
+        .addListener((obs, old, selected) -> {
+          if (selected != null &&
+              selected.getChapter().getId() != currentlySelectedChapterId) {
+            System.out.println(
+                "Selected chapter: " + selected.getChapter().getNameSimple());
+            onChapterSelected.accept(selected);
+          }
+        });
 
     searchField
-      .textProperty()
-      .addListener((obs, oldText, newText) -> {
-        searchDebounce.setOnFinished(event -> filterChapters(newText));
-        searchDebounce.playFromStart(); // Reset timer on each keystroke
-      });
+        .textProperty()
+        .addListener((obs, oldText, newText) -> {
+          searchDebounce.setOnFinished(event -> filterChapters(newText));
+          searchDebounce.playFromStart(); // Reset timer on each keystroke
+        });
   }
 
   private void filterChapters(String keyword) {
@@ -102,21 +95,18 @@ public class SidebarController {
     } else {
       String lowerKeyword = keyword.toLowerCase();
       filtered = allChapters
-        .stream()
-        .filter(cv -> {
-          String nameSimple = cv.getChapter().getNameSimple();
-          String nameArabic = cv.getChapter().getNameArabic();
-          return (
-            (nameSimple != null &&
-              nameSimple.toLowerCase().contains(lowerKeyword)) ||
-            (nameArabic != null && nameArabic.contains(keyword))
-          );
-        })
-        .collect(Collectors.toList());
+          .stream()
+          .filter(cv -> {
+            String nameSimple = cv.getChapter().getNameSimple();
+            String nameArabic = cv.getChapter().getNameArabic();
+            return ((nameSimple != null &&
+                nameSimple.toLowerCase().contains(lowerKeyword)) ||
+                (nameArabic != null && nameArabic.contains(keyword)));
+          })
+          .collect(Collectors.toList());
     }
 
-    ObservableList<ChapterView> filteredList =
-      FXCollections.observableArrayList(filtered);
+    ObservableList<ChapterView> filteredList = FXCollections.observableArrayList(filtered);
     chaptersListView.setItems(filteredList); // Already on JavaFX thread
   }
 
@@ -130,7 +120,8 @@ public class SidebarController {
         }
       });
 
-      // TODO: Add a hover effect for the home button if desired (e.g., change cursor/opacity on hover).
+      // TODO: Add a hover effect for the home button if desired (e.g., change
+      // cursor/opacity on hover).
     }
   }
 

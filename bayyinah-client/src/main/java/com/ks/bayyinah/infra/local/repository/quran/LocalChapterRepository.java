@@ -3,17 +3,17 @@ package com.ks.bayyinah.infra.local.repository.quran;
 import com.ks.bayyinah.core.exception.RepositoryException;
 import com.ks.bayyinah.core.model.Chapter;
 import com.ks.bayyinah.core.repository.ChapterRepository;
-import com.ks.bayyinah.infra.local.repository.LocalRepository;
+import com.ks.bayyinah.infra.local.database.DatabaseManager;
 
 import java.util.Optional;
 import java.util.List;
 
-public class LocalChapterRepository extends LocalRepository implements ChapterRepository {
+public class LocalChapterRepository implements ChapterRepository {
   // Fetches a chapter by its unique ID
   @Override
   public Optional<Chapter> findChapterById(int chapterId) {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement("SELECT * FROM chapters WHERE id = ?")) {
         statement.setInt(1, chapterId);
         try (var resultSet = statement.executeQuery()) {
@@ -39,7 +39,7 @@ public class LocalChapterRepository extends LocalRepository implements ChapterRe
   @Override
   public List<Chapter> findAllChapters() {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement("SELECT * FROM chapters");
           var resultSet = statement.executeQuery()) {
         List<Chapter> chapters = new java.util.ArrayList<>();

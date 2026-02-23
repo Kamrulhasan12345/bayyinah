@@ -4,16 +4,16 @@ import com.ks.bayyinah.core.query.QuranReadRepository;
 import com.ks.bayyinah.core.dto.*;
 import com.ks.bayyinah.core.model.*;
 import com.ks.bayyinah.core.exception.RepositoryException;
-import com.ks.bayyinah.infra.local.repository.LocalRepository;
+import com.ks.bayyinah.infra.local.database.DatabaseManager;
 
 import java.util.List;
 import java.util.Optional;
 
-public class LocalQuranReadRepository extends LocalRepository implements QuranReadRepository {
+public class LocalQuranReadRepository implements QuranReadRepository {
   @Override
   public Optional<VerseView> findVerseView(String verseKey, int translationId) {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
               "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text "
                   +
@@ -53,7 +53,7 @@ public class LocalQuranReadRepository extends LocalRepository implements QuranRe
   @Override
   public List<VerseView> findChapterView(int chapterId, int translationId) {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
               "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text "
                   +
@@ -94,7 +94,7 @@ public class LocalQuranReadRepository extends LocalRepository implements QuranRe
   @Override
   public Page<VerseView> findChapterView(int chapterId, int translationId, PageRequest pageRequest) {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
               "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text "
                   +
@@ -140,7 +140,7 @@ public class LocalQuranReadRepository extends LocalRepository implements QuranRe
   @Override
   public List<ChapterView> findAllChapters(String langCode) {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
               "SELECT c.id as chapter_id, c.name_simple, c.name_arabic, c.verse_count, c.revelation_place, t.translated_name, t.full_text, t.short_text, t.id as i18n_id"
                   +
@@ -182,7 +182,7 @@ public class LocalQuranReadRepository extends LocalRepository implements QuranRe
   @Override
   public Optional<ChapterView> findChapterById(int chapterId, String langCode) {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
               "SELECT c.id as chapter_id, c.name_simple, c.name_arabic, c.verse_count, c.revelation_place, t.translated_name, t.full_text, t.short_text, t.id as i18n_id"
                   +
@@ -223,7 +223,7 @@ public class LocalQuranReadRepository extends LocalRepository implements QuranRe
 
   private int countVersesByChapter(int chapterId) {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement("SELECT COUNT(*) FROM verses WHERE surah_id = ?")) {
         statement.setInt(1, chapterId);
         try (var resultSet = statement.executeQuery()) {

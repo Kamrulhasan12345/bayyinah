@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 import com.ks.bayyinah.infra.local.database.*;
+import com.ks.bayyinah.model.MainConfig;
 import com.ks.bayyinah.config.ConfigManager;
 
 /**
@@ -20,7 +21,14 @@ public class App extends Application {
 
   @Override
   public void start(Stage stage) throws IOException {
-    DatabaseManager.initialize(ConfigManager.getConfig().getQuran().getDatabasePath());
+    try {
+      MainConfig config = ConfigManager.getConfig();
+      DatabaseManager.initialize(config);
+    } catch (Exception e) {
+      System.err.println("Failed to initialize database: " + e.getMessage());
+      e.printStackTrace();
+      return;
+    }
     scene = new Scene(loadFXML("fxml/RootLayout"), 1200, 700);
     stage.setScene(scene);
     stage.show();
@@ -29,8 +37,7 @@ public class App extends Application {
   @Override
   public void stop() throws Exception {
     super.stop();
-    DatabaseManager.close();
-    DBExecutor.close();
+    DatabaseManager.closeAll();
   }
 
   static void setRoot(String fxml) throws IOException {
