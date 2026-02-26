@@ -2,7 +2,6 @@ package com.ks.bayyinah.bayyinah_server.repository;
 
 import com.ks.bayyinah.bayyinah_server.model.Bookmark;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;

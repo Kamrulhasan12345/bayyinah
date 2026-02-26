@@ -5,10 +5,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.*;
 
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users")
@@ -29,12 +33,13 @@ public class User {
   private String email;
 
   @Column(name = "password_hash", nullable = false)
-  private String passwordHash;
+  @JsonIgnore
+  private String password;
 
-  @Column(name = "first_name", nullable = false)
+  @Column(name = "first_name", nullable = true)
   private String firstName;
 
-  @Column(name = "last_name", nullable = false)
+  @Column(name = "last_name", nullable = true)
   private String lastName;
 
   @Column(name = "role", nullable = false)
@@ -54,4 +59,19 @@ public class User {
 
   @Column(name = "last_login_at")
   private LocalDateTime lastLoginAt;
+
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = LocalDateTime.now();
+    this.updatedAt = LocalDateTime.now();
+    if (this.enabled == null)
+      this.enabled = true;
+    if (this.accountLocked == null)
+      this.accountLocked = false;
+  }
+
+  @PreUpdate
+  protected void onUpdate() {
+    this.updatedAt = LocalDateTime.now();
+  }
 }
