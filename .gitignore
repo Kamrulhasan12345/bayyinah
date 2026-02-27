@@ -40,5 +40,4 @@ out/
 
 # --- Database / Data ---
 # Keeping the folder, but ignoring the large binary DB file
-data/*.db
-bayyinah-client/db/*.db
+**/*.db

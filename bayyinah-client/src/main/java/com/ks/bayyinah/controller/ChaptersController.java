@@ -5,7 +5,6 @@ import com.ks.bayyinah.core.dto.ChapterView;
 import com.ks.bayyinah.core.dto.VerseView;
 import com.ks.bayyinah.core.model.Chapter;
 import com.ks.bayyinah.core.model.Chapter_i18n;
-import com.ks.bayyinah.infra.local.database.DBExecutor;
 import com.ks.bayyinah.infra.local.database.DbAsync;
 import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
 import java.util.List;

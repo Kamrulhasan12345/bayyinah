@@ -12,6 +12,7 @@ CREATE TABLE bookmarks (
     -- Cloud sync tracking
     synced BOOLEAN DEFAULT 0,
     server_id INTEGER, -- ID from PostgreSQL after sync
+    deleted BOOLEAN DEFAULT 0
     
     UNIQUE(surah_number, ayah_number) -- Prevent duplicate bookmarks
 );
@@ -101,3 +102,31 @@ CREATE TABLE daily_stats (
     notes_written INTEGER DEFAULT 0
 );
 
+-- ═══════════════════════════════════════════════════════════
+-- USERS (Single User Mode with Guest Support)
+-- ═══════════════════════════════════════════════════════════
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY CHECK (id = 1),  -- Enforce single row
+    username TEXT,              -- NULL for guests
+    email TEXT,                 -- NULL for guests
+    first_name TEXT,            -- NULL for guests
+    last_name TEXT,             -- NULL for guests
+    device_id TEXT NOT NULL,    -- Always set (unique device identifier)
+    is_guest BOOLEAN NOT NULL DEFAULT 1,  -- TRUE = guest mode
+    server_id INTEGER,          -- NULL for guests
+    last_sync_at DATETIME,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE auth_tokens (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    access_token TEXT NOT NULL,
+    refresh_token TEXT NOT NULL,
+    token_type TEXT DEFAULT 'Bearer',
+    expires_at DATETIME NOT NULL,
+    issued_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    encrypted BOOLEAN DEFAULT 0
+)
+
+CREATE INDEX idx_auth_expries_at ON auth_tokens(expires_at);

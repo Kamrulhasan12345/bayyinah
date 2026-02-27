@@ -2,7 +2,6 @@ package com.ks.bayyinah.controller;
 
 import com.ks.bayyinah.controller.cell.ChapterSidebarCell;
 import com.ks.bayyinah.core.dto.ChapterView;
-import com.ks.bayyinah.infra.local.database.DBExecutor;
 import com.ks.bayyinah.infra.local.database.DbAsync;
 import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
 import java.util.List;

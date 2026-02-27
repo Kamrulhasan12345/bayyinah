@@ -1,6 +1,6 @@
 package com.ks.bayyinah.infra.local.database;
 
-import com.ks.bayyinah.model.MainConfig;
+import com.ks.bayyinah.infra.hybrid.model.MainConfig;
 import com.ks.bayyinah.infra.exception.DatabaseException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -107,6 +107,6 @@ public final class DatabaseManager {
 
   public static boolean isInitialized() {
     return quranPool != null && !quranPool.isClosed() &&
-           userPool != null && !userPool.isClosed();
+        userPool != null && !userPool.isClosed();
   }
 }

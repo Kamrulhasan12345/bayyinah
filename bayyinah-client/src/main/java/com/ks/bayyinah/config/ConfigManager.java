@@ -1,6 +1,6 @@
 package com.ks.bayyinah.config;
 
-import com.ks.bayyinah.model.*;
+import com.ks.bayyinah.infra.hybrid.model.*;
 
 import lombok.*;
 import tools.jackson.databind.ObjectMapper;

@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 import com.ks.bayyinah.infra.local.database.*;
-import com.ks.bayyinah.model.MainConfig;
+import com.ks.bayyinah.infra.hybrid.model.MainConfig;
 import com.ks.bayyinah.config.ConfigManager;
 
 /**

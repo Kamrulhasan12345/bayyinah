@@ -1,4 +1,4 @@
-package com.ks.bayyinah.model;
+package com.ks.bayyinah.infra.hybrid.model;
 
 import lombok.*;
 
