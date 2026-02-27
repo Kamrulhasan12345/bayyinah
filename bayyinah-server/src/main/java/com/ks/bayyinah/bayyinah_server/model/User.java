@@ -36,10 +36,10 @@ public class User {
   @JsonIgnore
   private String password;
 
-  @Column(name = "first_name", nullable = true)
+  @Column(name = "first_name", nullable = false)
   private String firstName;
 
-  @Column(name = "last_name", nullable = true)
+  @Column(name = "last_name", nullable = false)
   private String lastName;
 
   @Column(name = "role", nullable = false)

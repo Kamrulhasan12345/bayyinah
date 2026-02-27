@@ -36,9 +36,8 @@ public class AuthenticationController {
         .lastName(request.lastName())
         .password(request.password())
         .role(request.role())
-        .enabled(true)
-        .accountLocked(false)
         .build();
+
     User user = userService.register(requestUser);
 
     return ResponseEntity.ok(new RegistrationResponse("User registered successfully", user));
