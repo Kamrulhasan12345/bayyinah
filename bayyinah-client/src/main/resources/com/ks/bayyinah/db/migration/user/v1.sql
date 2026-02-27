@@ -51,6 +51,7 @@ CREATE TABLE reading_progress (
     -- Cloud sync tracking
     synced BOOLEAN DEFAULT 0,
     server_id INTEGER,
+    deleted BOOLEAN DEFAULT 0, -- Soft delete for sync
     
     UNIQUE(surah_number, ayah_number)
 );

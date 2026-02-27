@@ -15,6 +15,7 @@ public class ReadingProgress {
   private LocalDateTime lastReadAt;
   private int timeSpentSeconds; // Time spent on this verse
   private boolean synced;
+  private boolean deleted;
 
   // Constructors
   public ReadingProgress(int surahNumber, int ayahNumber) {
