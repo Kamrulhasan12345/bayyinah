@@ -7,6 +7,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class RemoteUserQueryService {
   public AuthTokens refreshTokens() {
-    return null;
+    return new AuthTokens();
   }
 }

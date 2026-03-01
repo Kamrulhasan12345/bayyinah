@@ -28,6 +28,8 @@ public class User {
    */
   public static User createGuest() {
     User guest = new User();
+    long id = 1;
+    guest.id = id;
     guest.deviceId = generateDeviceId();
     guest.isGuest = true;
     guest.serverId = null;
@@ -42,6 +44,8 @@ public class User {
    */
   public static User createRegistered(String username, String email) {
     User user = new User();
+    long id = 1;
+    user.id = id; // This will be updated when saved to DB
     user.deviceId = generateDeviceId();
     user.isGuest = false;
     user.username = username;

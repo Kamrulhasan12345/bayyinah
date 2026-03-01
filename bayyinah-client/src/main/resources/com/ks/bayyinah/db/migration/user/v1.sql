@@ -12,7 +12,7 @@ CREATE TABLE bookmarks (
     -- Cloud sync tracking
     synced BOOLEAN DEFAULT 0,
     server_id INTEGER, -- ID from PostgreSQL after sync
-    deleted BOOLEAN DEFAULT 0
+    deleted BOOLEAN DEFAULT 0,
 
     UNIQUE(surah_number, ayah_number) -- Prevent duplicate bookmarks
 );
@@ -61,14 +61,14 @@ CREATE INDEX idx_progress_synced ON reading_progress(synced);
 -- ═══════════════════════════════════════════════════════════
 -- USER PREFERENCES
 -- ═══════════════════════════════════════════════════════════
-CREATE TABLE preferences (
+CREATE TABLE user_preferences (
     key TEXT PRIMARY KEY,
     value TEXT NOT NULL,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Insert defaults
-INSERT INTO preferences (key, value) VALUES
+INSERT INTO user_preferences (key, value) VALUES
     ('theme', 'light'),
     ('font_size', '16'),
     ('default_translation', '20'),
@@ -128,6 +128,6 @@ CREATE TABLE auth_tokens (
     issued_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     encrypted BOOLEAN DEFAULT 0
-)
+);
 
-CREATE INDEX idx_auth_expries_at ON auth_tokens(expires_at);
+CREATE INDEX idx_auth_expires_at ON auth_tokens(expires_at);

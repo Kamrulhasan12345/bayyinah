@@ -5,10 +5,6 @@ import javafx.application.Platform;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public final class DbAsync {
   private DbAsync() {
@@ -33,7 +29,7 @@ public final class DbAsync {
     });
   }
 
-    public static void run(Runnable dbOperation) {
+  public static void run(Runnable dbOperation) {
     Thread.startVirtualThread(dbOperation);
   }
 
