@@ -18,13 +18,15 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+import lombok.Getter;
+
 @Service
 public class JwtService {
   @Value("${jwt.secret}")
   private String secretKey;
 
   @Value("${jwt.expiration}")
-  private long jwtExpiration;
+  @Getter private long jwtExpiration;
 
   @Value("${jwt.refresh-expiration}")
   private long refreshExpiration;

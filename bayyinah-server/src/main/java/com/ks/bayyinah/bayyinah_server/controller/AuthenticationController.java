@@ -53,6 +53,7 @@ public class AuthenticationController {
     Tokens tokens = Tokens.builder()
         .accessToken(accessToken)
         .refreshToken(refreshToken)
+        .expiresIn(jwtService.getJwtExpiration())
         .build();
 
     return ResponseEntity.ok(new LoginResponse("Successfully logged in", authenticatedUser, tokens));

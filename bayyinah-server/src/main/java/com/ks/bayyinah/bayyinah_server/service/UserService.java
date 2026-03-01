@@ -66,6 +66,7 @@ public class UserService {
       return Tokens.builder()
           .accessToken(newAccessToken)
           .refreshToken(newRefreshToken)
+          .expiresIn(jwtService.getJwtExpiration())
           .build();
     } else {
       throw new RuntimeException("Invalid refresh token");
