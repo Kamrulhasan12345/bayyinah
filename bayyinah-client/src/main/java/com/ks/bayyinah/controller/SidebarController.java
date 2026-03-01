@@ -48,6 +48,10 @@ public class SidebarController {
 
   @FXML
   public void initialize() {
+
+    /*
+     * Sidebar Chapters List Fetchng and Display Logic
+     */
     LocalQuranQueryService quranQueryService = LocalQuranQueryService.getInstance();
 
     searchDebounce = new PauseTransition(Duration.millis(300));
@@ -81,6 +85,16 @@ public class SidebarController {
           searchDebounce.setOnFinished(event -> filterChapters(newText));
           searchDebounce.playFromStart(); // Reset timer on each keystroke
         });
+
+
+    /*
+     * User Info Display Logic (e.g., username / Guest User)
+     */
+
+
+    /* 
+     * Settings Button Logic
+     */
   }
 
   private void filterChapters(String keyword) {

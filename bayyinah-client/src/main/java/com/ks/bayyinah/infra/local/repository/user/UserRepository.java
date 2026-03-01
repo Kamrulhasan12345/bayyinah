@@ -8,7 +8,7 @@ import com.ks.bayyinah.infra.local.database.DatabaseManager;
 
 public class UserRepository {
 
-  public User getCurrentUser() {
+  public User get() {
     try {
       try (var connection = DatabaseManager.getUserConnection();
           var statement = connection.prepareStatement("SELECT * FROM users WHERE id = 1")) {
@@ -90,7 +90,7 @@ public class UserRepository {
   //
   // public void promoteGuestToRegistered(String username, String email, Long
   // serverId) {
-  // User currentUser = getCurrentUser();
+  // User currentUser = get();
   // currentUser.promoteToRegistered(username, email, serverId);
   //
   // // maybe save then?
@@ -132,7 +132,7 @@ public class UserRepository {
     return true;
   }
 
-  public void clearAllUserData() {
+  public void clear() {
     try {
       try (var connection = DatabaseManager.getUserConnection();
           var statement = connection.prepareStatement("DELETE FROM users")) {

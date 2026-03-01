@@ -31,6 +31,16 @@ public class AuthTokens {
     this.encrypted = false;
   }
 
+  public AuthTokens(String accessToken, String refreshToken, LocalDateTime expiresAt) {
+    this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
+    this.tokenType = "Bearer";
+    this.expiresAt = expiresAt;
+    this.issuedAt = LocalDateTime.now();
+    this.updatedAt = LocalDateTime.now();
+    this.encrypted = false;
+  }
+
   public boolean isExpired() {
     if (expiresAt == null)
       return true;

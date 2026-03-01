@@ -36,6 +36,7 @@ public class UserPreferenceRepository {
     } catch (Exception e) {
       e.printStackTrace();
     }
+    return null;
   }
 
   public List<UserPreference> findAll() {

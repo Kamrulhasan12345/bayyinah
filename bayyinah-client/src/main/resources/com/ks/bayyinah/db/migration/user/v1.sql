@@ -7,13 +7,13 @@ CREATE TABLE bookmarks (
     ayah_number INTEGER NOT NULL,
     title TEXT, -- User's custom label
     color TEXT DEFAULT '#FFD700', -- Hex color for UI
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
     -- Cloud sync tracking
     synced BOOLEAN DEFAULT 0,
     server_id INTEGER, -- ID from PostgreSQL after sync
     deleted BOOLEAN DEFAULT 0
-    
+
     UNIQUE(surah_number, ayah_number) -- Prevent duplicate bookmarks
 );
 CREATE INDEX idx_bookmarks_verse ON bookmarks(surah_number, ayah_number);
@@ -27,9 +27,9 @@ CREATE TABLE notes (
     surah_number INTEGER NOT NULL,
     ayah_number INTEGER NOT NULL,
     content TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
     -- Cloud sync tracking
     synced BOOLEAN DEFAULT 0,
     server_id INTEGER,
@@ -45,14 +45,14 @@ CREATE TABLE reading_progress (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     surah_number INTEGER NOT NULL,
     ayah_number INTEGER NOT NULL,
-    last_read_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    last_read_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     time_spent_seconds INTEGER DEFAULT 0, -- Optional: track reading time
-    
+
     -- Cloud sync tracking
     synced BOOLEAN DEFAULT 0,
     server_id INTEGER,
     deleted BOOLEAN DEFAULT 0, -- Soft delete for sync
-    
+
     UNIQUE(surah_number, ayah_number)
 );
 CREATE INDEX idx_progress_time ON reading_progress(last_read_at DESC);
@@ -64,7 +64,7 @@ CREATE INDEX idx_progress_synced ON reading_progress(synced);
 CREATE TABLE preferences (
     key TEXT PRIMARY KEY,
     value TEXT NOT NULL,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Insert defaults
@@ -86,7 +86,7 @@ CREATE TABLE sync_queue (
     table_name TEXT NOT NULL, -- 'bookmarks', 'notes', etc.
     record_id INTEGER NOT NULL,
     payload TEXT, -- JSON data to sync
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     retry_count INTEGER DEFAULT 0,
     last_error TEXT
 );
@@ -115,7 +115,7 @@ CREATE TABLE users (
     device_id TEXT NOT NULL,    -- Always set (unique device identifier)
     is_guest BOOLEAN NOT NULL DEFAULT 1,  -- TRUE = guest mode
     server_id INTEGER,          -- NULL for guests
-    last_sync_at DATETIME,
+    last_sync_at DATETIME NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
