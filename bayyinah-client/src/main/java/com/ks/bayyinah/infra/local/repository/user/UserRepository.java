@@ -16,7 +16,7 @@ public class UserRepository {
           if (resultSet.next()) {
             User user = User.builder()
                 .id(resultSet.getLong("id"))
-                .serverId(resultSet.getLong("server_id"))
+                .serverId(resultSet.getObject("server_id", Long.class))
                 .username(resultSet.getString("username"))
                 .email(resultSet.getString("email"))
                 .firstName(resultSet.getString("first_name"))
@@ -120,7 +120,7 @@ public class UserRepository {
         try (var resultSet = statement.executeQuery()) {
           if (resultSet.next()) {
             boolean isGuest = resultSet.getBoolean("is_guest");
-            Long serverId = resultSet.getLong("server_id");
+            Long serverId = resultSet.getObject("server_id", Long.class);
             return !isGuest && serverId != null;
           }
         }

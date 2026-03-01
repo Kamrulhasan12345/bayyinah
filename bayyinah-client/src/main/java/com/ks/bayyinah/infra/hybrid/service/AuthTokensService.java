@@ -18,11 +18,7 @@ public class AuthTokensService {
   }
 
   public void saveAuthTokens(AuthTokens tokens) {
-    if (repository.get().isPresent()) {
-      repository.update(tokens);
-    } else {
-      repository.insert(tokens);
-    }
+    repository.insertOrUpdate(tokens);
   }
 
   public void clearAuthTokens() {
@@ -39,7 +35,7 @@ public class AuthTokensService {
       AuthTokens tokens = tokensOpt.get();
       tokens.setAccessToken(newAccessToken);
       tokens.setExpiresAt(tokens.getIssuedAt().plusSeconds(expiresInSeconds));
-      repository.update(tokens);
+      repository.insertOrUpdate(tokens);
     }
   }
 
@@ -48,7 +44,7 @@ public class AuthTokensService {
     if (tokensOpt.isPresent()) {
       AuthTokens tokens = tokensOpt.get();
       tokens.setRefreshToken(newRefreshToken);
-      repository.update(tokens);
+      repository.insertOrUpdate(tokens);
     }
   }
 }
