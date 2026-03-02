@@ -50,7 +50,7 @@ public class SidebarController {
   public void initialize() {
 
     /*
-     * Sidebar Chapters List Fetchng and Display Logic
+     * Sidebar Chapters List Fetching and Display Logic
      */
     LocalQuranQueryService quranQueryService = LocalQuranQueryService.getInstance();
 

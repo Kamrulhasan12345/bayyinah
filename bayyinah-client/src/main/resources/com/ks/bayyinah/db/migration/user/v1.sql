@@ -115,7 +115,7 @@ CREATE TABLE users (
     device_id TEXT NOT NULL,    -- Always set (unique device identifier)
     is_guest BOOLEAN NOT NULL DEFAULT 1,  -- TRUE = guest mode
     server_id INTEGER,          -- NULL for guests
-    last_sync_at DATETIME NOT NULL,
+    last_sync_at DATETIME,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 

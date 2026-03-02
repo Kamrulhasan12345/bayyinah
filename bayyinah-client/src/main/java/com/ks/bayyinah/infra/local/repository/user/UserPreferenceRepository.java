@@ -3,11 +3,12 @@ package com.ks.bayyinah.infra.local.repository.user;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ks.bayyinah.core.exception.RepositoryException;
 import com.ks.bayyinah.infra.hybrid.model.UserPreference;
 import com.ks.bayyinah.infra.local.database.DatabaseManager;
 
 public class UserPreferenceRepository {
-  void insertOrUpdate(String key, String value) {
+  public void insertOrUpdate(String key, String value) {
     try {
       try (var conn = DatabaseManager.getUserConnection();
           var stmt = conn.prepareStatement(
@@ -19,6 +20,7 @@ public class UserPreferenceRepository {
       }
     } catch (Exception e) {
       e.printStackTrace();
+      throw new RepositoryException("Failed to insert/update user preference for key: " + key, e);
     }
   }
 
@@ -35,6 +37,7 @@ public class UserPreferenceRepository {
       }
     } catch (Exception e) {
       e.printStackTrace();
+      throw new RepositoryException("Failed to fetch user preference for key: " + key, e);
     }
     return null;
   }
@@ -51,7 +54,7 @@ public class UserPreferenceRepository {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      throw new RuntimeException("Failed to fetch user preferences", e);
+      throw new RepositoryException("Failed to fetch user preferences", e);
     }
     return prefs;
   }

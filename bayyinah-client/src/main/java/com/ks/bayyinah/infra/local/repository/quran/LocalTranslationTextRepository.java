@@ -4,6 +4,7 @@ import com.ks.bayyinah.core.repository.TranslationTextRepository;
 import com.ks.bayyinah.core.model.TranslationText;
 import com.ks.bayyinah.core.dto.Page;
 import com.ks.bayyinah.core.dto.PageRequest;
+import com.ks.bayyinah.core.exception.RepositoryException;
 import com.ks.bayyinah.infra.local.database.DatabaseManager;
 
 import java.util.Optional;
@@ -33,7 +34,7 @@ public class LocalTranslationTextRepository implements TranslationTextRepository
       }
     } catch (Exception e) {
       // Handle exceptions related to database access
-      throw new RuntimeException(
+      throw new RepositoryException(
           "Failed to fetch translation for verse ID: " + verseId + " and translation ID: " + translationId, e);
     }
     return Optional.empty();
@@ -61,7 +62,7 @@ public class LocalTranslationTextRepository implements TranslationTextRepository
       }
     } catch (Exception e) {
       // Handle exceptions related to database access
-      throw new RuntimeException("Failed to fetch translations for chapter ID: " + chapterId, e);
+      throw new RepositoryException("Failed to fetch translations for chapter ID: " + chapterId, e);
     }
   }
 
@@ -92,7 +93,7 @@ public class LocalTranslationTextRepository implements TranslationTextRepository
       }
     } catch (Exception e) {
       // Handle exceptions related to database access
-      throw new RuntimeException("Failed to fetch translations for chapter ID: " + chapterId, e);
+      throw new RepositoryException("Failed to fetch translations for chapter ID: " + chapterId, e);
     }
   }
 
@@ -110,7 +111,7 @@ public class LocalTranslationTextRepository implements TranslationTextRepository
       }
     } catch (Exception e) {
       // Handle exceptions related to database access
-      throw new RuntimeException("Failed to count translations for chapter ID: " + chapterId, e);
+      throw new RepositoryException("Failed to count translations for chapter ID: " + chapterId, e);
     }
     return 0;
   }

@@ -3,6 +3,7 @@ package com.ks.bayyinah.infra.local.repository.user;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import com.ks.bayyinah.core.exception.RepositoryException;
 import com.ks.bayyinah.infra.hybrid.model.AuthTokens;
 import com.ks.bayyinah.infra.local.database.DatabaseManager;
 
@@ -20,7 +21,7 @@ public class AuthTokensRepository {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      throw new RuntimeException("Failed to save auth tokens", e);
+      throw new RepositoryException("Failed to save auth tokens", e);
     }
   }
 
@@ -40,9 +41,9 @@ public class AuthTokensRepository {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      throw new RuntimeException("Failed to fetch auth tokens", e);
+      throw new RepositoryException("Failed to fetch auth tokens", e);
     }
-    return null;
+    return Optional.empty();
   }
 
   public boolean isExpired() {
@@ -62,7 +63,7 @@ public class AuthTokensRepository {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      throw new RuntimeException("Failed to clear auth tokens", e);
+      throw new RepositoryException("Failed to clear auth tokens", e);
     }
   }
 

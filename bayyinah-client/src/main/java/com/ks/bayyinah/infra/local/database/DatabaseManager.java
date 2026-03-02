@@ -103,6 +103,8 @@ public final class DatabaseManager {
       quranPool.close();
     if (userPool != null && !userPool.isClosed())
       userPool.close();
+    quranPool = null;
+    userPool = null;
   }
 
   public static boolean isInitialized() {

@@ -3,6 +3,7 @@ package com.ks.bayyinah.infra.local.repository.user;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import com.ks.bayyinah.core.exception.RepositoryException;
 import com.ks.bayyinah.infra.hybrid.model.User;
 import com.ks.bayyinah.infra.local.database.DatabaseManager;
 
@@ -33,7 +34,7 @@ public class UserRepository {
     } catch (SQLException e) {
       // Handle exception, possibly return a guest user or null
       e.printStackTrace();
-      throw new RuntimeException("Failed to fetch current user", e);
+      throw new RepositoryException("Failed to fetch current user", e);
     }
     return null;
   }
@@ -57,7 +58,7 @@ public class UserRepository {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      throw new RuntimeException("Failed to save user", e);
+      throw new RepositoryException("Failed to save user", e);
     }
   }
 
@@ -80,7 +81,7 @@ public class UserRepository {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      throw new RuntimeException("Failed to update user", e);
+      throw new RepositoryException("Failed to update user", e);
     }
   }
 
@@ -108,7 +109,7 @@ public class UserRepository {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      throw new RuntimeException("Failed to check guest mode", e);
+      throw new RepositoryException("Failed to check guest mode", e);
     }
     return true;
   }
@@ -127,9 +128,9 @@ public class UserRepository {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      throw new RuntimeException("Failed to check sync capability", e);
+      throw new RepositoryException("Failed to check sync capability", e);
     }
-    return true;
+    return false;
   }
 
   public void clear() {
@@ -140,7 +141,7 @@ public class UserRepository {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      throw new RuntimeException("Failed to clear user data", e);
+      throw new RepositoryException("Failed to clear user data", e);
     }
   }
 
