@@ -68,11 +68,11 @@ public class UserPreference {
     if (this.language == null)
       this.language = "en";
     if (this.readingMode == null)
-      this.readingMode = "standard";
+      this.readingMode = "continuous";
     if (this.showTransliteration == null)
       this.showTransliteration = false;
     if (this.autoScroll == null)
-      this.autoScroll = false;
+      this.autoScroll = true;
   }
 
   @PreUpdate

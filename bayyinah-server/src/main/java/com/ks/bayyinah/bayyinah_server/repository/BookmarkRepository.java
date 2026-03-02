@@ -29,7 +29,7 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
   void deleteByUserId(Long userId);
 
-  // For sync - get bookmarks modified after timestamp
+  // For sync - get bookmarks created after timestamp
   List<Bookmark> findByUserIdAndCreatedAtAfter(Long userId, LocalDateTime timestamp);
 
   long countByUserId(Long userId);
