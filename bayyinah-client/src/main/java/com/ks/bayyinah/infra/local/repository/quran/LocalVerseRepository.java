@@ -1,20 +1,21 @@
-package com.ks.bayyinah.infra.local.repository;
+package com.ks.bayyinah.infra.local.repository.quran;
 
 import com.ks.bayyinah.core.repository.VerseRepository;
 import com.ks.bayyinah.core.model.Verse;
 import com.ks.bayyinah.core.dto.Page;
 import com.ks.bayyinah.core.dto.PageRequest;
 import com.ks.bayyinah.core.exception.RepositoryException;
+import com.ks.bayyinah.infra.local.database.DatabaseManager;
 
 import java.util.List;
 import java.util.Optional;
 
-public class LocalVerseRepository extends LocalRespository implements VerseRepository {
+public class LocalVerseRepository implements VerseRepository {
   // Fetches a verse by its unique key (e.g., "2:255")
   @Override
   public Optional<Verse> findVerseByKey(String verseKey) {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement("SELECT * FROM verses WHERE verse_key = ?")) {
         statement.setString(1, verseKey);
         try (var resultSet = statement.executeQuery()) {
@@ -40,7 +41,7 @@ public class LocalVerseRepository extends LocalRespository implements VerseRepos
   @Override
   public Optional<Verse> findVerseById(int verseId) {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement("SELECT * FROM verses WHERE id = ?")) {
         statement.setInt(1, verseId);
         try (var resultSet = statement.executeQuery()) {
@@ -66,7 +67,7 @@ public class LocalVerseRepository extends LocalRespository implements VerseRepos
   @Override
   public Optional<Verse> findVerseByChapterAndVerseNumber(int chapterId, int verseNumber) {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
               "SELECT * FROM verses WHERE surah_id = ? AND verse_number = ?")) {
         statement.setInt(1, chapterId);
@@ -95,7 +96,7 @@ public class LocalVerseRepository extends LocalRespository implements VerseRepos
   @Override
   public List<Verse> findVersesByChapter(int chapterId) {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection
               .prepareStatement("SELECT * FROM verses WHERE surah_id = ? ORDER BY verse_number")) {
         statement.setInt(1, chapterId);
@@ -124,7 +125,7 @@ public class LocalVerseRepository extends LocalRespository implements VerseRepos
   public Page<Verse> findVersesByChapter(int chapterId, PageRequest pageRequest) {
     try {
       int offset = (pageRequest.getPage() - 1) * pageRequest.getPageSize();
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
               "SELECT * FROM verses WHERE surah_id = ? ORDER BY verse_number LIMIT ? OFFSET ?")) {
         statement.setInt(1, chapterId);
@@ -154,7 +155,7 @@ public class LocalVerseRepository extends LocalRespository implements VerseRepos
   }
 
   private int countVersesByChapter(int chapterId) {
-    try (var connection = getConnection();
+    try (var connection = DatabaseManager.getQuranConnection();
         var statement = connection.prepareStatement("SELECT COUNT(*) FROM verses WHERE surah_id = ?")) {
       statement.setInt(1, chapterId);
       try (var resultSet = statement.executeQuery()) {

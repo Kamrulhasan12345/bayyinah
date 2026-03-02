@@ -5,7 +5,7 @@ import com.ks.bayyinah.core.dto.ChapterView;
 import com.ks.bayyinah.core.dto.VerseView;
 import com.ks.bayyinah.core.model.Chapter;
 import com.ks.bayyinah.core.model.Chapter_i18n;
-import com.ks.bayyinah.infra.local.database.DBExecutor;
+import com.ks.bayyinah.infra.local.database.DbAsync;
 import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
 import java.util.List;
 import javafx.application.Platform;
@@ -45,40 +45,19 @@ public class ChaptersController {
   }
 
   public void showVerses(int chapterId) {
-    LocalQuranQueryService quranQueryService =
-      LocalQuranQueryService.getInstance();
+    LocalQuranQueryService quranQueryService = LocalQuranQueryService.getInstance();
 
-    DBExecutor.run(() -> {
-      try {
-        // Ensure DB is initialized before querying
-        List<VerseView> verses = quranQueryService.getChapterVerses(
-          chapterId,
-          20
-        );
-
-        System.out.println(
-          "Fetched " + verses.size() + " verses for chapter " + chapterId
-        );
-
-        Platform.runLater(() -> {
-          if (verseListView != null) {
-            verseListView.setItems(FXCollections.observableArrayList(verses));
-          }
-
-          System.out.println("Loaded " + verses.size() + " verses");
-
-          if (onLoadComplete != null) {
-            onLoadComplete.run();
-          }
-        });
-      } catch (Exception e) {
-        e.printStackTrace();
-
-        Platform.runLater(() -> {
-          if (onLoadComplete != null) {
-            onLoadComplete.run();
-          }
-        });
+    DbAsync.runWithUi(() -> quranQueryService.getChapterVerses(chapterId, 20), verses -> {
+      System.out.println("Fetched " + verses.size() + " verses for chapter " + chapterId);
+      verseListView.setItems(FXCollections.observableArrayList(verses));
+      System.out.println("Loaded " + verses.size() + " verses");
+      if (onLoadComplete != null) {
+        onLoadComplete.run();
+      }
+    }, e -> {
+      e.printStackTrace();
+      if (onLoadComplete != null) {
+        onLoadComplete.run();
       }
     });
 
