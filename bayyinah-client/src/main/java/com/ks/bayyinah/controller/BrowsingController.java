@@ -35,7 +35,6 @@ public class BrowsingController {
   private RootController rootController;
   private int currentShownChapterId;
 
-
   private VBox loadingOverlay;
 
   public void setRootController(RootController rootController) {
@@ -90,6 +89,7 @@ public class BrowsingController {
   }
 
   private void hideLoading() {
+    System.out.println("Hiding loading overlay");
     Platform.runLater(() -> {
       loadingOverlay.setVisible(false);
       loadingOverlay.setManaged(false);
@@ -100,24 +100,23 @@ public class BrowsingController {
     SplitPane.Divider divider = splitPane.getDividers().get(0);
 
     divider
-      .positionProperty()
-      .addListener((observable, oldValue, newValue) -> {
-        double clamped =
-          newValue.doubleValue() > 0.2 ? 0.2 : newValue.doubleValue();
-        divider.setPosition(clamped);
-      });
+        .positionProperty()
+        .addListener((observable, oldValue, newValue) -> {
+          double clamped = newValue.doubleValue() > 0.2 ? 0.2 : newValue.doubleValue();
+          divider.setPosition(clamped);
+        });
   }
 
   private void showHome() {
     try {
       FXMLLoader loader = new FXMLLoader(
-        App.class.getResource("fxml/HomeView.fxml")
-      );
+          App.class.getResource("fxml/HomeView.fxml"));
       Node homeView = loader.load();
       HomeController homeController = loader.getController();
       homeController.setBrowsingController(this);
       contentArea.getChildren().setAll(homeView);
       contentArea.getChildren().add(loadingOverlay);
+      currentShownChapterId = -1; // reset current chapter since we're on home
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -126,10 +125,9 @@ public class BrowsingController {
   private void showChapter(ChapterView chapter) {
     if (currentShownChapterId == chapter.getChapter().getId()) {
       System.out.println(
-        "Chapter " +
-          chapter.getChapter().getId() +
-          " is already shown, skipping"
-      );
+          "Chapter " +
+              chapter.getChapter().getId() +
+              " is already shown, skipping");
       return;
     }
 
@@ -137,8 +135,7 @@ public class BrowsingController {
 
     try {
       FXMLLoader loader = new FXMLLoader(
-        App.class.getResource("fxml/ChaptersView.fxml")
-      );
+          App.class.getResource("fxml/ChaptersView.fxml"));
       Node chaptersView = loader.load();
       ChaptersController chaptersController = loader.getController();
 

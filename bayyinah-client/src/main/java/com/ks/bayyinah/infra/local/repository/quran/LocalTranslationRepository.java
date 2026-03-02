@@ -1,18 +1,19 @@
-package com.ks.bayyinah.infra.local.repository;
+package com.ks.bayyinah.infra.local.repository.quran;
 
 import com.ks.bayyinah.core.repository.TranslationRepository;
 import com.ks.bayyinah.core.model.Translation;
 import com.ks.bayyinah.core.exception.RepositoryException;
+import com.ks.bayyinah.infra.local.database.DatabaseManager;
 
 import java.util.Optional;
 import java.util.List;
 
-public class LocalTranslationRepository extends LocalRespository implements TranslationRepository {
+public class LocalTranslationRepository implements TranslationRepository {
   // Fetches all translations available in the app
   @Override
   public List<Translation> findAllTranslations() {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement("SELECT * FROM translations");
           var resultSet = statement.executeQuery()) {
         List<Translation> translations = new java.util.ArrayList<>();
@@ -35,7 +36,7 @@ public class LocalTranslationRepository extends LocalRespository implements Tran
   @Override
   public Optional<Translation> findTranslationById(int translationId) {
     try {
-      try (var connection = getConnection();
+      try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement("SELECT * FROM translations WHERE id = ?")) {
         statement.setInt(1, translationId);
         try (var resultSet = statement.executeQuery()) {
