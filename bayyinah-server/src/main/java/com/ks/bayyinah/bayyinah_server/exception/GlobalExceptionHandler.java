@@ -1,9 +1,8 @@
 package com.ks.bayyinah.bayyinah_server.exception;
 
-import java.nio.file.AccessDeniedException;
-
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

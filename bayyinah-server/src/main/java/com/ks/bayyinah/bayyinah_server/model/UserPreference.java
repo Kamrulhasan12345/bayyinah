@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.*;
 
@@ -52,4 +54,29 @@ public class UserPreference {
 
   @Column(name = "user_id", nullable = false)
   private Long userId;
+
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = LocalDateTime.now();
+    this.updatedAt = LocalDateTime.now();
+    if (this.theme == null)
+      this.theme = "light";
+    if (this.fontSize == null)
+      this.fontSize = 16;
+    if (this.defaultTranslation == null)
+      this.defaultTranslation = 20;
+    if (this.language == null)
+      this.language = "en";
+    if (this.readingMode == null)
+      this.readingMode = "standard";
+    if (this.showTransliteration == null)
+      this.showTransliteration = false;
+    if (this.autoScroll == null)
+      this.autoScroll = false;
+  }
+
+  @PreUpdate
+  protected void onUpdate() {
+    this.updatedAt = LocalDateTime.now();
+  }
 }

@@ -32,6 +32,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   @Autowired
   ApplicationContext applicationContext;
 
+  @Autowired
+  private UserDetailsServiceImpl userDetailsService;
+
+  @Autowired
+  private HandlerExceptionResolver resolver;
+
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
@@ -51,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       }
 
       if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-        UserDetails userDetails = applicationContext.getBean(UserDetailsServiceImpl.class).loadUserByUsername(username);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         if (jwtService.validateToken(token, userDetails)) {
           UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
               userDetails, null, userDetails.getAuthorities());
@@ -61,7 +67,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       }
     } catch (Exception e) {
       // TODO: do a research on it and find a better way to handle the exception
-      HandlerExceptionResolver resolver = applicationContext.getBean(HandlerExceptionResolver.class);
       resolver.resolveException(request, response, null, e);
       return;
     }
