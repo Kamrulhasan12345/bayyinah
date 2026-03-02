@@ -35,7 +35,7 @@ public class UserService {
   public User register(User user) {
     if (userRepository.existsByUsername(user.getUsername())
         || userRepository.existsByEmail(user.getEmail())) {
-      throw new DuplicateUserException("Username already exists");
+      throw new DuplicateUserException();
     }
 
     user.setPassword(passwordEncoder.encode(user.getPassword()));

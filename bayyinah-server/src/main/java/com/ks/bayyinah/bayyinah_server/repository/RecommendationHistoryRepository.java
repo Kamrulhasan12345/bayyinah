@@ -3,6 +3,7 @@ package com.ks.bayyinah.bayyinah_server.repository;
 import com.ks.bayyinah.bayyinah_server.model.RecommendationHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,5 +24,5 @@ public interface RecommendationHistoryRepository extends JpaRepository<Recommend
       "WHERE rh.userId = :userId " +
       "GROUP BY rh.queryText " +
       "ORDER BY count DESC")
-  List<Object[]> findTopQueriesByUserId(Long userId);
+  List<Object[]> findTopQueriesByUserId(@Param("userId") Long userId);
 }

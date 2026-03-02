@@ -30,9 +30,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private JwtService jwtService;
 
   @Autowired
-  ApplicationContext applicationContext;
-
-  @Autowired
   private UserDetailsServiceImpl userDetailsService;
 
   @Autowired
@@ -45,11 +42,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       String authHeader = request.getHeader("Authorization");
       String token = null;
       String username = null;
-
-      if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-        filterChain.doFilter(request, response);
-        return;
-      }
 
       if (authHeader != null && authHeader.startsWith("Bearer ")) {
         token = authHeader.substring(7);

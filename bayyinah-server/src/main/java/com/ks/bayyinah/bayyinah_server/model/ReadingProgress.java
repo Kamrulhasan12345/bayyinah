@@ -30,13 +30,13 @@ public class ReadingProgress {
   @Column(name = "ayah_number", nullable = false)
   private Integer ayahNumber;
 
-  @Column(name = "last_read_at", nullable = false)
+  @Column(name = "last_read_at")
   private LocalDateTime lastReadAt;
 
-  @Column(name = "completion_percentage", nullable = false)
+  @Column(name = "completion_percentage")
   private Float completionPercentage;
 
-  @Column(name = "total_read_time_minutes", nullable = false)
+  @Column(name = "total_read_time_minutes")
   private Integer totalReadTimeMinutes;
 
   @Column(name = "created_at", nullable = false)
@@ -52,6 +52,10 @@ public class ReadingProgress {
   protected void onCreate() {
     this.createdAt = LocalDateTime.now();
     this.updatedAt = LocalDateTime.now();
+    if (this.completionPercentage == null)
+      this.completionPercentage = 0.0f;
+    if (this.totalReadTimeMinutes == null)
+      this.totalReadTimeMinutes = 0;
   }
 
   @PreUpdate

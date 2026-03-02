@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.security.SignatureException;
 
 @RestControllerAdvice
@@ -53,6 +54,11 @@ public class GlobalExceptionHandler {
     if (exception instanceof ExpiredJwtException) {
       errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
       errorDetail.setProperty("description", "The JWT token has expired or its invalid");
+    }
+
+    if (exception instanceof JwtException) {
+      errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
+      errorDetail.setProperty("description", "The JWT token is invalid");
     }
 
     if (exception instanceof InvalidRefreshKeyException) {
