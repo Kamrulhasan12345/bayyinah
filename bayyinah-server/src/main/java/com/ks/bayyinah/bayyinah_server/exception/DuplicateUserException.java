@@ -6,6 +6,6 @@ public class DuplicateUserException extends RuntimeException {
   }
 
   public DuplicateUserException() {
-    super("User with the given email already exists");
+    super("User already exists");
   }
 }
