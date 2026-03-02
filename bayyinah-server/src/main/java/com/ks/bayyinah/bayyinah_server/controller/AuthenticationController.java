@@ -29,14 +29,13 @@ public class AuthenticationController {
 
   @PostMapping("/register")
   public ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationRequest request) {
-    String role = request.role() != null ? request.role() : "ROLE_USER";
     User requestUser = User.builder()
         .username(request.username())
         .email(request.email())
         .firstName(request.firstName())
         .lastName(request.lastName())
         .password(request.password())
-        .role(role)
+        .role("ROLE_USER")
         .build();
 
     User user = userService.register(requestUser);
