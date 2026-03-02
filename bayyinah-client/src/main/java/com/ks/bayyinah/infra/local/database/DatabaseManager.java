@@ -48,6 +48,16 @@ public final class DatabaseManager {
     return new HikariDataSource(config);
   }
 
+  /*
+   * TODO: SQLite PRAGMAs like foreign_keys and busy_timeout are
+   * connection-scoped.
+   * Running them once in configureSqlite(...) only affects that single
+   * connection;
+   * other pooled connections may still have defaults (e.g., foreign_keys=OFF).
+   * Prefer setting HikariConfig#setConnectionInitSql(...)
+   * (or a ConnectionCustomizer) so every new connection is configured
+   * consistently.
+   */
   private static void configureSqlite(HikariDataSource pool) {
     try (Connection conn = pool.getConnection();
         var stmt = conn.createStatement()) {
