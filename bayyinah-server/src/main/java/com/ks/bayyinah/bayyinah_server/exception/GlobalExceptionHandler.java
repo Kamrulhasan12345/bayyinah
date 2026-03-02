@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
     }
 
     if (exception instanceof NoResourceFoundException) {
-      errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
+      errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), exception.getMessage());
       errorDetail.setProperty("description", "The resource or endpoint does not exist");
     }
 
