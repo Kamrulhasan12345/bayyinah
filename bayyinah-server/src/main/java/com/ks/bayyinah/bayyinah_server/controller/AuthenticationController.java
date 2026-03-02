@@ -29,7 +29,7 @@ public class AuthenticationController {
 
   @PostMapping("/register")
   public ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationRequest request) {
-    String role = request.role() != null ? request.role() : "USER";
+    String role = request.role() != null ? request.role() : "ROLE_USER";
     User requestUser = User.builder()
         .username(request.username())
         .email(request.email())
