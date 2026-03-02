@@ -30,23 +30,25 @@ public class UserDetailsImpl implements UserDetails {
 
   @Override
   public boolean isAccountNonExpired() {
-    // FIXME: just a temp thing
-    return user.getEnabled();
+    // No explicit account expiration field; treat accounts as non-expired.
+    return true;
   }
 
   @Override
   public boolean isAccountNonLocked() {
-    return user.getAccountLocked() == false;
+    // Treat null or false as "not locked".
+    return !Boolean.TRUE.equals(user.getAccountLocked());
   }
 
   @Override
   public boolean isCredentialsNonExpired() {
-    // FIXME: a temp thing
-    return user.getEnabled();
+    // No explicit credential expiration field; treat credentials as non-expired.
+    return true;
   }
 
   @Override
   public boolean isEnabled() {
-    return user.getEnabled();
+    // Null-safe check; only TRUE is considered enabled.
+    return Boolean.TRUE.equals(user.getEnabled());
   }
 }
