@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private UserDetailsServiceImpl userDetailsService;
 
   @Autowired
-  private HandlerExceptionResolver resolver;
+  private HandlerExceptionResolver handlerExceptionResolver;
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       }
     } catch (Exception e) {
       // TODO: do a research on it and find a better way to handle the exception
-      resolver.resolveException(request, response, null, e);
+      handlerExceptionResolver.resolveException(request, response, null, e);
       return;
     }
     filterChain.doFilter(request, response);
