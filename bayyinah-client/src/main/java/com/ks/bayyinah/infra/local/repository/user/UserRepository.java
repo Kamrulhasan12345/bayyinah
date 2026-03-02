@@ -2,6 +2,7 @@ package com.ks.bayyinah.infra.local.repository.user;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 
 import com.ks.bayyinah.core.exception.RepositoryException;
 import com.ks.bayyinah.infra.hybrid.model.User;
@@ -15,6 +16,7 @@ public class UserRepository {
           var statement = connection.prepareStatement("SELECT * FROM users WHERE id = 1")) {
         try (var resultSet = statement.executeQuery()) {
           if (resultSet.next()) {
+            Timestamp lastSyncAtTimestamp = resultSet.getObject("last_sync_at", Timestamp.class);
             User user = User.builder()
                 .id(resultSet.getLong("id"))
                 .serverId(resultSet.getObject("server_id", Long.class))
@@ -24,7 +26,7 @@ public class UserRepository {
                 .lastName(resultSet.getString("last_name"))
                 .deviceId(resultSet.getString("device_id"))
                 .isGuest(resultSet.getBoolean("is_guest"))
-                .lastSyncAt(resultSet.getTimestamp("last_sync_at").toLocalDateTime())
+                .lastSyncAt(lastSyncAtTimestamp != null ? lastSyncAtTimestamp.toLocalDateTime() : null)
                 .createdAt(resultSet.getTimestamp("created_at").toLocalDateTime())
                 .build();
             return user;
@@ -44,7 +46,7 @@ public class UserRepository {
       try (var connection = DatabaseManager.getUserConnection();
           var statement = connection.prepareStatement(
               "INSERT INTO users (id, server_id, username, email, first_name, last_name, device_id, is_guest, last_sync_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-        statement.setLong(1, user.getId());
+        statement.setLong(1, 1);
         statement.setObject(2, user.getServerId()); // Use setObject for nullable Long
         statement.setString(3, user.getUsername());
         statement.setString(4, user.getEmail());
@@ -52,8 +54,11 @@ public class UserRepository {
         statement.setString(6, user.getLastName());
         statement.setString(7, user.getDeviceId());
         statement.setBoolean(8, user.isGuest());
-        statement.setTimestamp(9, Timestamp.valueOf(user.getLastSyncAt()));
-        statement.setTimestamp(10, Timestamp.valueOf(user.getCreatedAt()));
+        if (user.getLastSyncAt() != null) {
+          statement.setTimestamp(9, Timestamp.valueOf(user.getLastSyncAt()));
+        } else {
+          statement.setNull(9, Types.TIMESTAMP);
+        }
         statement.executeUpdate();
       }
     } catch (SQLException e) {
@@ -74,7 +79,11 @@ public class UserRepository {
         statement.setString(5, user.getLastName());
         statement.setString(6, user.getDeviceId());
         statement.setBoolean(7, user.isGuest());
-        statement.setTimestamp(8, Timestamp.valueOf(user.getLastSyncAt()));
+        if (user.getLastSyncAt() != null) {
+          statement.setTimestamp(9, Timestamp.valueOf(user.getLastSyncAt()));
+        } else {
+          statement.setNull(9, Types.TIMESTAMP);
+        }
         statement.setTimestamp(9, Timestamp.valueOf(user.getCreatedAt()));
         statement.setLong(10, user.getId());
         statement.executeUpdate();
