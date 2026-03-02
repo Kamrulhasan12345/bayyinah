@@ -5,13 +5,17 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ks.bayyinah.bayyinah_server.exception.DuplicateUserException;
+import com.ks.bayyinah.bayyinah_server.exception.InvalidRefreshKeyException;
 import com.ks.bayyinah.bayyinah_server.model.Tokens;
 import com.ks.bayyinah.bayyinah_server.model.User;
 import com.ks.bayyinah.bayyinah_server.repository.UserRepository;
+
+import io.jsonwebtoken.ExpiredJwtException;
 
 @Service
 public class UserService {
@@ -29,7 +33,8 @@ public class UserService {
   private BCryptPasswordEncoder passwordEncoder;
 
   public User register(User user) {
-    if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+    if (userRepository.existsByUsername(user.getUsername())
+        || userRepository.existsByEmail(user.getEmail())) {
       throw new DuplicateUserException("Username already exists");
     }
 
@@ -42,7 +47,7 @@ public class UserService {
         .authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
     User user = userRepository.findByUsername(username)
-        .orElseThrow(() -> new RuntimeException("User not found"));
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
     user.setLastLoginAt(LocalDateTime.now());
 
@@ -69,7 +74,7 @@ public class UserService {
           .expiresIn(jwtService.getJwtExpiration())
           .build();
     } else {
-      throw new RuntimeException("Invalid refresh token");
+      throw new InvalidRefreshKeyException("Invalid refresh token");
     }
   }
 }

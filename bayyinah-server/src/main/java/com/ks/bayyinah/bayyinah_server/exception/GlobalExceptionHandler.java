@@ -45,14 +45,19 @@ public class GlobalExceptionHandler {
       errorDetail.setProperty("description", "The JWT signature is invalid");
     }
 
-    if (exception instanceof ExpiredJwtException) {
-      errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-      errorDetail.setProperty("description", "The JWT token has expired");
+    if (exception instanceof IllegalArgumentException) {
+      errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), exception.getMessage());
+      errorDetail.setProperty("description", "The request is invalid");
     }
 
-    if (exception instanceof BadCredentialsException) {
+    if (exception instanceof ExpiredJwtException) {
       errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-      errorDetail.setProperty("description", "The JWT token has expired");
+      errorDetail.setProperty("description", "The JWT token has expired or its invalid");
+    }
+
+    if (exception instanceof InvalidRefreshKeyException) {
+      errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
+      errorDetail.setProperty("description", "The refresh token is invalid or has expired");
     }
 
     if (exception instanceof NoResourceFoundException) {

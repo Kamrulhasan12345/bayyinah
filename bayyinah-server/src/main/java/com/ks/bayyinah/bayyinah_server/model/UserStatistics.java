@@ -62,6 +62,23 @@ public class UserStatistics {
   protected void onCreate() {
     this.createdAt = LocalDateTime.now();
     this.updatedAt = LocalDateTime.now();
+
+    if (this.totalReadingTimeMinutes == null)
+      this.totalReadingTimeMinutes = 0;
+    if (this.totalAyahsRead == null)
+      this.totalAyahsRead = 0;
+    if (this.totalSurahsCompleted == null)
+      this.totalSurahsCompleted = 0;
+    if (this.currentStreakDays == null)
+      this.currentStreakDays = 0;
+    if (this.longestStreakDays == null)
+      this.longestStreakDays = 0;
+    if (this.totalBookmarks == null)
+      this.totalBookmarks = 0;
+    if (this.totalNotes == null)
+      this.totalNotes = 0;
+    if (this.lastStreakDate == null)
+      this.lastStreakDate = LocalDateTime.now();
   }
 
   @PreUpdate

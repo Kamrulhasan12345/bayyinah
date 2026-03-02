@@ -31,7 +31,7 @@ public class RecommendationHistory {
   private String queryText;
   // private RecommendedAyah recommendedAyahs;
 
-  @Column(name = "feedback_rating", nullable = false)
+  @Column(name = "feedback_rating")
   private Integer feedbackRating;
 
   @Column(name = "created_at", nullable = false)
