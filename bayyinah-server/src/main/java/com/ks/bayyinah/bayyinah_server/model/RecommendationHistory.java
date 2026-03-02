@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 
 @Entity
-@Table(name = "recommendation_history")
+@Table(name = "recommendation_histories")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
