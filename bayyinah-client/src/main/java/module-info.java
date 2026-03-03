@@ -2,6 +2,7 @@ module com.ks.bayyinah {
   requires javafx.controls;
   requires javafx.fxml;
   requires java.sql;
+  requires java.net.http;
   requires com.zaxxer.hikari;
   requires jakarta.persistence;
 

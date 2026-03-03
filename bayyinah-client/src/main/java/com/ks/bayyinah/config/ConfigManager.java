@@ -40,11 +40,15 @@ public class ConfigManager {
         mainConfig = new MainConfig(
             new QuranConfig(quranDbPath, "http://localhost:8080"),
             new UserConfig(userDbPath, "http://localhost:8080"),
+            new ApiConfig(10, 30, 3, 5000),
             "http://localhost:8080");
 
         yamlMapper.writeValue(configFile, mainConfig);
-      } else
+      } else {
         mainConfig = yamlMapper.readValue(configFile, MainConfig.class);
+        mainConfig.loadFallbacksAsNeeded();
+      }
+
       System.out.println("Configuration loaded successfully from: " + configFile.getAbsolutePath());
       System.out.println("Whole config: " + mainConfig.toString());
     } catch (Exception e) {
