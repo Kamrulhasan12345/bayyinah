@@ -1,6 +1,10 @@
 package com.ks.bayyinah.infra.remote.query;
 
 import com.ks.bayyinah.core.query.QuranQueryService;
+import com.ks.bayyinah.infra.remote.client.ApiClient;
+
+import lombok.AllArgsConstructor;
+
 import com.ks.bayyinah.core.dto.ChapterView;
 import com.ks.bayyinah.core.dto.VerseView;
 import com.ks.bayyinah.core.dto.TranslationView;
@@ -10,12 +14,11 @@ import com.ks.bayyinah.core.dto.PageRequest;
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 public class RemoteQuranQueryService implements QuranQueryService {
   // complete the implementation of the QuranQueryService interface using remote
   // data sources (e.g., REST API, GraphQL, etc.)
-  public RemoteQuranQueryService() {
-    // Initialize local data sources (e.g., database connections, DAOs, etc.)
-  }
+  private final ApiClient apiClient;
 
   @Override
   public List<ChapterView> getAllChapters(String langCode) {

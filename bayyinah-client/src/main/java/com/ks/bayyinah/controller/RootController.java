@@ -1,6 +1,7 @@
 package com.ks.bayyinah.controller;
 
 import com.ks.bayyinah.App;
+import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.infra.hybrid.model.MainConfig;
 import com.ks.bayyinah.infra.hybrid.query.AuthSessionQueryService;
 import com.ks.bayyinah.infra.hybrid.query.TokenManager;
@@ -28,25 +29,7 @@ public class RootController {
   private Node browsingView;
   // TODO: private Node settingsView;
 
-  private AuthSessionQueryService authSessionQueryService;
-
-  private UserService userService;
-  private AuthTokensService authTokensService;
-  private BookmarkService bookmarkService;
-  private UserPreferenceService userPreferenceService;
-  private ReadingProgressService readingProgressService;
-  private NoteService noteService;
-
-  private MainConfig mainConfig;
-  private TokenManager tokenManager;
-  private ApiClient apiClient;
-
-  private RemoteUserQueryService remoteUserQueryService;
-
-  @FXML
-  public void initialize() {
-    showBrowsingView();
-  }
+  private AppContext appContext;
 
   public void showBrowsingView() {
     if (browsingView == null) {

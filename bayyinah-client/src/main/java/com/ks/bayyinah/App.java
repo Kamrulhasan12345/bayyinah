@@ -14,9 +14,10 @@ import com.ks.bayyinah.infra.remote.client.ApiClient;
 import com.ks.bayyinah.infra.remote.query.RemoteUserQueryService;
 import com.ks.bayyinah.infra.hybrid.service.*;
 import com.ks.bayyinah.infra.hybrid.model.*;
-import com.ks.bayyinah.infra.hybrid.query.AuthSessionQueryService;
+import com.ks.bayyinah.infra.hybrid.query.*;
 import com.ks.bayyinah.infra.hybrid.query.TokenManager;
 import com.ks.bayyinah.config.ConfigManager;
+import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.controller.RootController;
 
 /**
@@ -26,21 +27,9 @@ public class App extends Application {
 
   private static Scene scene;
 
-  private AuthSessionQueryService authSessionQueryService;
-
-  private UserService userService;
-  private AuthTokensService authTokensService;
-  private BookmarkService bookmarkService;
-  private UserPreferenceService userPreferenceService;
-  private ReadingProgressService readingProgressService;
-  private NoteService noteService;
+  private AppContext appContext;
 
   private MainConfig mainConfig;
-
-  private TokenManager tokenManager;
-  private ApiClient apiClient;
-
-  private RemoteUserQueryService remoteUserQueryService;
 
   @Override
   public void start(Stage stage) throws IOException {
@@ -81,25 +70,15 @@ public class App extends Application {
 
     if (controller instanceof RootController) {
       RootController rootController = (RootController) controller;
-
-      rootController.setAuthTokensService(authTokensService);
-      rootController.setBookmarkService(bookmarkService);
-      rootController.setUserPreferenceService(userPreferenceService);
-      rootController.setReadingProgressService(readingProgressService);
-      rootController.setUserService(userService);
-      rootController.setNoteService(noteService);
-
-      rootController.setMainConfig(mainConfig);
-      rootController.setTokenManager(tokenManager);
-      rootController.setApiClient(apiClient);
-
-      rootController.setRemoteUserQueryService(remoteUserQueryService);
-      rootController.setAuthSessionQueryService(authSessionQueryService);
+      rootController.setAppContext(appContext);
+      rootController.showBrowsingView();
     }
     return root;
   }
 
   private void initializeUserServices() {
+    appContext = new AppContext();
+
     // Initialize repositories
     var authTokensRepo = new AuthTokensRepository();
     var bookmarksRepo = new BookmarksRepository();
@@ -109,19 +88,32 @@ public class App extends Application {
     var noteRepo = new NoteRepository();
 
     // Initialize services
-    authTokensService = new AuthTokensService(authTokensRepo);
-    bookmarkService = new BookmarkService(bookmarksRepo);
-    userPreferenceService = new UserPreferenceService(userPrefRepo);
-    readingProgressService = new ReadingProgressService(readingProgressRepo);
-    userService = new UserService(userRepo);
-    noteService = new NoteService(noteRepo);
+    var authTokensService = new AuthTokensService(authTokensRepo);
+    var bookmarkService = new BookmarkService(bookmarksRepo);
+    var userPreferenceService = new UserPreferenceService(userPrefRepo);
+    var readingProgressService = new ReadingProgressService(readingProgressRepo);
+    var userService = new UserService(userRepo);
+    var noteService = new NoteService(noteRepo);
 
-    tokenManager = new TokenManager(authTokensService);
-    apiClient = new ApiClient(mainConfig, tokenManager);
+    appContext.setAuthTokensService(authTokensService);
+    appContext.setBookmarkService(bookmarkService);
+    appContext.setUserPreferenceService(userPreferenceService);
+    appContext.setReadingProgressService(readingProgressService);
+    appContext.setUserService(userService);
+    appContext.setNoteService(noteService);
 
-    remoteUserQueryService = new RemoteUserQueryService(apiClient);
+    var tokenManager = new TokenManager(authTokensService);
+    var apiClient = new ApiClient(mainConfig, tokenManager);
 
-    authSessionQueryService = new AuthSessionQueryService(authTokensService, userService, remoteUserQueryService);
+    appContext.setMainConfig(mainConfig);
+    appContext.setTokenManager(tokenManager);
+    appContext.setApiClient(apiClient);
+
+    var remoteUserQueryService = new RemoteUserQueryService(apiClient);
+    var authSessionQueryService = new AuthSessionQueryService(authTokensService, userService, remoteUserQueryService);
+
+    appContext.setRemoteUserQueryService(remoteUserQueryService);
+    appContext.setAuthSessionQueryService(authSessionQueryService);
   }
 
   public static void main(String[] args) {
