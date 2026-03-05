@@ -1,11 +1,17 @@
 package com.ks.bayyinah.bayyinah_server.exception;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -19,7 +25,6 @@ import io.jsonwebtoken.security.SignatureException;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
-
   public ProblemDetail handleSecurityException(Exception exception) {
     ProblemDetail errorDetail = null;
 
@@ -87,11 +92,27 @@ public class GlobalExceptionHandler {
       errorDetail.setProperty("description", "The username already exists");
     }
 
+    if (exception instanceof AuthenticationException) {
+      errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), exception.getMessage());
+      errorDetail.setProperty("description", "Authentication failed");
+    }
+
     if (errorDetail == null) {
       errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
       errorDetail.setProperty("description", "Unknown internal server error.");
     }
 
     return errorDetail;
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ProblemDetail handleValidationExceptions(MethodArgumentNotValidException ex) {
+    ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+    detail.setTitle("Validation Failed");
+    // Extract field errors and add them as a property
+    Map<String, String> errors = new HashMap<>();
+    ex.getBindingResult().getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+    detail.setProperty("errors", errors);
+    return detail;
   }
 }
