@@ -3,12 +3,15 @@ package com.ks.bayyinah.infra.remote.client;
 import java.net.URI;
 import java.net.http.*;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 
 import com.ks.bayyinah.infra.exception.UnauthorizedException;
 import com.ks.bayyinah.infra.hybrid.model.AuthTokens;
 import com.ks.bayyinah.infra.hybrid.model.MainConfig;
 import com.ks.bayyinah.infra.hybrid.query.TokenManager;
+import com.ks.bayyinah.infra.remote.dto.auth.RefreshTokenRequest;
+import com.ks.bayyinah.infra.remote.dto.auth.TokensResponse;
 import com.ks.bayyinah.infra.remote.routing.ApiRoute;
 import com.ks.bayyinah.infra.remote.routing.RouteResolver;
 
@@ -34,7 +37,7 @@ public class ApiClient {
   }
 
   // GET (with auth)
-  public <T> CompletableFuture<T> get(ApiRoute route, Class<T> responseType, Object... pathParams) {
+  public <Req, Res> CompletableFuture<Res> get(ApiRoute route, Class<Res> responseType, Object... pathParams) {
     return tokenManager.getAccessToken().thenCompose(token -> {
       String url = routeResolver.resolve(route, pathParams);
 
@@ -51,7 +54,7 @@ public class ApiClient {
   }
 
   // GET (without auth)
-  public <T> CompletableFuture<T> getPublic(ApiRoute route, Class<T> responseType, Object... pathParams) {
+  public <Req, Res> CompletableFuture<Res> getPublic(ApiRoute route, Class<Res> responseType, Object... pathParams) {
     String url = routeResolver.resolve(route, pathParams);
 
     HttpRequest request = HttpRequest.newBuilder()
@@ -65,7 +68,8 @@ public class ApiClient {
   }
 
   // POST (with auth)
-  public <T> CompletableFuture<T> post(ApiRoute route, T body, Class<T> responseType, Object... pathParams) {
+  public <Req, Res> CompletableFuture<Res> post(ApiRoute route, Req body, Class<Res> responseType,
+      Object... pathParams) {
     return tokenManager.getAccessToken().thenCompose(token -> {
       String url = routeResolver.resolve(route, pathParams);
       String jsonBody = objectMapper.writeValueAsString(body);
@@ -83,7 +87,8 @@ public class ApiClient {
   }
 
   // POST (without auth)
-  public <T> CompletableFuture<T> postPublic(ApiRoute route, T body, Class<T> responseType, Object... pathParams) {
+  public <Req, Res> CompletableFuture<Res> postPublic(ApiRoute route, Req body, Class<Res> responseType,
+      Object... pathParams) {
     String url = routeResolver.resolve(route, pathParams);
     String jsonBody = objectMapper.writeValueAsString(body);
 
@@ -98,7 +103,8 @@ public class ApiClient {
   }
 
   // PUT (with auth)
-  public <T> CompletableFuture<T> put(ApiRoute route, T body, Class<T> responseType, Object... pathParams) {
+  public <Req, Res> CompletableFuture<Res> put(ApiRoute route, Req body, Class<Res> responseType,
+      Object... pathParams) {
     return tokenManager.getAccessToken().thenCompose(token -> {
       String url = routeResolver.resolve(route, pathParams);
       String jsonBody = objectMapper.writeValueAsString(body);
@@ -116,7 +122,8 @@ public class ApiClient {
   }
 
   // PUT (without auth)
-  public <T> CompletableFuture<T> putPublic(ApiRoute route, T body, Class<T> responseType, Object... pathParams) {
+  public <Req, Res> CompletableFuture<Res> putPublic(ApiRoute route, Req body, Class<Res> responseType,
+      Object... pathParams) {
     String url = routeResolver.resolve(route, pathParams);
     String jsonBody = objectMapper.writeValueAsString(body);
 
@@ -131,7 +138,7 @@ public class ApiClient {
   }
 
   // DELETE (with auth)
-  public <T> CompletableFuture<T> delete(ApiRoute route, Class<T> responseType, Object... pathParams) {
+  public <Req, Res> CompletableFuture<Res> delete(ApiRoute route, Class<Res> responseType, Object... pathParams) {
     return tokenManager.getAccessToken().thenCompose(token -> {
       String url = routeResolver.resolve(route, pathParams);
 
@@ -148,7 +155,7 @@ public class ApiClient {
   }
 
   // DELETE (without auth)
-  public <T> CompletableFuture<T> deletePublic(ApiRoute route, Class<T> responseType, Object... pathParams) {
+  public <Req, Res> CompletableFuture<Res> deletePublic(ApiRoute route, Class<Res> responseType, Object... pathParams) {
     String url = routeResolver.resolve(route, pathParams);
 
     HttpRequest request = HttpRequest.newBuilder()
@@ -161,17 +168,50 @@ public class ApiClient {
     return executeRequest(request, responseType);
   }
 
-  private <T> CompletableFuture<T> executeRequest(HttpRequest request, Class<T> responseType) {
+  private <Req, Res> CompletableFuture<Res> executeRequest(HttpRequest request, Class<Res> responseType) {
     return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
         .thenApply(response -> handleResponse(response, responseType));
   }
 
   private CompletableFuture<AuthTokens> performTokenRefresh(String refreshToken) {
     // TODO: implement the real logic here
-    return CompletableFuture.completedFuture(new AuthTokens());
+    String url = routeResolver.resolve(ApiRoute.AUTH_REFRESH);
+
+    try {
+      RefreshTokenRequest refreshRequest = new RefreshTokenRequest(refreshToken);
+      String jsonBody = objectMapper.writeValueAsString(refreshRequest);
+
+      HttpRequest httpRequest = HttpRequest.newBuilder()
+          .uri(URI.create(url))
+          .header("Content-Type", "application/json")
+          .timeout(Duration.ofSeconds(mainConfig.getApi().getRequestTimeoutSeconds()))
+          .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+          .build();
+
+      return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
+          .thenApply(response -> {
+            if (response.statusCode() != 200) {
+              throw new UnauthorizedException("Failed to refresh token: " + response.statusCode());
+            }
+
+            try {
+              TokensResponse refreshResponse = objectMapper.readValue(response.body(), TokensResponse.class);
+
+              LocalDateTime expiresAt = LocalDateTime.now().plus(Duration.ofMillis(refreshResponse.getExpiresIn()));
+              AuthTokens newTokens = new AuthTokens(refreshResponse.getAccessToken(), refreshResponse.getRefreshToken(),
+                  expiresAt);
+
+              return newTokens;
+            } catch (Exception e) {
+              throw new ApiException("Failed to parse token refresh response: " + e.getMessage(), e);
+            }
+          });
+    } catch (Exception e) {
+      return CompletableFuture.failedFuture(e);
+    }
   }
 
-  private <T> T handleResponse(HttpResponse<String> response, Class<T> responseType) {
+  private <Req, Res> Res handleResponse(HttpResponse<String> response, Class<Res> responseType) {
     int statusCode = response.statusCode();
     String body = response.body();
 
@@ -230,18 +270,6 @@ public class ApiClient {
 
     public void setMessage(String message) {
       this.message = message;
-    }
-  }
-
-  private static class RefreshTokenRequest {
-    private String refreshToken;
-
-    public RefreshTokenRequest(String refreshToken) {
-      this.refreshToken = refreshToken;
-    }
-
-    public String getRefreshToken() {
-      return refreshToken;
     }
   }
 }

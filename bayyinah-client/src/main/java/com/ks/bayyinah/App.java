@@ -10,10 +10,12 @@ import java.io.IOException;
 
 import com.ks.bayyinah.infra.local.database.*;
 import com.ks.bayyinah.infra.local.repository.user.*;
+import com.ks.bayyinah.infra.remote.client.ApiClient;
 import com.ks.bayyinah.infra.remote.query.RemoteUserQueryService;
 import com.ks.bayyinah.infra.hybrid.service.*;
 import com.ks.bayyinah.infra.hybrid.model.*;
 import com.ks.bayyinah.infra.hybrid.query.AuthSessionQueryService;
+import com.ks.bayyinah.infra.hybrid.query.TokenManager;
 import com.ks.bayyinah.config.ConfigManager;
 import com.ks.bayyinah.controller.RootController;
 
@@ -33,13 +35,18 @@ public class App extends Application {
   private ReadingProgressService readingProgressService;
   private NoteService noteService;
 
+  private MainConfig mainConfig;
+
+  private TokenManager tokenManager;
+  private ApiClient apiClient;
+
   private RemoteUserQueryService remoteUserQueryService;
 
   @Override
   public void start(Stage stage) throws IOException {
     try {
-      MainConfig config = ConfigManager.getConfig();
-      DatabaseManager.initialize(config);
+      mainConfig = ConfigManager.getConfig();
+      DatabaseManager.initialize(mainConfig);
 
       this.initializeUserServices();
     } catch (Exception e) {
@@ -82,6 +89,10 @@ public class App extends Application {
       rootController.setUserService(userService);
       rootController.setNoteService(noteService);
 
+      rootController.setMainConfig(mainConfig);
+      rootController.setTokenManager(tokenManager);
+      rootController.setApiClient(apiClient);
+
       rootController.setRemoteUserQueryService(remoteUserQueryService);
       rootController.setAuthSessionQueryService(authSessionQueryService);
     }
@@ -105,7 +116,10 @@ public class App extends Application {
     userService = new UserService(userRepo);
     noteService = new NoteService(noteRepo);
 
-    remoteUserQueryService = new RemoteUserQueryService();
+    tokenManager = new TokenManager(authTokensService);
+    apiClient = new ApiClient(mainConfig, tokenManager);
+
+    remoteUserQueryService = new RemoteUserQueryService(apiClient);
 
     authSessionQueryService = new AuthSessionQueryService(authTokensService, userService, remoteUserQueryService);
   }
