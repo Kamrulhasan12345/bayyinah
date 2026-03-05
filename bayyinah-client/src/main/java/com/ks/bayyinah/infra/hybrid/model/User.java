@@ -42,14 +42,17 @@ public class User {
   /**
    * Create a registered user
    */
-  public static User createRegistered(String username, String email) {
+  public static User createRegistered(Long serverId, String username, String email, String firstName, String lastName) {
     User user = new User();
     long id = 1;
     user.id = id; // This will be updated when saved to DB
+    user.serverId = serverId;
     user.deviceId = generateDeviceId();
     user.isGuest = false;
     user.username = username;
     user.email = email;
+    user.firstName = firstName;
+    user.lastName = lastName;
     user.createdAt = LocalDateTime.now();
     return user;
   }
