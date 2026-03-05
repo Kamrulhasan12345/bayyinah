@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import lombok.*;
 
@@ -27,17 +28,23 @@ public class SecurityConfiguration {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http.csrf(csrf -> csrf.disable())
+    return http
+        .csrf(csrf -> csrf.disable())
         // TODO: versionize the api someday
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/auth/**").permitAll()
-            .requestMatchers("/actuator/**").permitAll()
-            .anyRequest().authenticated())
+        .authorizeHttpRequests(
+          auth -> {
+              auth.requestMatchers("/").permitAll();
+              auth.requestMatchers("/error").permitAll();
+              auth.requestMatchers("/api/auth/**").permitAll();
+              auth.requestMatchers("/actuator/info").permitAll();
+              auth.anyRequest().authenticated();
+            }
+        )
         .sessionManagement(session -> session.sessionCreationPolicy(
             SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider)
         .addFilterBefore(jwtAuthenticationFilter,
-            org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
+            UsernamePasswordAuthenticationFilter.class)
         .build();
   }
 }
