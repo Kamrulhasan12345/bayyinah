@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -69,6 +70,11 @@ public class GlobalExceptionHandler {
     if (exception instanceof NoResourceFoundException) {
       errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), exception.getMessage());
       errorDetail.setProperty("description", "The resource or endpoint does not exist");
+    }
+
+    if (exception instanceof HttpRequestMethodNotSupportedException) {
+      errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(405), exception.getMessage());
+      errorDetail.setProperty("description", "The HTTP method is not supported for this endpoint");
     }
 
     if (exception instanceof UsernameNotFoundException) {
