@@ -43,14 +43,17 @@ public class TokenManager {
     try {
       Optional<AuthTokens> tokensOpt = authTokensService.getAuthTokens();
       if (tokensOpt.isPresent() && !tokensOpt.get().isExpired()) {
+        refreshLock.unlock();
         return CompletableFuture.completedFuture(tokensOpt.get().getAccessToken());
       }
 
       if (tokens.isRefreshTokenExpired()) {
+        refreshLock.unlock();
         return CompletableFuture.failedFuture(new UnauthorizedException("Refresh token expired, please log in again"));
       }
 
       if (tokenRefreshCallback == null) {
+        refreshLock.unlock();
         return CompletableFuture.failedFuture(new IllegalStateException("Token refresh callback not set"));
       }
 
@@ -60,6 +63,7 @@ public class TokenManager {
         refreshLock.unlock();
         return newTokens.getAccessToken();
       }).exceptionally(ex -> {
+        refreshLock.unlock();
         throw new UnauthorizedException("Failed to refresh access token", ex);
       });
 
