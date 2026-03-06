@@ -77,4 +77,13 @@ public class UserService {
       throw new InvalidRefreshKeyException("Invalid refresh token");
     }
   }
+
+  public User updateProfile(User user) {
+    return userRepository.save(user);
+  }
+
+  public void deleteProfile(Long userId) {
+    // Delete the user's profile from the database
+    userRepository.deleteById(userId);
+  }
 }

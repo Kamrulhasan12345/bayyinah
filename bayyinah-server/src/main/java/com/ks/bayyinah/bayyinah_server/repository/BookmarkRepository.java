@@ -20,6 +20,8 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
       Integer surahNumber,
       Integer ayahNumber);
 
+  Optional<Bookmark> findByIdAndUserId(Long id, Long userId);
+
   boolean existsByUserIdAndSurahNumberAndAyahNumber(
       Long userId,
       Integer surahNumber,

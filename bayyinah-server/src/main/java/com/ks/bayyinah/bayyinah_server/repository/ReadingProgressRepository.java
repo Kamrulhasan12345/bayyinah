@@ -13,18 +13,19 @@ import java.util.Optional;
 @Repository
 public interface ReadingProgressRepository extends JpaRepository<ReadingProgress, Long> {
 
+  List<ReadingProgress> findByUserId(Long userId);
+
   List<ReadingProgress> findByUserIdOrderByLastReadAtDesc(Long userId);
 
   Optional<ReadingProgress> findFirstByUserIdOrderByLastReadAtDesc(Long userId);
 
-  List<ReadingProgress> findByUserIdAndSurahNumber(Long userId, Integer surahNumber);
-
-  Optional<ReadingProgress> findByUserIdAndSurahNumberAndAyahNumber(
-      Long userId,
-      Integer surahNumber,
-      Integer ayahNumber);
+  Optional<ReadingProgress> findByUserIdAndSurahNumber(Long userId, Integer surahNumber);
 
   void deleteByUserId(Long userId);
+
+  void deleteByUserIdAndSurahNumber(Long userId, Integer surahNumber);
+
+  void deleteByUserIdAndId(Long userId, Long id);
 
   // For sync
   List<ReadingProgress> findByUserIdAndUpdatedAtAfter(Long userId, LocalDateTime timestamp);
