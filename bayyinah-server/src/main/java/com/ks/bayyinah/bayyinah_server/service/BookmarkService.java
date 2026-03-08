@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.ks.bayyinah.bayyinah_server.model.Bookmark;
 import com.ks.bayyinah.bayyinah_server.repository.BookmarkRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class BookmarkService {
 
@@ -27,11 +29,16 @@ public class BookmarkService {
     return bookmarkRepository.findByUserIdAndSurahNumber(userId, surahNumber);
   }
 
+  @Transactional
   public void deleteBookmarkByIdAndUserId(Long id, Long userId) {
     bookmarkRepository.deleteByUserIdAndId(userId, id);
   }
 
   public Bookmark saveBookmark(Bookmark bookmark) {
     return bookmarkRepository.save(bookmark);
+  }
+
+  public boolean existsByUserIdAndSurahNumberAndAyahNumber(Long userId, Integer surahNumber, Integer ayahNumber) {
+    return bookmarkRepository.existsByUserIdAndSurahNumberAndAyahNumber(userId, surahNumber, ayahNumber);
   }
 }

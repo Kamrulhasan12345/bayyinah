@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.ks.bayyinah.bayyinah_server.model.ReadingProgress;
 import com.ks.bayyinah.bayyinah_server.repository.ReadingProgressRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class ReadingProgressService {
 
@@ -31,10 +33,12 @@ public class ReadingProgressService {
     return readingProgressRepository.findByUserIdAndSurahNumber(userId, surahNumber);
   }
 
+  @Transactional
   public void deleteReadingProgressByIdAndUserId(Long id, Long userId) {
     readingProgressRepository.deleteByUserIdAndId(userId, id);
   }
 
+  @Transactional
   public void deleteReadingProgressByUserIdAndSurahNumber(Long userId, Integer surahNumber) {
     readingProgressRepository.deleteByUserIdAndSurahNumber(userId, surahNumber);
   }

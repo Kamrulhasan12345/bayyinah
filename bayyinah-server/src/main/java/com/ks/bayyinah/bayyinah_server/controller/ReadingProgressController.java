@@ -1,6 +1,7 @@
 package com.ks.bayyinah.bayyinah_server.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +28,7 @@ public class ReadingProgressController {
   @Autowired
   private ReadingProgressService readingProgressService;
 
-  @GetMapping("/")
+  @GetMapping("")
   public ResponseEntity<List<ReadingProgress>> getReadingProgress() {
     Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -38,28 +40,40 @@ public class ReadingProgressController {
   }
 
   @GetMapping("/chapters/{number}")
-  public ResponseEntity<ReadingProgress> getReadingProgressByChapterNumber(Integer number) {
+  public ResponseEntity<?> getReadingProgressByChapterNumber(@PathVariable("number") Integer number) {
     Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     User currentUser = userDetails.getUser();
 
-    return readingProgressService.getReadingProgressByUserIdAndSurahNumber(currentUser.getId(), number)
-        .map(ResponseEntity::ok)
-        .orElse(ResponseEntity.notFound().build());
+    Optional<ReadingProgress> progress = readingProgressService
+        .getReadingProgressByUserIdAndSurahNumber(currentUser.getId(), number);
+
+    if (progress.isPresent()) {
+      return ResponseEntity.ok(progress.get());
+    } else {
+      return ResponseEntity.status(404)
+          .body(new ReadingProgressDeletionResponse("Reading progress not found for chapter " + number));
+    }
+
   }
 
   @GetMapping("/current")
-  public ResponseEntity<ReadingProgress> getCurrentReadingProgress() {
+  public ResponseEntity<?> getCurrentReadingProgress() {
     Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     User currentUser = userDetails.getUser();
 
-    return readingProgressService.getLatestProgress(currentUser.getId())
-        .map(ResponseEntity::ok)
-        .orElse(ResponseEntity.notFound().build());
+    Optional<ReadingProgress> progress = readingProgressService.getLatestProgress(currentUser.getId());
+
+    if (progress.isPresent()) {
+      return ResponseEntity.ok(progress.get());
+    } else {
+      return ResponseEntity.status(404)
+          .body(new ReadingProgressDeletionResponse("No reading progress found for the user"));
+    }
   }
 
-  @PostMapping("/")
+  @PostMapping("")
   public ResponseEntity<ReadingProgress> saveReadingProgress(
       @RequestBody ReadingProgressCreationRequest readingProgress) {
     Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
@@ -77,7 +91,7 @@ public class ReadingProgressController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<ReadingProgressDeletionResponse> deleteReadingProgressById(Long id) {
+  public ResponseEntity<ReadingProgressDeletionResponse> deleteReadingProgressById(@PathVariable("id") Long id) {
     Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     User currentUser = userDetails.getUser();

@@ -93,7 +93,16 @@ public class UserController {
     Optional<UserPreference> userPreferenceOpt = userPreferenceService.findByUserId(currentUser.getId());
 
     if (userPreferenceOpt.isEmpty()) {
-      UserPreference newPreference = new UserPreference();
+      UserPreference newPreference = UserPreference.builder()
+          .userId(currentUser.getId())
+          .theme(updatedPreferences.theme())
+          .fontSize(updatedPreferences.fontSize())
+          .defaultTranslation(updatedPreferences.defaultTranslation())
+          .language(updatedPreferences.language())
+          .readingMode(updatedPreferences.readingMode())
+          .showTransliteration(updatedPreferences.showTransliteration())
+          .autoScroll(updatedPreferences.autoScroll())
+          .build();
       userPreferenceService.save(newPreference);
       return ResponseEntity.ok(new UserPreferenceResponse("User preferences created successfully", newPreference));
     }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.ks.bayyinah.bayyinah_server.dto.BookmarkCreationRequest;
 import com.ks.bayyinah.bayyinah_server.dto.BookmarkDeleteResponse;
@@ -29,9 +30,9 @@ public class BookmarkController {
   @Autowired
   private BookmarkService bookmarkService;
 
-  @GetMapping("/")
+  @GetMapping("")
   public ResponseEntity<List<Bookmark>> getBookmarks() {
-    Authentication authentication = (Authentication) SecurityContextHolder.getContext();
+    Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     User currentUser = userDetails.getUser();
 
@@ -41,8 +42,8 @@ public class BookmarkController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Bookmark> getBookmarkById(Long id) {
-    Authentication authentication = (Authentication) SecurityContextHolder.getContext();
+  public ResponseEntity<?> getBookmarkById(@PathVariable("id") Long id) {
+    Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     User currentUser = userDetails.getUser();
 
@@ -51,13 +52,13 @@ public class BookmarkController {
     if (bookmark.isPresent()) {
       return ResponseEntity.ok(bookmark.get());
     } else {
-      return ResponseEntity.notFound().build();
+      return ResponseEntity.status(404).body(new BookmarkDeleteResponse("Bookmark not found"));
     }
   }
 
   @GetMapping("/chapters/{number}")
-  public ResponseEntity<List<Bookmark>> getBookmarksByChapterNumber(@Param("number") int chapterNumber) {
-    Authentication authentication = (Authentication) SecurityContextHolder.getContext();
+  public ResponseEntity<List<Bookmark>> getBookmarksByChapterNumber(@PathVariable("number") int chapterNumber) {
+    Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     User currentUser = userDetails.getUser();
 
@@ -65,12 +66,16 @@ public class BookmarkController {
     return ResponseEntity.ok(bookmarks);
   }
 
-  @PostMapping("/")
-  public ResponseEntity<Bookmark> createBookmark(@RequestBody BookmarkCreationRequest bookmark) {
-    Authentication authentication = (Authentication) SecurityContextHolder.getContext();
+  @PostMapping("")
+  public ResponseEntity<?> createBookmark(@RequestBody BookmarkCreationRequest bookmark) {
+    Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     User currentUser = userDetails.getUser();
 
+    if (bookmarkService.existsByUserIdAndSurahNumberAndAyahNumber(currentUser.getId(), bookmark.surahNumber(),
+        bookmark.ayahNumber())) {
+      return ResponseEntity.status(400).body(new BookmarkDeleteResponse("Bookmark already exists for this verse"));
+    }
     Bookmark newBookmark = Bookmark.builder().userId(currentUser.getId()).surahNumber(bookmark.surahNumber())
         .ayahNumber(bookmark.ayahNumber()).title(bookmark.title()).color(bookmark.color()).build();
     Bookmark createdBookmark = bookmarkService.saveBookmark(newBookmark);
@@ -78,8 +83,8 @@ public class BookmarkController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<BookmarkDeleteResponse> deleteBookmarkById(Long id) {
-    Authentication authentication = (Authentication) SecurityContextHolder.getContext();
+  public ResponseEntity<BookmarkDeleteResponse> deleteBookmarkById(@PathVariable("id") Long id) {
+    Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     User currentUser = userDetails.getUser();
 
