@@ -32,13 +32,12 @@ public class SecurityConfiguration {
         .csrf(csrf -> csrf.disable())
         // TODO: versionize the api someday
         .authorizeHttpRequests(
-          auth -> {
-              auth.requestMatchers("/").permitAll();
-              auth.requestMatchers("/error").permitAll();
-              auth.requestMatchers("/api/auth/**").permitAll();
-              auth.requestMatchers("/actuator/info").permitAll();
-              auth.anyRequest().authenticated();
-            }
+            auth -> auth.requestMatchers("/").permitAll()
+                .requestMatchers("/error").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/actuator/info").permitAll()
+                .anyRequest().authenticated()
+
         )
         .sessionManagement(session -> session.sessionCreationPolicy(
             SessionCreationPolicy.STATELESS))

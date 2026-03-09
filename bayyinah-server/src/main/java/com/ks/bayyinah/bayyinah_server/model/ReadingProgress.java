@@ -56,6 +56,8 @@ public class ReadingProgress {
       this.completionPercentage = 0.0f;
     if (this.totalReadTimeMinutes == null)
       this.totalReadTimeMinutes = 0;
+    if (this.lastReadAt == null)
+      this.lastReadAt = LocalDateTime.now();
   }
 
   @PreUpdate

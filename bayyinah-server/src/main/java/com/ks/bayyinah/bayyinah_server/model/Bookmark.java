@@ -44,5 +44,13 @@ public class Bookmark {
   @PrePersist
   protected void onCreate() {
     this.createdAt = LocalDateTime.now();
+
+    if (this.title == null || this.title.isEmpty()) {
+      this.title = "Bookmark for Surah " + this.surahNumber + ", Ayah " + this.ayahNumber;
+    }
+
+    if (this.color == null || this.color.isEmpty()) {
+      this.color = "#00FF00";
+    }
   }
 }
