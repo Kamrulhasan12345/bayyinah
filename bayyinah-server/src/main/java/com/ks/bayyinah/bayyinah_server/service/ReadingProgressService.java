@@ -26,7 +26,7 @@ public class ReadingProgressService {
   }
 
   public Optional<ReadingProgress> getLatestProgress(Long userId) {
-    return readingProgressRepository.findByUserIdOrderByLastReadAtDesc(userId).stream().findFirst();
+    return readingProgressRepository.findFirstByUserIdOrderByLastReadAtDesc(userId);
   }
 
   public Optional<ReadingProgress> getReadingProgressByUserIdAndSurahNumber(Long userId, Integer surahNumber) {

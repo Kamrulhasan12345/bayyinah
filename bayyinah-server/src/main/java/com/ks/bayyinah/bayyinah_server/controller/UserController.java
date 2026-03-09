@@ -47,8 +47,12 @@ public class UserController {
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     User currentUser = userDetails.getUser();
 
-    currentUser.setFirstName(updatedUser.firstName());
-    currentUser.setLastName(updatedUser.lastName());
+    if (updatedUser.firstName() != null) {
+      currentUser.setFirstName(updatedUser.firstName());
+    }
+    if (updatedUser.lastName() != null) {
+      currentUser.setLastName(updatedUser.lastName());
+    }
 
     userService.updateProfile(currentUser);
 
@@ -106,18 +110,32 @@ public class UserController {
       userPreferenceService.save(newPreference);
       return ResponseEntity.ok(new UserPreferenceResponse("User preferences created successfully", newPreference));
     }
+    UserPreference existingPreference = userPreferenceOpt.get();
 
-    userPreferenceOpt.get().setTheme(updatedPreferences.theme());
-    userPreferenceOpt.get().setFontSize(updatedPreferences.fontSize());
-    userPreferenceOpt.get().setDefaultTranslation(updatedPreferences.defaultTranslation());
-    userPreferenceOpt.get().setLanguage(updatedPreferences.language());
-    userPreferenceOpt.get().setReadingMode(updatedPreferences.readingMode());
-    userPreferenceOpt.get().setShowTransliteration(updatedPreferences.showTransliteration());
-    userPreferenceOpt.get().setAutoScroll(updatedPreferences.autoScroll());
-
-    userPreferenceService.save(userPreferenceOpt.get());
+    if (updatedPreferences.theme() != null) {
+      existingPreference.setTheme(updatedPreferences.theme());
+    }
+    if (updatedPreferences.fontSize() != null) {
+      existingPreference.setFontSize(updatedPreferences.fontSize());
+    }
+    if (updatedPreferences.defaultTranslation() != null) {
+      existingPreference.setDefaultTranslation(updatedPreferences.defaultTranslation());
+    }
+    if (updatedPreferences.language() != null) {
+      existingPreference.setLanguage(updatedPreferences.language());
+    }
+    if (updatedPreferences.readingMode() != null) {
+      existingPreference.setReadingMode(updatedPreferences.readingMode());
+    }
+    if (updatedPreferences.showTransliteration() != null) {
+      existingPreference.setShowTransliteration(updatedPreferences.showTransliteration());
+    }
+    if (updatedPreferences.autoScroll() != null) {
+      existingPreference.setAutoScroll(updatedPreferences.autoScroll());
+    }
+    userPreferenceService.save(existingPreference);
 
     return ResponseEntity
-        .ok(new UserPreferenceResponse("User preferences updated successfully", userPreferenceOpt.get()));
+        .ok(new UserPreferenceResponse("User preferences updated successfully", existingPreference));
   }
 }
