@@ -6,7 +6,7 @@ import com.ks.bayyinah.infra.local.database.DbAsync;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import lombok.Setter;
 
@@ -19,7 +19,7 @@ public class LoginController {
   private TextField passwordField;
 
   @FXML
-  private Label registerRedirect;
+  private Hyperlink registerRedirect;
 
   @FXML
   private TextField usernameField;

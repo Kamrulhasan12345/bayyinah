@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.layout.HBox?>
@@ -25,7 +26,7 @@
             <HBox>
                <children>
                   <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="New here?" HBox.hgrow="ALWAYS" />
-                  <Label fx:id="registerRedirect" alignment="CENTER" maxWidth="1.7976931348623157E308" onMouseClicked="#goToRegister" text="Register" HBox.hgrow="ALWAYS" />
+                  <Hyperlink fx:id="registerRedirect" alignment="CENTER" maxWidth="1.7976931348623157E308" onAction="#goToRegister" text="Register" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
          </children>
