@@ -54,10 +54,15 @@ public class AuthSessionQueryService {
   public void logout() {
     String refreshToken = authTokensService.getAuthTokens()
         .map(AuthTokens::getRefreshToken)
-        .orElseThrow(() -> new IllegalStateException("No refresh token available"));
-    remoteUserQueryService.logout(refreshToken).join();
-    authTokensService.clearAuthTokens();
-    userService.clearUser();
+        .orElse(null);
+    try {
+      if (refreshToken != null) {
+        remoteUserQueryService.logout(refreshToken).join();
+      }
+    } finally {
+      authTokensService.clearAuthTokens();
+      userService.clearUser();
+    }
   }
 
   public User getCurrentUser() {
