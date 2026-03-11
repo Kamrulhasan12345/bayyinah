@@ -1,10 +1,13 @@
 package com.ks.bayyinah.controller;
 
+import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.controller.cell.VerseCell;
 import com.ks.bayyinah.core.dto.ChapterView;
 import com.ks.bayyinah.core.dto.VerseView;
 import com.ks.bayyinah.core.model.Chapter;
 import com.ks.bayyinah.core.model.Chapter_i18n;
+import com.ks.bayyinah.infra.hybrid.model.UserPreference;
+import com.ks.bayyinah.infra.hybrid.service.UserPreferenceService;
 import com.ks.bayyinah.infra.local.database.DbAsync;
 import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
 import java.util.List;
@@ -14,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
+import lombok.Setter;
 
 public class ChaptersController {
 
@@ -34,6 +38,9 @@ public class ChaptersController {
 
   private BrowsingController browsingController;
 
+  @Setter
+  private AppContext appContext;
+
   private Runnable onLoadComplete;
 
   public void setBrowsingController(BrowsingController browsingController) {
@@ -46,20 +53,22 @@ public class ChaptersController {
 
   public void showVerses(int chapterId) {
     LocalQuranQueryService quranQueryService = LocalQuranQueryService.getInstance();
+    UserPreferenceService userPreferencesService = appContext.getUserPreferenceService();
 
-    DbAsync.runWithUi(() -> quranQueryService.getChapterVerses(chapterId, 20), verses -> {
-      System.out.println("Fetched " + verses.size() + " verses for chapter " + chapterId);
-      verseListView.setItems(FXCollections.observableArrayList(verses));
-      System.out.println("Loaded " + verses.size() + " verses");
-      if (onLoadComplete != null) {
-        onLoadComplete.run();
-      }
-    }, e -> {
-      e.printStackTrace();
-      if (onLoadComplete != null) {
-        onLoadComplete.run();
-      }
-    });
+    DbAsync.runWithUi(
+        () -> quranQueryService.getChapterVerses(chapterId, userPreferencesService.getDefaultTranslation()), verses -> {
+          System.out.println("Fetched " + verses.size() + " verses for chapter " + chapterId);
+          verseListView.setItems(FXCollections.observableArrayList(verses));
+          System.out.println("Loaded " + verses.size() + " verses");
+          if (onLoadComplete != null) {
+            onLoadComplete.run();
+          }
+        }, e -> {
+          e.printStackTrace();
+          if (onLoadComplete != null) {
+            onLoadComplete.run();
+          }
+        });
 
     verseListView.setCellFactory(listView -> new VerseCell());
   }

@@ -34,7 +34,8 @@ public class RemoteUserQueryService {
     return apiClient.post(ApiRoute.AUTH_REFRESH, request, TokensResponse.class);
   }
 
-  public CompletableFuture<Void> logout() {
-    return apiClient.post(ApiRoute.AUTH_LOGOUT, null, Void.class);
+  public CompletableFuture<Void> logout(String refreshToken) {
+    RefreshTokenRequest request = new RefreshTokenRequest(refreshToken);
+    return apiClient.post(ApiRoute.AUTH_LOGOUT, request, Void.class);
   }
 }

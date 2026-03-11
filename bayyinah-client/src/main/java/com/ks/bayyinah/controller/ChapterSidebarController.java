@@ -1,5 +1,6 @@
 package com.ks.bayyinah.controller;
 
+import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.core.dto.ChapterView;
 import com.ks.bayyinah.core.model.Chapter;
 

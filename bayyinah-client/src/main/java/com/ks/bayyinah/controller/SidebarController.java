@@ -1,7 +1,10 @@
 package com.ks.bayyinah.controller;
 
+import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.controller.cell.ChapterSidebarCell;
 import com.ks.bayyinah.core.dto.ChapterView;
+import com.ks.bayyinah.infra.hybrid.model.User;
+import com.ks.bayyinah.infra.hybrid.query.AuthSessionQueryService;
 import com.ks.bayyinah.infra.local.database.DbAsync;
 import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
 import java.util.List;
@@ -34,10 +37,16 @@ public class SidebarController {
   private FontIcon settingsBtn;
 
   @FXML
+  private FontIcon toggleAuthBtn;
+
+  @FXML
   private Label username;
 
   @Setter
   private Consumer<ChapterView> onChapterSelected;
+
+  @Setter
+  private Runnable onLoginClicked;
 
   @Setter
   private Runnable onHomeBtnClick;
@@ -46,8 +55,10 @@ public class SidebarController {
   private PauseTransition searchDebounce;
   private int currentlySelectedChapterId;
 
-  @FXML
-  public void initialize() {
+  @Setter
+  private AppContext appContext;
+
+  public void initializeSidebar() {
 
     /*
      * Sidebar Chapters List Fetching and Display Logic
@@ -86,13 +97,13 @@ public class SidebarController {
           searchDebounce.playFromStart(); // Reset timer on each keystroke
         });
 
-
     /*
      * User Info Display Logic (e.g., username / Guest User)
      */
 
+    refreshAuthState();
 
-    /* 
+    /*
      * Settings Button Logic
      */
   }
@@ -142,6 +153,49 @@ public class SidebarController {
     Platform.runLater(() -> {
       chaptersListView.getSelectionModel().clearSelection();
       currentlySelectedChapterId = -1;
+    });
+  }
+
+  public void refreshAuthState() {
+    AuthSessionQueryService authSessionQueryService = appContext.getAuthSessionQueryService();
+
+    DbAsync.runWithUi(authSessionQueryService::getCurrentUser, user -> {
+      username.setText(user.getDisplayName());
+
+      if (user.isGuest()) {
+        bindGuestAuthAction();
+      } else {
+        bindLogoutAction(authSessionQueryService);
+      }
+    }, e -> {
+      e.printStackTrace();
+      username.setText("Guest User");
+      bindGuestAuthAction();
+    });
+  }
+
+  private void bindGuestAuthAction() {
+    username.setText("Guest User");
+    toggleAuthBtn.setIconLiteral("mdi2l-login");
+    toggleAuthBtn.setOnMouseClicked(e -> {
+      if (onLoginClicked != null) {
+        onLoginClicked.run();
+      }
+    });
+  }
+
+  private void bindLogoutAction(AuthSessionQueryService authSessionQueryService) {
+    toggleAuthBtn.setIconLiteral("mdi2l-logout");
+    toggleAuthBtn.setOnMouseClicked(e -> {
+      DbAsync.runWithUi(() -> {
+        authSessionQueryService.logout();
+        return null;
+      }, ignored -> {
+        // Read user state from storage after logout so label/icon are always in sync.
+        refreshAuthState();
+      }, err -> {
+        err.printStackTrace();
+      });
     });
   }
 }

@@ -34,8 +34,8 @@
       <ListView id="chaptersListSidebar" fx:id="chaptersListView" prefHeight="616.0" prefWidth="195.0" stylesheets="@../css/stylesheet.css" />
       <HBox prefHeight="32.0" spacing="5.0">
          <children>
-            <FontIcon iconLiteral="mdi2a-account" iconSize="24" />
-            <Label fx:id="username" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="314.0" text="Username" HBox.hgrow="ALWAYS" />
+            <FontIcon fx:id="toggleAuthBtn" iconLiteral="mdi2l-logout" iconSize="24" />
+            <Label fx:id="username" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="314.0" text="Guest User" HBox.hgrow="ALWAYS" />
             <FontIcon fx:id="settingsBtn" iconLiteral="mdi2c-cog" iconSize="24" />
          </children>
          <VBox.margin>

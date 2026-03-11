@@ -14,6 +14,7 @@ module com.ks.bayyinah {
   requires lombok;
   requires org.kordamp.ikonli.javafx;
   requires org.kordamp.ikonli.materialdesign2;
+  requires javafx.graphics;
 
   opens com.ks.bayyinah to javafx.fxml;
   opens com.ks.bayyinah.controller to javafx.fxml;

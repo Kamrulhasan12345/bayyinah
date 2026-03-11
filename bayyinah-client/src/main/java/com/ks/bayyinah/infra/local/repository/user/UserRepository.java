@@ -3,6 +3,7 @@ package com.ks.bayyinah.infra.local.repository.user;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDateTime;
 
 import com.ks.bayyinah.core.exception.RepositoryException;
 import com.ks.bayyinah.infra.hybrid.model.User;
@@ -17,9 +18,11 @@ public class UserRepository {
         try (var resultSet = statement.executeQuery()) {
           if (resultSet.next()) {
             Timestamp lastSyncAtTimestamp = resultSet.getObject("last_sync_at", Timestamp.class);
+            Long serverId = resultSet.getLong("server_id");
+            if (resultSet.wasNull()) serverId = null;
             User user = User.builder()
                 .id(resultSet.getLong("id"))
-                .serverId(resultSet.getObject("server_id", Long.class))
+                .serverId(serverId)
                 .username(resultSet.getString("username"))
                 .email(resultSet.getString("email"))
                 .firstName(resultSet.getString("first_name"))
@@ -58,6 +61,11 @@ public class UserRepository {
           statement.setTimestamp(9, Timestamp.valueOf(user.getLastSyncAt()));
         } else {
           statement.setNull(9, Types.TIMESTAMP);
+        }
+        if (user.getCreatedAt() != null) {
+          statement.setTimestamp(10, Timestamp.valueOf(user.getCreatedAt()));
+        } else {
+          statement.setTimestamp(10, Timestamp.valueOf(LocalDateTime.now()));
         }
         statement.executeUpdate();
       }
