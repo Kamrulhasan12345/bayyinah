@@ -18,10 +18,11 @@ public class AuthSessionQueryService {
   private final UserService userService;
   private final RemoteUserQueryService remoteUserQueryService;
 
-  public void ensureGuestSession() {
+  public User ensureGuestSession() {
     if (authTokensService.getAuthTokens().isEmpty()) {
-      userService.createGuestUser();
+      return userService.createGuestUser();
     }
+    return null;
   }
 
   public void login(String username, String password) {
@@ -51,7 +52,10 @@ public class AuthSessionQueryService {
   }
 
   public void logout() {
-    remoteUserQueryService.logout().join();
+    String refreshToken = authTokensService.getAuthTokens()
+        .map(AuthTokens::getRefreshToken)
+        .orElseThrow(() -> new IllegalStateException("No refresh token available"));
+    remoteUserQueryService.logout(refreshToken).join();
     authTokensService.clearAuthTokens();
     userService.clearUser();
   }

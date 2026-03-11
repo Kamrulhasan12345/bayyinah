@@ -1,5 +1,6 @@
 package com.ks.bayyinah.infra.hybrid.service;
 
+import com.ks.bayyinah.infra.hybrid.model.UserPreference;
 import com.ks.bayyinah.infra.local.repository.user.UserPreferenceRepository;
 
 public class UserPreferenceService {
@@ -21,5 +22,26 @@ public class UserPreferenceService {
 
   public UserPreferenceService(UserPreferenceRepository repository) {
     this.repository = repository;
+  }
+
+  public void setPreference(String key, String value) {
+    repository.insertOrUpdate(key, value);
+  }
+
+  public UserPreference getPreference(String key) {
+    return repository.get(key);
+  }
+
+  public Integer getDefaultTranslation() {
+    UserPreference pref = getPreference("default_translation");
+    if (pref != null && pref.getValue() != null) {
+      try {
+        return Integer.parseInt(pref.getValue().trim());
+      } catch (NumberFormatException e) {
+        // Log the error and return null or a default value
+        e.printStackTrace();
+      }
+    }
+    return 20; // or return a default translation ID
   }
 }

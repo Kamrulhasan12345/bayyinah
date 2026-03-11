@@ -1,6 +1,7 @@
 package com.ks.bayyinah.controller;
 
 import com.ks.bayyinah.App;
+import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.core.dto.ChapterView;
 import java.io.IOException;
 
@@ -17,7 +18,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import lombok.*;
 
+@Data
 public class BrowsingController {
 
   @FXML
@@ -35,14 +38,15 @@ public class BrowsingController {
   private RootController rootController;
   private int currentShownChapterId;
 
+  private AppContext appContext;
+
   private VBox loadingOverlay;
 
   public void setRootController(RootController rootController) {
     this.rootController = rootController;
   }
 
-  @FXML
-  public void initialize() {
+  public void initializeBrowsingController() {
     // make the split pane divider fixed at 20%
     setupSidebar();
 
@@ -50,8 +54,7 @@ public class BrowsingController {
 
     showHome();
 
-    sidebarController.setOnHomeBtnClick(this::handleHomeClicked);
-    sidebarController.setOnChapterSelected(this::showChapter);
+    System.out.println("BrowsingController initialized with AppContext: " + appContext);
   }
 
   private void handleHomeClicked() {
@@ -105,6 +108,23 @@ public class BrowsingController {
           double clamped = newValue.doubleValue() > 0.2 ? 0.2 : newValue.doubleValue();
           divider.setPosition(clamped);
         });
+
+    sidebarController.setOnHomeBtnClick(this::handleHomeClicked);
+    sidebarController.setOnChapterSelected(this::showChapter);
+    sidebarController.setOnLoginClicked(() -> {
+      if (rootController != null) {
+        rootController.showLoginOverlay();
+      }
+    });
+    sidebarController.setAppContext(appContext);
+
+    sidebarController.initializeSidebar();
+  }
+
+  public void refreshAuthUi() {
+    if (sidebarController != null) {
+      sidebarController.refreshAuthState();
+    }
   }
 
   private void showHome() {
@@ -114,6 +134,7 @@ public class BrowsingController {
       Node homeView = loader.load();
       HomeController homeController = loader.getController();
       homeController.setBrowsingController(this);
+      homeController.setAppContext(appContext);
       contentArea.getChildren().setAll(homeView);
       contentArea.getChildren().add(loadingOverlay);
       currentShownChapterId = -1; // reset current chapter since we're on home
@@ -140,6 +161,7 @@ public class BrowsingController {
       ChaptersController chaptersController = loader.getController();
 
       chaptersController.setOnLoadComplete(() -> hideLoading());
+      chaptersController.setAppContext(appContext);
       chaptersController.setChapter(chapter);
 
       currentShownChapterId = chapter.getChapter().getId();

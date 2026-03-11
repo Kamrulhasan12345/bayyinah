@@ -11,7 +11,11 @@ public class UserService {
   }
 
   public User getCurrentUser() {
-    return repository.get();
+    User user = repository.get();
+    if (user != null)
+      return user;
+    user = createGuestUser();
+    return user;
   }
 
   public void saveUser(User user) {
@@ -35,8 +39,9 @@ public class UserService {
     return user == null || user.isGuest();
   }
 
-  public void createGuestUser() {
+  public User createGuestUser() {
     User guestUser = User.createGuest();
     saveUser(guestUser);
+    return guestUser;
   }
 }

@@ -227,7 +227,7 @@ public class ApiClient {
     }
 
     if (statusCode == 401) {
-      throw new ApiException("Unauthorized: Access token may have expired");
+      throw new ApiException("Unauthorized: Wrong login credientials");
     }
 
     if (statusCode == 403) {

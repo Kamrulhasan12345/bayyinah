@@ -17,9 +17,10 @@ public class UserRepository {
         try (var resultSet = statement.executeQuery()) {
           if (resultSet.next()) {
             Timestamp lastSyncAtTimestamp = resultSet.getObject("last_sync_at", Timestamp.class);
+            Long serverId = resultSet.getLong("server_id");
             User user = User.builder()
                 .id(resultSet.getLong("id"))
-                .serverId(resultSet.getObject("server_id", Long.class))
+                .serverId(serverId)
                 .username(resultSet.getString("username"))
                 .email(resultSet.getString("email"))
                 .firstName(resultSet.getString("first_name"))
@@ -59,6 +60,7 @@ public class UserRepository {
         } else {
           statement.setNull(9, Types.TIMESTAMP);
         }
+        statement.setTimestamp(10, Timestamp.valueOf(user.getCreatedAt()));
         statement.executeUpdate();
       }
     } catch (SQLException e) {
