@@ -1,6 +1,7 @@
 package com.ks.bayyinah.ui;
 
 import com.ks.bayyinah.error.ErrorCategory;
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class ToastManager {
@@ -18,11 +20,12 @@ public class ToastManager {
 
   private final VBox toastContainer;
   private final Queue<ToastNotification> queue;
-  private boolean isShowingToast;
+  private final List<ToastNotification> activeToasts;
+  private static final int MAX_VISIBLE_TOASTS = 3; // Max toasts to show at once
 
   private ToastManager() {
     this.queue = new LinkedList<>();
-    this.isShowingToast = false;
+    this.activeToasts = new LinkedList<>();
 
     // Create container for toasts (bottom-right corner)
     toastContainer = new VBox(10);
@@ -104,16 +107,13 @@ public class ToastManager {
   private void showToast(String title, String message, ToastSeverity severity, String iconLiteral) {
     Platform.runLater(() -> {
       ToastNotification toast = new ToastNotification(title, message, severity, iconLiteral);
-      toast.enableClickToDismiss();
 
       toast.setOnDismiss(() -> {
-        toastContainer.getChildren().remove(toast);
-        isShowingToast = false;
-        showNextToast(); // Show next in queue
+        removeToast(toast);
       });
 
       // If already showing a toast, queue this one
-      if (isShowingToast) {
+      if (activeToasts.size() >= MAX_VISIBLE_TOASTS) {
         queue.offer(toast);
       } else {
         displayToast(toast);
@@ -125,8 +125,9 @@ public class ToastManager {
    * Display toast on screen
    */
   private void displayToast(ToastNotification toast) {
-    isShowingToast = true;
+    activeToasts.add(toast);
     toastContainer.getChildren().add(toast);
+
     toast.show();
   }
 
@@ -137,6 +138,21 @@ public class ToastManager {
     ToastNotification next = queue.poll();
     if (next != null) {
       displayToast(next);
+    }
+  }
+
+  /**
+   * Remove toast from screen and show next if available
+   */
+  private void removeToast(ToastNotification toast) {
+    activeToasts.remove(toast);
+    toastContainer.getChildren().remove(toast);
+
+    // slideToastDown(toast.getHeight() + 10); // Slide remaining toasts down to
+    // fill gap
+
+    if (!queue.isEmpty() && activeToasts.size() < MAX_VISIBLE_TOASTS) {
+      showNextToast();
     }
   }
 }

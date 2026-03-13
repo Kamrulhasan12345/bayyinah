@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -45,6 +46,8 @@ public class ToastNotification extends VBox {
             "-fx-font-size: 14px; " +
             "-fx-text-fill: #000000;");
 
+    HBox.setHgrow(titleLabel, Priority.ALWAYS);
+
     // Message
     messageLabel = new Label(message);
     messageLabel.setWrapText(true);
@@ -56,9 +59,23 @@ public class ToastNotification extends VBox {
     // Icon (optional)
     FontIcon icon = new FontIcon(iconLiteral != null ? iconLiteral : getIconForSeverity(severity));
 
+    FontIcon crossIcon = new FontIcon("mdi2c-close:16:#9E9E9E");
+
+    crossIcon.setOnMouseClicked(e -> hide());
+    crossIcon.setStyle(crossIcon.getStyle() + "-fx-cursor: hand;");
+    crossIcon.setTranslateX(10); // Add some spacing from the right edge
+    crossIcon.setTranslateY(-10); // Position it at the top-right corner
+    crossIcon.setOpacity(0.7); // Slightly faded for better aesthetics
+    crossIcon.setOnMouseEntered(e -> crossIcon.setOpacity(1.0)); // Highlight on hover
+    crossIcon.setOnMouseExited(e -> crossIcon.setOpacity(0.7)); // Restore opacity when not hovered
+    crossIcon.setPickOnBounds(true); // Allow clicking on transparent areas of the icon
+    crossIcon.setFocusTraversable(false); // Don't allow focus on the close icon
+
     // Layout
-    HBox header = new HBox(10, icon, titleLabel);
+    HBox header = new HBox(10, icon, titleLabel, crossIcon);
+
     header.setAlignment(Pos.CENTER_LEFT);
+    header.setMaxWidth(Double.MAX_VALUE);
 
     this.getChildren().addAll(header, messageLabel);
 

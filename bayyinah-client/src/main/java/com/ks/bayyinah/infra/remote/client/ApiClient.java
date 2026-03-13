@@ -5,6 +5,7 @@ import java.net.http.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import com.ks.bayyinah.infra.exception.UnauthorizedException;
 import com.ks.bayyinah.infra.hybrid.model.AuthTokens;
@@ -53,11 +54,11 @@ public class ApiClient {
           .build();
 
       return executeRequest(request, responseType);
-    }).exceptionally(error -> {
-                // Handle error globally
-                exceptionHandler.handleException(error, "GET " + route.getPath());
-                return null;
-            });
+    }).whenComplete((result, error) -> {
+      if (error != null) {
+        exceptionHandler.handleException(error, "GET " + route.getPath());
+      }
+    });
   }
 
   // GET (without auth)
@@ -71,7 +72,12 @@ public class ApiClient {
         .GET()
         .build();
 
-    return executeRequest(request, responseType);
+    return executeRequest(request, responseType)
+        .whenComplete((result, error) -> {
+          if (error != null) {
+            exceptionHandler.handleException(error, "GET " + route.getPath() + " (public)");
+          }
+        });
   }
 
   // POST (with auth)
@@ -90,11 +96,11 @@ public class ApiClient {
           .build();
 
       return executeRequest(request, responseType);
-    }).exceptionally(error -> {
-                // Handle error globally
-                exceptionHandler.handleException(error, "POST " + route.getPath());
-                return null;
-            });
+    }).whenComplete((result, error) -> {
+      if (error != null) {
+        exceptionHandler.handleException(error, "POST " + route.getPath());
+      }
+    });
   }
 
   // POST (without auth)
@@ -110,7 +116,12 @@ public class ApiClient {
         .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
         .build();
 
-    return executeRequest(request, responseType);
+    return executeRequest(request, responseType)
+        .whenComplete((result, error) -> {
+          if (error != null) {
+            exceptionHandler.handleException(error, "POST " + route.getPath() + " (public)");
+          }
+        });
   }
 
   // PUT (with auth)
@@ -129,11 +140,11 @@ public class ApiClient {
           .build();
 
       return executeRequest(request, responseType);
-    }).exceptionally(error -> {
-                // Handle error globally
-                exceptionHandler.handleException(error, "PUT " + route.getPath());
-                return null;
-            });
+    }).whenComplete((result, error) -> {
+      if (error != null) {
+        exceptionHandler.handleException(error, "PUT " + route.getPath());
+      }
+    });
   }
 
   // PUT (without auth)
@@ -149,7 +160,12 @@ public class ApiClient {
         .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
         .build();
 
-    return executeRequest(request, responseType);
+    return executeRequest(request, responseType)
+        .whenComplete((result, error) -> {
+          if (error != null) {
+            exceptionHandler.handleException(error, "PUT " + route.getPath() + " (public)");
+          }
+        });
   }
 
   // DELETE (with auth)
@@ -166,11 +182,11 @@ public class ApiClient {
           .build();
 
       return executeRequest(request, responseType);
-    }).exceptionally(error -> {
-                // Handle error globally
-                exceptionHandler.handleException(error, "DELETE " + route.getPath());
-                return null;
-            });
+    }).whenComplete((result, error) -> {
+      if (error != null) {
+        exceptionHandler.handleException(error, "DELETE " + route.getPath());
+      }
+    });
   }
 
   // DELETE (without auth)
@@ -184,7 +200,12 @@ public class ApiClient {
         .DELETE()
         .build();
 
-    return executeRequest(request, responseType);
+    return executeRequest(request, responseType)
+        .whenComplete((result, error) -> {
+          if (error != null) {
+            exceptionHandler.handleException(error, "DELETE " + route.getPath() + " (public)");
+          }
+        });
   }
 
   private <Req, Res> CompletableFuture<Res> executeRequest(HttpRequest request, Class<Res> responseType) {
@@ -226,6 +247,7 @@ public class ApiClient {
             }
           });
     } catch (Exception e) {
+      exceptionHandler.handleException(e, "performTokenRefresh");
       return CompletableFuture.failedFuture(e);
     }
   }
