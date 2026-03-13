@@ -19,6 +19,8 @@ import com.ks.bayyinah.infra.hybrid.query.TokenManager;
 import com.ks.bayyinah.config.ConfigManager;
 import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.controller.RootController;
+import com.ks.bayyinah.error.GlobalExceptionHandler;
+import com.ks.bayyinah.ui.ToastManager;
 
 /**
  * JavaFX App
@@ -30,6 +32,19 @@ public class App extends Application {
   private AppContext appContext;
 
   private MainConfig mainConfig;
+
+  private GlobalExceptionHandler exceptionHandler;
+
+  @Override
+  public void init() {
+    // Set up global exception handler
+    exceptionHandler = new GlobalExceptionHandler();
+    Thread.setDefaultUncaughtExceptionHandler(exceptionHandler);
+
+    // Also handle JavaFX thread exceptions
+    Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
+
+  }
 
   @Override
   public void start(Stage stage) throws IOException {
@@ -44,8 +59,22 @@ public class App extends Application {
       return;
     }
     scene = new Scene(loadRootFXML("fxml/RootLayout"), 1200, 700);
+
     stage.setScene(scene);
+    stage.setTitle("Bayyinah");
+
+    ToastManager.getInstance().initialize(stage);
+
     stage.show();
+
+    ToastManager.getInstance().showInfo("Welcome", "Welcome to Bayyinah!");
+    ToastManager.getInstance().showInfo("Getting Started", "Use the menu to explore features.");
+    ToastManager.getInstance().showSuccess("Setup Complete", "Your application is ready to use.");
+    ToastManager.getInstance().showError("Sample Error", "This is a sample error message.");
+    ToastManager.getInstance().showWarning("Sample Warning", "This is a sample warning message.");
+    ToastManager.getInstance().showDebug("Sample Debug", "This is a sample debug message.");
+    ToastManager.getInstance().showInfo("Enjoy!",
+        "This is a very very long message. This notification is meant to test how the toast handles long messages. It should wrap properly and still look good without breaking the layout of the application. You can add as much text as you want here to see how it behaves. The toast should expand vertically to accommodate the content while maintaining a reasonable width. And it should still be readable and visually appealing. This is important for providing users with detailed information without overwhelming them. The design should ensure that even with a lot of text, the notification remains user-friendly and effective in communicating the message.");
   }
 
   @Override

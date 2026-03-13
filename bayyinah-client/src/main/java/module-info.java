@@ -5,6 +5,7 @@ module com.ks.bayyinah {
   requires java.net.http;
   requires com.zaxxer.hikari;
   requires jakarta.persistence;
+  requires org.slf4j;
 
   requires tools.jackson.core;
   requires tools.jackson.databind;
@@ -22,5 +23,6 @@ module com.ks.bayyinah {
   opens com.ks.bayyinah.infra.remote.dto.auth to tools.jackson.databind;
 
   exports com.ks.bayyinah.controller;
+  exports com.ks.bayyinah.error;
   exports com.ks.bayyinah;
 }

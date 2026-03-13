@@ -14,6 +14,7 @@ import com.ks.bayyinah.infra.remote.dto.auth.RefreshTokenRequest;
 import com.ks.bayyinah.infra.remote.dto.auth.TokensResponse;
 import com.ks.bayyinah.infra.remote.routing.ApiRoute;
 import com.ks.bayyinah.infra.remote.routing.RouteResolver;
+import com.ks.bayyinah.error.GlobalExceptionHandler;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -23,8 +24,10 @@ public class ApiClient {
   private final RouteResolver routeResolver;
   private final TokenManager tokenManager;
   private final ObjectMapper objectMapper;
+  private final GlobalExceptionHandler exceptionHandler;
 
   public ApiClient(MainConfig mainConfig, TokenManager tokenManager) {
+    this.exceptionHandler = new GlobalExceptionHandler();
     this.mainConfig = mainConfig;
     this.routeResolver = new RouteResolver(mainConfig);
     this.objectMapper = new ObjectMapper();
@@ -50,7 +53,11 @@ public class ApiClient {
           .build();
 
       return executeRequest(request, responseType);
-    });
+    }).exceptionally(error -> {
+                // Handle error globally
+                exceptionHandler.handleException(error, "GET " + route.getPath());
+                return null;
+            });
   }
 
   // GET (without auth)
@@ -83,7 +90,11 @@ public class ApiClient {
           .build();
 
       return executeRequest(request, responseType);
-    });
+    }).exceptionally(error -> {
+                // Handle error globally
+                exceptionHandler.handleException(error, "POST " + route.getPath());
+                return null;
+            });
   }
 
   // POST (without auth)
@@ -118,7 +129,11 @@ public class ApiClient {
           .build();
 
       return executeRequest(request, responseType);
-    });
+    }).exceptionally(error -> {
+                // Handle error globally
+                exceptionHandler.handleException(error, "PUT " + route.getPath());
+                return null;
+            });
   }
 
   // PUT (without auth)
@@ -151,7 +166,11 @@ public class ApiClient {
           .build();
 
       return executeRequest(request, responseType);
-    });
+    }).exceptionally(error -> {
+                // Handle error globally
+                exceptionHandler.handleException(error, "DELETE " + route.getPath());
+                return null;
+            });
   }
 
   // DELETE (without auth)
