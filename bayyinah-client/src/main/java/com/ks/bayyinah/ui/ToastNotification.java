@@ -21,7 +21,10 @@ public class ToastNotification extends VBox {
   private final Timeline autoHideTimeline;
   private Runnable onDismiss;
 
-  public ToastNotification(String title, String message, ToastSeverity severity, String iconLiteral) {
+  private final Boolean showBackgroundColor;
+
+  public ToastNotification(String title, String message, ToastSeverity severity, String iconLiteral,
+      Boolean showBackgroundColor) {
     // Container styling
     // Remove fixed height constraints
     this.setPrefWidth(TOAST_WIDTH);
@@ -36,15 +39,17 @@ public class ToastNotification extends VBox {
     this.setSpacing(5);
     this.setAlignment(Pos.CENTER_LEFT);
 
+    this.showBackgroundColor = showBackgroundColor != null ? showBackgroundColor : true;
+
     // Apply severity styling
     applySeverityStyle(severity);
 
     // Title
+    String textBackgroundStyle = !this.showBackgroundColor ? "-fx-text-fill: #000000; " : "-fx-text-fill: #FFFFFF; ";
     titleLabel = new Label(title);
     titleLabel.setStyle(
         "-fx-font-weight: bold; " +
-            "-fx-font-size: 14px; " +
-            "-fx-text-fill: #000000;");
+            "-fx-font-size: 14px; " + textBackgroundStyle);
 
     HBox.setHgrow(titleLabel, Priority.ALWAYS);
 
@@ -53,7 +58,7 @@ public class ToastNotification extends VBox {
     messageLabel.setWrapText(true);
     messageLabel.setStyle(
         "-fx-font-size: 12px; " +
-            "-fx-text-fill: #000000; " +
+            textBackgroundStyle +
             "-fx-opacity: 0.9;");
 
     // Icon (optional)
@@ -62,7 +67,7 @@ public class ToastNotification extends VBox {
     Region spacer = new Region();
     HBox.setHgrow(spacer, Priority.ALWAYS);
 
-    FontIcon crossIcon = new FontIcon("mdi2c-close:16:#9E9E9E");
+    FontIcon crossIcon = new FontIcon(!this.showBackgroundColor ? "mdi2c-close:16:#9E9E9E" : "mdi2c-close:16:#FFFFFF");
 
     crossIcon.setOnMouseClicked(e -> hide());
     crossIcon.setStyle(crossIcon.getStyle() + "-fx-cursor: hand;");
@@ -93,32 +98,34 @@ public class ToastNotification extends VBox {
     String baseStyle = "-fx-background-radius: 8px; " +
         "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2); ";
 
-    String backgroundColor;
-    switch (severity) {
-      case INFO:
-        backgroundColor = "#2196F3";
-        break;
-      case SUCCESS:
-        backgroundColor = "#4CAF50";
-        break;
-      case WARNING:
-        backgroundColor = "#FF9800";
-        break;
-      case ERROR:
-        backgroundColor = "#F44336";
-        break;
-      case CRITICAL:
-        backgroundColor = "#B71C1C";
-        break;
-      case DEBUG:
-        backgroundColor = "#9E9E9E";
-        break;
-      default:
-        backgroundColor = "#FFFFFF";
-        break;
-    }
+    if (showBackgroundColor) {
+      String backgroundColor;
+      switch (severity) {
+        case INFO:
+          backgroundColor = "#2196F3";
+          break;
+        case SUCCESS:
+          backgroundColor = "#4CAF50";
+          break;
+        case WARNING:
+          backgroundColor = "#FF9800";
+          break;
+        case ERROR:
+          backgroundColor = "#F44336";
+          break;
+        case CRITICAL:
+          backgroundColor = "#B71C1C";
+          break;
+        case DEBUG:
+          backgroundColor = "#9E9E9E";
+          break;
+        default:
+          backgroundColor = "#FFFFFF";
+          break;
+      }
 
-    this.setStyle(baseStyle + "-fx-background-color: " + backgroundColor + ";");
+      this.setStyle(baseStyle + "-fx-background-color: " + backgroundColor + ";");
+    }
   }
 
   /**
@@ -127,19 +134,23 @@ public class ToastNotification extends VBox {
   private String getIconForSeverity(ToastSeverity severity) {
     switch (severity) {
       case INFO:
-        return "mdi2i-information-outline:20:#2196F3";
+        return !this.showBackgroundColor ? "mdi2i-information-outline:20:#2196F3"
+            : "mdi2i-information-outline:20:#FFFFFF";
       case SUCCESS:
-        return "mdi2c-check-circle-outline:20:#4CAF50";
+        return !this.showBackgroundColor ? "mdi2c-check-circle-outline:20:#4CAF50"
+            : "mdi2c-check-circle-outline:20:#FFFFFF";
       case WARNING:
-        return "mdi2a-alert-outline:20:#FF9800";
+        return !this.showBackgroundColor ? "mdi2a-alert-outline:20:#FF9800" : "mdi2a-alert-outline:20:#FFFFFF";
       case ERROR:
-        return "mdi2c-close-circle-outline:20:#F44336";
+        return !this.showBackgroundColor ? "mdi2c-close-circle-outline:20:#F44336"
+            : "mdi2c-close-circle-outline:20:#FFFFFF";
       case CRITICAL:
-        return "mdi2a-alert-octagram:20:#B71C1C";
+        return !this.showBackgroundColor ? "mdi2a-alert-octagram:20:#B71C1C" : "mdi2a-alert-octagram:20:#FFFFFF";
       case DEBUG:
-        return "mdi2b-bug-outline:20:#9E9E9E";
+        return !this.showBackgroundColor ? "mdi2b-bug-outline:20:#9E9E9E" : "mdi2b-bug-outline:20:#FFFFFF";
       default:
-        return "mdi2h-help-circle-outline:20:#9E9E9E";
+        return !this.showBackgroundColor ? "mdi2h-help-circle-outline:20:#9E9E9E"
+            : "mdi2h-help-circle-outline:20:#FFFFFF";
     }
   }
 

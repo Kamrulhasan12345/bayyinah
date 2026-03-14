@@ -63,50 +63,51 @@ public class ToastManager {
    * Show error toast
    */
   public void showError(String title, String message) {
-    showToast(title, message, ToastSeverity.ERROR, null);
+    showToast(title, message, ToastSeverity.ERROR, null, false);
   }
 
   /**
    * Show error toast from ErrorCategory
    */
   public void showError(ErrorCategory category) {
-    showToast(category.getTitle(), category.getMessage(), category.getSeverity(), null);
+    showToast(category.getTitle(), category.getMessage(), category.getSeverity(), null, false);
   }
 
   /**
    * Show warning toast
    */
   public void showWarning(String title, String message) {
-    showToast(title, message, ToastSeverity.WARNING, null);
+    showToast(title, message, ToastSeverity.WARNING, null, false);
   }
 
   /**
    * Show info toast
    */
   public void showInfo(String title, String message) {
-    showToast(title, message, ToastSeverity.INFO, null);
+    showToast(title, message, ToastSeverity.INFO, null, false);
   }
 
   /**
    * Show success toast
    */
   public void showSuccess(String title, String message) {
-    showToast(title, message, ToastSeverity.SUCCESS, null);
+    showToast(title, message, ToastSeverity.SUCCESS, null, false);
   }
 
   /**
    * Show debug toast
    */
   public void showDebug(String title, String message) {
-    showToast(title, message, ToastSeverity.DEBUG, null);
+    showToast(title, message, ToastSeverity.DEBUG, null, false);
   }
 
   /**
    * Show toast notification
    */
-  private void showToast(String title, String message, ToastSeverity severity, String iconLiteral) {
+  private void showToast(String title, String message, ToastSeverity severity, String iconLiteral,
+      Boolean showBackgroundColor) {
     Platform.runLater(() -> {
-      ToastNotification toast = new ToastNotification(title, message, severity, iconLiteral);
+      ToastNotification toast = new ToastNotification(title, message, severity, iconLiteral, showBackgroundColor);
 
       toast.setOnDismiss(() -> {
         removeToast(toast);

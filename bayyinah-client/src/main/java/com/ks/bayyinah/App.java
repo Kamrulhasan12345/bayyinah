@@ -27,7 +27,7 @@ import com.ks.bayyinah.ui.ToastManager;
  */
 public class App extends Application {
 
-  private static final boolean ENABLE_STARTUP_SAMPLE_TOASTS = false;
+  private static final boolean ENABLE_STARTUP_SAMPLE_TOASTS = true;
 
   private static Scene scene;
 
