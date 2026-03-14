@@ -67,14 +67,18 @@ public class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {
    */
   private void handleCriticalError(Throwable throwable) {
     Platform.runLater(() -> {
-      // Show dialog asking to restart
+      // Show confirmation dialog asking to restart
       javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-          javafx.scene.control.Alert.AlertType.ERROR);
+          javafx.scene.control.Alert.AlertType.CONFIRMATION);
       alert.setTitle("Critical Error");
       alert.setHeaderText("A critical error has occurred");
       alert.setContentText(
           "The application encountered a critical error and may not function properly.\n\n" +
               "Would you like to restart?");
+      alert.getButtonTypes().setAll(
+          javafx.scene.control.ButtonType.OK,
+          javafx.scene.control.ButtonType.CANCEL
+      );
 
       alert.showAndWait().ifPresent(response -> {
         if (response == javafx.scene.control.ButtonType.OK) {
