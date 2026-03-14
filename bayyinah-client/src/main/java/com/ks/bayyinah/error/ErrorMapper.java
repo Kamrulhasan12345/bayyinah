@@ -48,7 +48,8 @@ public class ErrorMapper {
 
     // Authentication errors
     if (throwable instanceof UnauthorizedException) {
-      if (throwable.getMessage().contains("token expired")) {
+      String message = throwable.getMessage();
+      if (message != null && message.contains("token expired")) {
         return ErrorCategory.AUTH_TOKEN_EXPIRED;
       }
       return ErrorCategory.AUTH_UNAUTHORIZED;
@@ -59,16 +60,17 @@ public class ErrorMapper {
       ApiException apiEx = (ApiException) throwable;
       String message = apiEx.getMessage();
 
-      if (message.contains("401")) {
+      if (message != null && message.contains("401")) {
         return ErrorCategory.AUTH_INVALID_CREDENTIALS;
       }
-      if (message.contains("403")) {
+      if (message != null && message.contains("403")) {
         return ErrorCategory.AUTH_UNAUTHORIZED;
       }
-      if (message.contains("404")) {
+      if (message != null && message.contains("404")) {
         return ErrorCategory.DATA_NOT_FOUND;
       }
-      if (message.contains("500") || message.contains("502") || message.contains("503")) {
+      if (message != null
+          && (message.contains("500") || message.contains("502") || message.contains("503"))) {
         return ErrorCategory.SERVER_ERROR;
       }
     }
