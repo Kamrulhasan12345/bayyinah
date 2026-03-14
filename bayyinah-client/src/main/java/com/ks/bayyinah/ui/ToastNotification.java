@@ -170,32 +170,30 @@ public class ToastNotification extends VBox {
   /**
    * Hide with slide-out animation
    */
-  * Hide with slide-out animation
-  */
   public void hide() {
-   if (isHiding) {
-     return;
-   }
-   isHiding = true;
+    if (isHiding) {
+      return;
+    }
+    isHiding = true;
 
-   // Stop auto-hide timer
-   autoHideTimeline.stop();
+    // Stop auto-hide timer
+    autoHideTimeline.stop();
 
-   // Slide down and fade out
-   TranslateTransition slide = new TranslateTransition(Duration.millis(250), this);
-   slide.setToY(100);
+    // Slide down and fade out
+    TranslateTransition slide = new TranslateTransition(Duration.millis(250), this);
+    slide.setToY(100);
 
-   FadeTransition fade = new FadeTransition(Duration.millis(250), this);
-   fade.setToValue(0);
+    FadeTransition fade = new FadeTransition(Duration.millis(250), this);
+    fade.setToValue(0);
 
-   ParallelTransition animation = new ParallelTransition(slide, fade);
-   animation.setOnFinished(e -> {
-     isHiding = false;
-     if (onDismiss != null) {
-       onDismiss.run();
-     }
-   });
-   animation.play();
+    ParallelTransition animation = new ParallelTransition(slide, fade);
+    animation.setOnFinished(e -> {
+      isHiding = false;
+      if (onDismiss != null) {
+        onDismiss.run();
+      }
+    });
+    animation.play();
   }
 
   /**
