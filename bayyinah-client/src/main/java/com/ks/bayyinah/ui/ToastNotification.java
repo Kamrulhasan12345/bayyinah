@@ -93,24 +93,32 @@ public class ToastNotification extends VBox {
     String baseStyle = "-fx-background-radius: 8px; " +
         "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2); ";
 
-    this.setStyle(baseStyle + "-fx-background-color: #FFFFFF;"); // Base style
+    String backgroundColor;
+    switch (severity) {
+      case INFO:
+        backgroundColor = "#2196F3";
+        break;
+      case SUCCESS:
+        backgroundColor = "#4CAF50";
+        break;
+      case WARNING:
+        backgroundColor = "#FF9800";
+        break;
+      case ERROR:
+        backgroundColor = "#F44336";
+        break;
+      case CRITICAL:
+        backgroundColor = "#B71C1C";
+        break;
+      case DEBUG:
+        backgroundColor = "#9E9E9E";
+        break;
+      default:
+        backgroundColor = "#FFFFFF";
+        break;
+    }
 
-    /*
-     * switch (severity) {
-     * case INFO:
-     * this.setStyle(baseStyle + "-fx-background-color: #2196F3;");
-     * break;
-     * case WARNING:
-     * this.setStyle(baseStyle + "-fx-background-color: #FF9800;");
-     * break;
-     * case ERROR:
-     * this.setStyle(baseStyle + "-fx-background-color: #F44336;");
-     * break;
-     * case CRITICAL:
-     * this.setStyle(baseStyle + "-fx-background-color: #B71C1C;");
-     * break;
-     * }
-     */
+    this.setStyle(baseStyle + "-fx-background-color: " + backgroundColor + ";");
   }
 
   /**
