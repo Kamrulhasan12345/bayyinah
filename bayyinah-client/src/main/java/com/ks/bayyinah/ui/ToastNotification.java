@@ -97,9 +97,9 @@ public class ToastNotification extends VBox {
   private void applySeverityStyle(ToastSeverity severity) {
     String baseStyle = "-fx-background-radius: 8px; " +
         "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2); ";
+    String backgroundColor = "#FFFFFF"; // Default white background
 
     if (showBackgroundColor) {
-      String backgroundColor;
       switch (severity) {
         case INFO:
           backgroundColor = "#2196F3";
@@ -123,9 +123,9 @@ public class ToastNotification extends VBox {
           backgroundColor = "#FFFFFF";
           break;
       }
-
-      this.setStyle(baseStyle + "-fx-background-color: " + backgroundColor + ";");
     }
+
+    this.setStyle(baseStyle + "-fx-background-color: " + backgroundColor + ";");
   }
 
   /**
