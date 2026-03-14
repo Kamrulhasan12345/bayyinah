@@ -23,6 +23,5 @@ module com.ks.bayyinah {
   opens com.ks.bayyinah.infra.remote.dto.auth to tools.jackson.databind;
 
   exports com.ks.bayyinah.controller;
-  exports com.ks.bayyinah.error;
   exports com.ks.bayyinah;
 }
