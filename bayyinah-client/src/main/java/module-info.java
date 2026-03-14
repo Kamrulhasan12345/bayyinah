@@ -5,6 +5,7 @@ module com.ks.bayyinah {
   requires java.net.http;
   requires com.zaxxer.hikari;
   requires jakarta.persistence;
+  requires org.slf4j;
 
   requires tools.jackson.core;
   requires tools.jackson.databind;
