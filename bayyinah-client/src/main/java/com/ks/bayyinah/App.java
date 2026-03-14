@@ -27,6 +27,8 @@ import com.ks.bayyinah.ui.ToastManager;
  */
 public class App extends Application {
 
+  private static final boolean ENABLE_STARTUP_SAMPLE_TOASTS = false;
+
   private static Scene scene;
 
   private AppContext appContext;
@@ -67,14 +69,16 @@ public class App extends Application {
 
     stage.show();
 
-    ToastManager.getInstance().showInfo("Welcome", "Welcome to Bayyinah!");
-    ToastManager.getInstance().showInfo("Getting Started", "Use the menu to explore features.");
-    ToastManager.getInstance().showSuccess("Setup Complete", "Your application is ready to use.");
-    ToastManager.getInstance().showError("Sample Error", "This is a sample error message.");
-    ToastManager.getInstance().showWarning("Sample Warning", "This is a sample warning message.");
-    ToastManager.getInstance().showDebug("Sample Debug", "This is a sample debug message.");
-    ToastManager.getInstance().showInfo("Enjoy!",
-        "This is a very very long message. This notification is meant to test how the toast handles long messages. It should wrap properly and still look good without breaking the layout of the application. You can add as much text as you want here to see how it behaves. The toast should expand vertically to accommodate the content while maintaining a reasonable width. And it should still be readable and visually appealing. This is important for providing users with detailed information without overwhelming them. The design should ensure that even with a lot of text, the notification remains user-friendly and effective in communicating the message.");
+    if (ENABLE_STARTUP_SAMPLE_TOASTS) {
+      ToastManager.getInstance().showInfo("Welcome", "Welcome to Bayyinah!");
+      ToastManager.getInstance().showInfo("Getting Started", "Use the menu to explore features.");
+      ToastManager.getInstance().showSuccess("Setup Complete", "Your application is ready to use.");
+      ToastManager.getInstance().showError("Sample Error", "This is a sample error message.");
+      ToastManager.getInstance().showWarning("Sample Warning", "This is a sample warning message.");
+      ToastManager.getInstance().showDebug("Sample Debug", "This is a sample debug message.");
+      ToastManager.getInstance().showInfo("Enjoy!",
+          "This is a very very long message. This notification is meant to test how the toast handles long messages. It should wrap properly and still look good without breaking the layout of the application. You can add as much text as you want here to see how it behaves. The toast should expand vertically to accommodate the content while maintaining a reasonable width. And it should still be readable and visually appealing. This is important for providing users with detailed information without overwhelming them. The design should ensure that even with a lot of text, the notification remains user-friendly and effective in communicating the message.");
+    }
   }
 
   @Override

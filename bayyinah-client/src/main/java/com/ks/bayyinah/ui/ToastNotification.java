@@ -93,24 +93,32 @@ public class ToastNotification extends VBox {
     String baseStyle = "-fx-background-radius: 8px; " +
         "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2); ";
 
-    this.setStyle(baseStyle + "-fx-background-color: #FFFFFF;"); // Base style
+    String backgroundColor;
+    switch (severity) {
+      case INFO:
+        backgroundColor = "#2196F3";
+        break;
+      case SUCCESS:
+        backgroundColor = "#4CAF50";
+        break;
+      case WARNING:
+        backgroundColor = "#FF9800";
+        break;
+      case ERROR:
+        backgroundColor = "#F44336";
+        break;
+      case CRITICAL:
+        backgroundColor = "#B71C1C";
+        break;
+      case DEBUG:
+        backgroundColor = "#9E9E9E";
+        break;
+      default:
+        backgroundColor = "#FFFFFF";
+        break;
+    }
 
-    /*
-     * switch (severity) {
-     * case INFO:
-     * this.setStyle(baseStyle + "-fx-background-color: #2196F3;");
-     * break;
-     * case WARNING:
-     * this.setStyle(baseStyle + "-fx-background-color: #FF9800;");
-     * break;
-     * case ERROR:
-     * this.setStyle(baseStyle + "-fx-background-color: #F44336;");
-     * break;
-     * case CRITICAL:
-     * this.setStyle(baseStyle + "-fx-background-color: #B71C1C;");
-     * break;
-     * }
-     */
+    this.setStyle(baseStyle + "-fx-background-color: " + backgroundColor + ";");
   }
 
   /**
@@ -138,6 +146,8 @@ public class ToastNotification extends VBox {
   /**
    * Show with slide-in animation
    */
+  private boolean isHiding = false;
+
   public void show() {
     // Start from below the screen
     this.setTranslateY(100);
@@ -160,24 +170,32 @@ public class ToastNotification extends VBox {
   /**
    * Hide with slide-out animation
    */
+  * Hide with slide-out animation
+  */
   public void hide() {
-    // Stop auto-hide timer
-    autoHideTimeline.stop();
+   if (isHiding) {
+     return;
+   }
+   isHiding = true;
 
-    // Slide down and fade out
-    TranslateTransition slide = new TranslateTransition(Duration.millis(250), this);
-    slide.setToY(100);
+   // Stop auto-hide timer
+   autoHideTimeline.stop();
 
-    FadeTransition fade = new FadeTransition(Duration.millis(250), this);
-    fade.setToValue(0);
+   // Slide down and fade out
+   TranslateTransition slide = new TranslateTransition(Duration.millis(250), this);
+   slide.setToY(100);
 
-    ParallelTransition animation = new ParallelTransition(slide, fade);
-    animation.setOnFinished(e -> {
-      if (onDismiss != null) {
-        onDismiss.run();
-      }
-    });
-    animation.play();
+   FadeTransition fade = new FadeTransition(Duration.millis(250), this);
+   fade.setToValue(0);
+
+   ParallelTransition animation = new ParallelTransition(slide, fade);
+   animation.setOnFinished(e -> {
+     isHiding = false;
+     if (onDismiss != null) {
+       onDismiss.run();
+     }
+   });
+   animation.play();
   }
 
   /**
