@@ -146,6 +146,8 @@ public class ToastNotification extends VBox {
   /**
    * Show with slide-in animation
    */
+  private boolean isHiding = false;
+
   public void show() {
     // Start from below the screen
     this.setTranslateY(100);
@@ -168,24 +170,32 @@ public class ToastNotification extends VBox {
   /**
    * Hide with slide-out animation
    */
+  * Hide with slide-out animation
+  */
   public void hide() {
-    // Stop auto-hide timer
-    autoHideTimeline.stop();
+   if (isHiding) {
+     return;
+   }
+   isHiding = true;
 
-    // Slide down and fade out
-    TranslateTransition slide = new TranslateTransition(Duration.millis(250), this);
-    slide.setToY(100);
+   // Stop auto-hide timer
+   autoHideTimeline.stop();
 
-    FadeTransition fade = new FadeTransition(Duration.millis(250), this);
-    fade.setToValue(0);
+   // Slide down and fade out
+   TranslateTransition slide = new TranslateTransition(Duration.millis(250), this);
+   slide.setToY(100);
 
-    ParallelTransition animation = new ParallelTransition(slide, fade);
-    animation.setOnFinished(e -> {
-      if (onDismiss != null) {
-        onDismiss.run();
-      }
-    });
-    animation.play();
+   FadeTransition fade = new FadeTransition(Duration.millis(250), this);
+   fade.setToValue(0);
+
+   ParallelTransition animation = new ParallelTransition(slide, fade);
+   animation.setOnFinished(e -> {
+     isHiding = false;
+     if (onDismiss != null) {
+       onDismiss.run();
+     }
+   });
+   animation.play();
   }
 
   /**
