@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane styleClass="search-results-page" stylesheets="@../css/search-results.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.SearchResultsController">
+    
+    <!-- Top: Search Bar -->
+    <top>
+        <VBox spacing="10" styleClass="search-header" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="20" left="20" right="20" top="20" />
+            </padding>
+            
+            <!-- Search input -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <TextField fx:id="searchField" promptText="Search Quran..." styleClass="search-field" HBox.hgrow="ALWAYS" />
+                
+                <Button fx:id="searchButton" onAction="#onSearchClicked" styleClass="search-button" text="Search" />
+            </HBox>
+            
+            <!-- Result count -->
+            <Label fx:id="resultCountLabel" styleClass="result-count" text="0 results" />
+        </VBox>
+    </top>
+    
+    <!-- Center: Results -->
+    <center>
+        <StackPane BorderPane.alignment="CENTER">
+            
+            <!-- Results container (in ScrollPane) -->
+            <ScrollPane fx:id="scrollPane" fitToWidth="true" styleClass="results-scroll">
+                <VBox fx:id="resultsContainer" spacing="10" styleClass="results-container">
+                    <padding>
+                        <Insets bottom="10" left="20" right="20" top="10" />
+                    </padding>
+                </VBox>
+            </ScrollPane>
+            
+            <!-- Loading indicator -->
+            <ProgressIndicator fx:id="loadingIndicator" maxHeight="50" maxWidth="50" visible="false" />
+            
+            <!-- No results message -->
+            <VBox fx:id="noResultsBox" alignment="CENTER" spacing="15" styleClass="no-results-box" visible="false">
+                <Text style="-fx-font-size: 48px;" text="😔" />
+                <Label styleClass="no-results-title" text="No results found" />
+                <Label styleClass="no-results-subtitle" text="Try different keywords or search terms" />
+            </VBox>
+            
+        </StackPane>
+    </center>
+    
+    <!-- Bottom: Pagination -->
+    <bottom>
+        <HBox fx:id="paginationBox" alignment="CENTER" spacing="10" styleClass="pagination-box" visible="false">
+            <padding>
+                <Insets bottom="15" left="20" right="20" top="15" />
+            </padding>
+            
+            <Button fx:id="firstPageBtn" styleClass="pagination-button" text="⏮ First" />
+            
+            <Button fx:id="previousPageBtn" styleClass="pagination-button" text="◀ Previous" />
+            
+            <Label fx:id="pageInfoLabel" styleClass="page-info" text="Page 1 of 1" />
+            
+            <Button fx:id="nextPageBtn" styleClass="pagination-button" text="Next ▶" />
+            
+            <Button fx:id="lastPageBtn" styleClass="pagination-button" text="Last ⏭" />
+        </HBox>
+    </bottom>
+    
+</BorderPane>

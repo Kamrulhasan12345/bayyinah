@@ -38,6 +38,8 @@ public class BrowsingController {
   private RootController rootController;
   private int currentShownChapterId;
 
+  private Boolean partialChapterView;
+
   private AppContext appContext;
 
   private VBox loadingOverlay;
@@ -135,16 +137,22 @@ public class BrowsingController {
       HomeController homeController = loader.getController();
       homeController.setBrowsingController(this);
       homeController.setAppContext(appContext);
+      homeController.initializeHome();
       contentArea.getChildren().setAll(homeView);
       contentArea.getChildren().add(loadingOverlay);
       currentShownChapterId = -1; // reset current chapter since we're on home
+      partialChapterView = true;
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
-  private void showChapter(ChapterView chapter) {
-    if (currentShownChapterId == chapter.getChapter().getId()) {
+  public void showChapter(ChapterView chapter) {
+    showChapter(chapter, null, null, null);
+  }
+
+  public void showChapter(ChapterView chapter, Integer startVerse, Integer endVerse, Integer translationId) {
+    if (currentShownChapterId == chapter.getChapter().getId() && !partialChapterView) {
       System.out.println(
           "Chapter " +
               chapter.getChapter().getId() +
@@ -162,12 +170,21 @@ public class BrowsingController {
 
       chaptersController.setOnLoadComplete(() -> hideLoading());
       chaptersController.setAppContext(appContext);
-      chaptersController.setChapter(chapter);
+      chaptersController.setChapter(chapter, startVerse, endVerse);
 
       currentShownChapterId = chapter.getChapter().getId();
+
+      if (startVerse != null && endVerse != null) {
+        partialChapterView = true;
+      } else {
+        partialChapterView = false;
+      }
+
       chaptersController.setBrowsingController(this);
+
       contentArea.getChildren().setAll(chaptersView);
       contentArea.getChildren().add(loadingOverlay);
+
     } catch (IOException e) {
       e.printStackTrace();
       hideLoading();

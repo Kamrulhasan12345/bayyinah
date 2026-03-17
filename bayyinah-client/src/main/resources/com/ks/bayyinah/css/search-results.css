@@ -1,0 +1,164 @@
+/* search-results.css */
+
+.search-results-page {
+    -fx-background-color: #fafafa;
+}
+
+.search-header {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.search-field {
+    -fx-font-size: 16px;
+    -fx-padding: 12px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-pref-width: 600px;
+}
+
+.search-field:focused {
+    -fx-border-color: #4285f4;
+    -fx-border-width: 2px;
+}
+
+.search-button {
+    -fx-font-size: 14px;
+    -fx-padding: 12px 30px;
+    -fx-background-color: #4285f4;
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+
+.search-button:hover {
+    -fx-background-color: #3367d6;
+}
+
+.result-count {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+}
+
+/* Results */
+.results-scroll {
+    -fx-background-color: transparent;
+}
+
+.results-container {
+    -fx-background-color: transparent;
+}
+
+.search-result-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 1);
+    -fx-cursor: hand;
+}
+
+.search-result-card:hover {
+    -fx-background-color: #f5f5f5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);
+}
+
+.verse-reference {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4285f4;
+}
+
+.arabic-text {
+    -fx-font-size: 24px;
+    -fx-font-family: "Traditional Arabic", "Arabic Typesetting";
+    -fx-fill: #1a1a1a;
+    -fx-line-spacing: 8px;
+}
+
+.translation-text {
+    -fx-font-size: 15px;
+    -fx-text-fill: #444;
+    -fx-line-spacing: 4px;
+}
+
+.match-indicator {
+    -fx-font-size: 12px;
+    -fx-text-fill: #888;
+    -fx-padding: 5px 0 0 0;
+}
+
+.highlighted-context {
+    -fx-fill: #666;
+}
+
+.chapter-name {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a1a;
+}
+
+.chapter-name-arabic {
+    -fx-font-size: 22px;
+    -fx-font-family: "Traditional Arabic";
+    -fx-text-fill: #444;
+}
+
+.chapter-info {
+    -fx-font-size: 13px;
+    -fx-text-fill: #888;
+}
+
+.chapter-translated-name {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+    -fx-font-style: italic;
+}
+
+/* No results */
+.no-results-box {
+    -fx-padding: 50px;
+}
+
+.no-results-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #666;
+}
+
+.no-results-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #999;
+}
+
+/* Pagination */
+.pagination-box {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, -2);
+}
+
+.pagination-button {
+    -fx-font-size: 13px;
+    -fx-padding: 8px 16px;
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+
+.pagination-button:hover {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #4285f4;
+}
+
+.pagination-button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+.page-info {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+    -fx-padding: 0 20px;
+}

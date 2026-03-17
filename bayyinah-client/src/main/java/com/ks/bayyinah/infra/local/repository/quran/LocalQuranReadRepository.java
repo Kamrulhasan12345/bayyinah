@@ -221,6 +221,99 @@ public class LocalQuranReadRepository implements QuranReadRepository {
     return Optional.empty();
   }
 
+  @Override
+  public List<VerseView> findVersesByRange(int chapterId, int startVerse, int endVerse, int translationId) {
+    try {
+      try (var connection = DatabaseManager.getQuranConnection();
+          var statement = connection.prepareStatement(
+              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text "
+                  +
+                  "FROM verses v " +
+                  "LEFT JOIN translation_text t ON v.id = t.verse_id AND t.translation_id = ? " +
+                  "WHERE v.surah_id = ? AND v.verse_number BETWEEN ? AND ? ORDER BY v.verse_number")) {
+        statement.setInt(1, translationId);
+        statement.setInt(2, chapterId);
+        statement.setInt(3, startVerse);
+        statement.setInt(4, endVerse);
+        try (var resultSet = statement.executeQuery()) {
+          List<VerseView> verseViews = new java.util.ArrayList<>();
+          while (resultSet.next()) {
+            VerseView verseView = new VerseView();
+            Verse verse = new Verse();
+            TranslationText translationText = new TranslationText();
+            verse.setId(resultSet.getInt("verse_id"));
+            verse.setSurahId(resultSet.getInt("surah_id"));
+            verse.setVerseNumber(resultSet.getInt("verse_number"));
+            verse.setVerseKey(resultSet.getString("verse_key"));
+            verse.setTextUthmani(resultSet.getString("text_uthmani"));
+            verse.setTextIndopak(resultSet.getString("text_indopak"));
+            translationText.setId(resultSet.getInt("t_id"));
+            translationText.setTranslationId(resultSet.getInt("translation_id"));
+            translationText.setText(resultSet.getString("text"));
+            verseView.setVerse(verse);
+            verseView.setTranslationText(translationText);
+            verseViews.add(verseView);
+          }
+          return verseViews;
+        }
+      }
+    } catch (Exception e) {
+      // Handle exceptions and return empty list on error
+      throw new RepositoryException(
+          "Failed to fetch verses by range for chapter ID: " + chapterId + ", start verse: " + startVerse
+              + ", end verse: " + endVerse + ", and translation ID: " + translationId,
+          e);
+    }
+  }
+
+  @Override
+  public Page<VerseView> findVersesByRange(int chapterId, int startVerse, int endVerse, int translationId,
+      PageRequest pageRequest) {
+    try {
+      try (var connection = DatabaseManager.getQuranConnection();
+          var statement = connection.prepareStatement(
+              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text "
+                  +
+                  "FROM verses v " +
+                  "LEFT JOIN translation_text t ON v.id = t.verse_id AND t.translation_id = ? " +
+                  "WHERE v.surah_id = ? AND v.verse_number BETWEEN ? AND ? ORDER BY v.verse_number LIMIT ? OFFSET ?")) {
+        statement.setInt(1, translationId);
+        statement.setInt(2, chapterId);
+        statement.setInt(3, startVerse);
+        statement.setInt(4, endVerse);
+        statement.setInt(5, pageRequest.getPageSize());
+        statement.setInt(6, (pageRequest.getPage() - 1) * pageRequest.getPageSize());
+        int totalElements = countVersesByChapter(chapterId);
+        try (var resultSet = statement.executeQuery()) {
+          List<VerseView> verseViews = new java.util.ArrayList<>();
+          while (resultSet.next()) {
+            VerseView verseView = new VerseView();
+            Verse verse = new Verse();
+            TranslationText translationText = new TranslationText();
+            verse.setId(resultSet.getInt("verse_id"));
+            verse.setSurahId(resultSet.getInt("surah_id"));
+            verse.setVerseNumber(resultSet.getInt("verse_number"));
+            verse.setVerseKey(resultSet.getString("verse_key"));
+            verse.setTextUthmani(resultSet.getString("text_uthmani"));
+            verse.setTextIndopak(resultSet.getString("text_indopak"));
+            translationText.setId(resultSet.getInt("t_id"));
+            translationText.setTranslationId(resultSet.getInt("translation_id"));
+            translationText.setText(resultSet.getString("text"));
+            verseView.setVerse(verse);
+            verseView.setTranslationText(translationText);
+            verseViews.add(verseView);
+          }
+          return new Page<>(verseViews, pageRequest.getPage(), pageRequest.getPageSize(), totalElements);
+        }
+      }
+    } catch (Exception e) {
+      throw new RepositoryException(
+          "Failed to fetch paginated verses by range for chapter ID: " + chapterId + ", start verse: " + startVerse
+              + ", end verse: " + endVerse + ", and translation ID: " + translationId,
+          e);
+    }
+  }
+
   private int countVersesByChapter(int chapterId) {
     try {
       try (var connection = DatabaseManager.getQuranConnection();

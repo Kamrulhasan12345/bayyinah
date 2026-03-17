@@ -73,13 +73,40 @@ public class ChaptersController {
     verseListView.setCellFactory(listView -> new VerseCell());
   }
 
-  public void setChapter(ChapterView chapter) {
+  public void showVerses(int chapterId, int startVerse, int endVerse) {
+    LocalQuranQueryService quranQueryService = LocalQuranQueryService.getInstance();
+    UserPreferenceService userPreferencesService = appContext.getUserPreferenceService();
+
+    DbAsync.runWithUi(
+        () -> quranQueryService.getVersesByRange(chapterId, startVerse, endVerse,
+            userPreferencesService.getDefaultTranslation()),
+        verses -> {
+          System.out.println("Fetched " + verses.size() + " verses for chapter " + chapterId);
+          verseListView.setItems(FXCollections.observableArrayList(verses));
+          System.out.println("Loaded " + verses.size() + " verses");
+          if (onLoadComplete != null) {
+            onLoadComplete.run();
+          }
+        }, e -> {
+          e.printStackTrace();
+          if (onLoadComplete != null) {
+            onLoadComplete.run();
+          }
+        });
+
+    verseListView.setCellFactory(listView -> new VerseCell());
+  }
+
+  public void setChapter(ChapterView chapter, Integer startVerse, Integer endVerse) {
     Chapter chaptersData = chapter.getChapter();
     Chapter_i18n chapterI18n = chapter.getChapterI18N();
     nameArabic.setText(chaptersData.getNameArabic());
     nameSimple.setText(chaptersData.getNameSimple());
     translatedName.setText(chapterI18n.getTranslatedName());
 
-    showVerses(chaptersData.getId());
+    if (startVerse == null || endVerse == null)
+      showVerses(chaptersData.getId());
+    else
+      showVerses(chaptersData.getId(), startVerse, endVerse);
   }
 }
