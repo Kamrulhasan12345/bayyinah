@@ -369,7 +369,7 @@ public class LocalSearchRepository implements SearchRepository {
   @Override
   public SearchResponse smartSearch(
       String query,
-      Integer translationId,
+      int translationId,
       PageRequest pageRequest) {
     query = query.trim();
 

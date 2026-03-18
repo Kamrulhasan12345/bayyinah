@@ -90,6 +90,6 @@ public interface SearchRepository {
    */
   SearchResponse smartSearch(
       String query,
-      Integer translationId,
+      int translationId,
       PageRequest pageRequest);
 }
