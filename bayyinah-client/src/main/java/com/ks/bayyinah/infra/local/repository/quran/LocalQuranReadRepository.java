@@ -283,7 +283,7 @@ public class LocalQuranReadRepository implements QuranReadRepository {
         statement.setInt(4, endVerse);
         statement.setInt(5, pageRequest.getPageSize());
         statement.setInt(6, (pageRequest.getPage() - 1) * pageRequest.getPageSize());
-        int totalElements = countVersesByChapter(chapterId);
+        int totalElements = countVersesByChapterAndRange(chapterId, startVerse, endVerse);
         try (var resultSet = statement.executeQuery()) {
           List<VerseView> verseViews = new java.util.ArrayList<>();
           while (resultSet.next()) {
@@ -328,6 +328,27 @@ public class LocalQuranReadRepository implements QuranReadRepository {
     } catch (Exception e) {
       // Handle exceptions related to database access
       throw new RepositoryException("Failed to count verses for chapter ID: " + chapterId, e);
+    }
+    return 0;
+  }
+
+  private int countVersesByChapterAndRange(int chapterId, int startVerse, int endVerse) {
+    try {
+      try (var connection = DatabaseManager.getQuranConnection();
+          var statement = connection.prepareStatement(
+              "SELECT COUNT(*) FROM verses WHERE surah_id = ? AND verse_number BETWEEN ? AND ?")) {
+        statement.setInt(1, chapterId);
+        statement.setInt(2, startVerse);
+        statement.setInt(3, endVerse);
+        try (var resultSet = statement.executeQuery()) {
+          if (resultSet.next()) {
+            return resultSet.getInt(1);
+          }
+        }
+      }
+    } catch (Exception e) {
+      throw new RepositoryException(
+          "Failed to count verses for chapter ID: " + chapterId + " in range " + startVerse + "-" + endVerse, e);
     }
     return 0;
   }
