@@ -234,9 +234,9 @@ public class SearchResultsController {
       translationBox.setPadding(new Insets(5, 0, 0, 0));
     }
 
-    // Highlighted text (if different from original)
+    // Highlighted text (if available)
     TextFlow highlightedFlow = null;
-    if (result.getHighlightedText() != null && !result.getHighlightedText().equals(result.getDisplayText())) {
+    if (result.getHighlightedText() != null) {
       highlightedFlow = createHighlightedText(result.getHighlightedText());
     }
 
