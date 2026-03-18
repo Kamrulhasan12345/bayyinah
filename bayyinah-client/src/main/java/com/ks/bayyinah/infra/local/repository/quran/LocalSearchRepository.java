@@ -207,8 +207,8 @@ public class LocalSearchRepository implements SearchRepository {
       allResults.addAll(translationResults.getContent());
     }
 
-    // Sort by relevance
-    allResults.sort((a, b) -> Double.compare(b.getRelevanceScore(), a.getRelevanceScore()));
+    // Sort by relevance (lower bm25/relevanceScore means more relevant)
+    allResults.sort((a, b) -> Double.compare(a.getRelevanceScore(), b.getRelevanceScore()));
 
     // Manual pagination
     int start = pageRequest.getOffset();
