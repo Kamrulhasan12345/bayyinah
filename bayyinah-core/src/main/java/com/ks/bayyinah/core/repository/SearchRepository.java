@@ -7,9 +7,9 @@ import com.ks.bayyinah.core.dto.*;
 public interface SearchRepository {
 
   /**
-   * Search by verse key (e.g., "2:255", "18:10", "1:1-7")
+   * Search by verse key (e.g., "2:255", "18:10")
    * 
-   * @param verseKey      The verse reference
+   * @param verseKey      The verse reference (single verse only)
    * @param translationId Translation to include (null = Arabic only)
    * @return Optional containing verse if found
    */
