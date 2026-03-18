@@ -123,9 +123,11 @@ public class SidebarController {
           .filter(cv -> {
             String nameSimple = cv.getChapter().getNameSimple();
             String nameArabic = cv.getChapter().getNameArabic();
+            String nameTranslated = cv.getChapterI18N().getTranslatedName();
             return ((nameSimple != null &&
                 nameSimple.toLowerCase().contains(lowerKeyword)) ||
-                (nameArabic != null && nameArabic.contains(keyword)));
+                (nameArabic != null && nameArabic.contains(keyword)) || (nameTranslated != null &&
+                    nameTranslated.toLowerCase().contains(lowerKeyword)));
           })
           .collect(Collectors.toList());
     }

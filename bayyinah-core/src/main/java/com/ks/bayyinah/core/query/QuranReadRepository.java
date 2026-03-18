@@ -15,4 +15,8 @@ public interface QuranReadRepository {
   List<ChapterView> findAllChapters(String langCode);
 
   Optional<ChapterView> findChapterById(int chapterId, String langCode);
+
+  List<VerseView> findVersesByRange(int chapterId, int startVerse, int endVerse, int translationId);
+
+  Page<VerseView> findVersesByRange(int chapterId, int startVerse, int endVerse, int translationId, PageRequest pageRequest);
 }

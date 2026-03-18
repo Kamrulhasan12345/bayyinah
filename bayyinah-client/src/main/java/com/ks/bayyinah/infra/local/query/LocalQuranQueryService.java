@@ -111,6 +111,27 @@ public class LocalQuranQueryService implements QuranQueryService {
     return translationViews; // Placeholder
   }
 
+  public List<VerseView> getVersesByRange(int chapterId, int startVerse, int endVerse, int translationId) {
+    // Implement logic to fetch verses of a chapter within a specific range with
+    // translation and localization from local data source
+    return quranReadRepository.findVersesByRange(
+        chapterId,
+        startVerse,
+        endVerse,
+        translationId); // Placeholder
+  }
+
+  public Page<VerseView> getVersesByRange(int chapterId, int startVerse, int endVerse, int translationId,
+      PageRequest pageRequest) {
+    // Implement logic to fetch verses of a chapter within a specific range with
+    // translation and localization from local data source
+    return quranReadRepository.findVersesByRange(
+        chapterId,
+        startVerse,
+        endVerse,
+        translationId, pageRequest); // Placeholder
+  }
+
   public void saveTranslation(int translationId) {
     // Implement logic to save a translation to the local data source
   }
