@@ -152,7 +152,7 @@ public class LocalSearchRepository implements SearchRepository {
             FROM translation_text_fts
             JOIN translation_text tt ON translation_text_fts.id = tt.id
             JOIN verses v ON tt.verse_id = v.id
-            WHERE translation_text_fts MATCH ? AND tt.translation_id = ?
+            WHERE translation_text_fts MATCH ? AND translation_text_fts.translation_id = ?
             ORDER BY rank
             LIMIT ? OFFSET ?
         """;
@@ -399,20 +399,21 @@ public class LocalSearchRepository implements SearchRepository {
     }
 
     // 2. Check if it's a chapter name search (if short query)
-    if (query.length() <= 20) { // Chapter names are usually short
-      Page<ChapterSearchResult> chapterResults = searchChapters(query, "en", PageRequest.first(5));
-
-      if (!chapterResults.isEmpty()) {
-        return SearchResponse.builder()
-            .query(query)
-            .searchType(SearchResponse.SearchType.CHAPTERS)
-            .chapterResults(chapterResults)
-            .build();
-      }
-    }
+    // if (query.length() <= 20) { // Chapter names are usually short
+    // Page<ChapterSearchResult> chapterResults = searchChapters(query, "en",
+    // PageRequest.first(5));
+    //
+    // if (!chapterResults.isEmpty()) {
+    // return SearchResponse.builder()
+    // .query(query)
+    // .searchType(SearchResponse.SearchType.CHAPTERS)
+    // .chapterResults(chapterResults)
+    // .build();
+    // }
+    // }
 
     // 3. Full-text search in verses
-    Page<VerseSearchResult> verseResults = searchEverywhere(query, translationId, pageRequest);
+    Page<VerseSearchResult> verseResults = searchInTranslation(query, translationId, pageRequest);
 
     return SearchResponse.builder()
         .query(query)
@@ -504,7 +505,7 @@ public class LocalSearchRepository implements SearchRepository {
             SELECT COUNT(*)
             FROM translation_text_fts
             JOIN translation_text tt ON translation_text_fts.id = tt.id
-            WHERE translation_text_fts MATCH ? AND tt.translation_id = ?
+            WHERE translation_text_fts MATCH ? AND translation_text_fts.translation_id = ?
         """;
 
     try (Connection conn = DatabaseManager.getQuranConnection();
