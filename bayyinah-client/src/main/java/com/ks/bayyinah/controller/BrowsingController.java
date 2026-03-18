@@ -170,7 +170,7 @@ public class BrowsingController {
 
       chaptersController.setOnLoadComplete(() -> hideLoading());
       chaptersController.setAppContext(appContext);
-      chaptersController.setChapter(chapter, startVerse, endVerse);
+      chaptersController.setChapter(chapter, startVerse, endVerse, translationId);
 
       currentShownChapterId = chapter.getChapter().getId();
 

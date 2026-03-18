@@ -97,7 +97,7 @@ public class ChaptersController {
     verseListView.setCellFactory(listView -> new VerseCell());
   }
 
-  public void setChapter(ChapterView chapter, Integer startVerse, Integer endVerse) {
+  public void setChapter(ChapterView chapter, Integer startVerse, Integer endVerse, Integer translationId) {
     Chapter chaptersData = chapter.getChapter();
     Chapter_i18n chapterI18n = chapter.getChapterI18N();
     nameArabic.setText(chaptersData.getNameArabic());

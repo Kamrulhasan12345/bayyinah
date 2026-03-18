@@ -30,6 +30,9 @@ public class LocalSearchRepository implements SearchRepository {
     int surahId = Integer.parseInt(matcher.group(1));
     int verseNumber = Integer.parseInt(matcher.group(2));
 
+    System.out
+        .println("Searching for verse key: " + verseKey + " (Surah: " + surahId + ", Verse: " + verseNumber + ")");
+
     String sql;
     if (translationId != null) {
       sql = """
@@ -65,6 +68,7 @@ public class LocalSearchRepository implements SearchRepository {
 
       try (ResultSet rs = stmt.executeQuery()) {
         if (rs.next()) {
+          System.out.println("Verse found for key: " + verseKey);
           return Optional.of(mapToVerseView(rs, translationId));
         }
       }
@@ -396,6 +400,11 @@ public class LocalSearchRepository implements SearchRepository {
             .verseResults(page)
             .build();
       }
+      return SearchResponse.builder()
+          .query(query)
+          .searchType(SearchResponse.SearchType.VERSE_KEY)
+          .verseResults(Page.empty())
+          .build();
     }
 
     // 2. Check if it's a chapter name search (if short query)

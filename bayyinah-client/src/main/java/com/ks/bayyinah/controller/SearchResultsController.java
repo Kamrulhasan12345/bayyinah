@@ -399,6 +399,8 @@ public class SearchResultsController {
         : response.getChapterResults();
 
     if (page == null || page.getTotalPages() <= 1) {
+      System.out.println("No pagination needed (total pages: " + (page != null ? page.getTotalPages() : "N/A") + ")");
+      pageInfoLabel.setText(String.format("Page %d of %d", page.getPage(), page.getTotalPages()));
       paginationBox.setVisible(false);
       return;
     }
