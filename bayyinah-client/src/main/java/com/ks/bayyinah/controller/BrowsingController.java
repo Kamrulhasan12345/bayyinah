@@ -152,7 +152,8 @@ public class BrowsingController {
   }
 
   public void showChapter(ChapterView chapter, Integer startVerse, Integer endVerse, Integer translationId) {
-    if (currentShownChapterId == chapter.getChapter().getId() && !partialChapterView) {
+    if (currentShownChapterId == chapter.getChapter().getId()
+        && Boolean.FALSE.equals(partialChapterView)) {
       System.out.println(
           "Chapter " +
               chapter.getChapter().getId() +

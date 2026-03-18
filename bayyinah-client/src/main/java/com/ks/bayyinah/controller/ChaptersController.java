@@ -102,7 +102,14 @@ public class ChaptersController {
     Chapter_i18n chapterI18n = chapter.getChapterI18N();
     nameArabic.setText(chaptersData.getNameArabic());
     nameSimple.setText(chaptersData.getNameSimple());
-    translatedName.setText(chapterI18n.getTranslatedName());
+
+    String translated = "";
+    if (chapterI18n != null && chapterI18n.getTranslatedName() != null) {
+      translated = chapterI18n.getTranslatedName();
+    } else if (chaptersData.getNameSimple() != null) {
+      translated = chaptersData.getNameSimple();
+    }
+    translatedName.setText(translated);
 
     if (startVerse == null || endVerse == null)
       showVerses(chaptersData.getId());

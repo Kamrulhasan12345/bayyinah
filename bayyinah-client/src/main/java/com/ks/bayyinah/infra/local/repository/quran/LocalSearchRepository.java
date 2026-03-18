@@ -218,7 +218,11 @@ public class LocalSearchRepository implements SearchRepository {
     int start = pageRequest.getOffset();
     int end = Math.min(start + pageRequest.getPageSize(), allResults.size());
 
-    List<VerseSearchResult> pageResults = allResults.subList(start, Math.min(end, allResults.size()));
+    if (start >= allResults.size()) {
+      return new Page<>(new ArrayList<>(), pageRequest.getPage(), pageRequest.getPageSize(), allResults.size());
+    }
+
+    List<VerseSearchResult> pageResults = allResults.subList(start, end);
 
     return new Page<>(pageResults, pageRequest.getPage(), pageRequest.getPageSize(), allResults.size());
   }

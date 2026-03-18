@@ -26,12 +26,12 @@ public class SearchResponse {
     return 0;
   }
 
-      public static SearchResponse empty(String query, SearchType type) {
-        return SearchResponse.builder()
-            .query(query)
-            .searchType(type)
-            .verseResults(type == SearchType.VERSES ? Page.empty() : null)
-            .chapterResults(type == SearchType.CHAPTERS ? Page.empty() : null)
-            .build();
-    }
+  public static SearchResponse empty(String query, SearchType type) {
+    return SearchResponse.builder()
+        .query(query)
+        .searchType(type)
+        .verseResults(type == SearchType.VERSES ? Page.empty() : null)
+        .chapterResults(type == SearchType.CHAPTERS ? Page.empty() : null)
+        .build();
+  }
 }
