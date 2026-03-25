@@ -353,16 +353,19 @@ public class SearchResultsController {
     int chapterId = result.getVerseView().getVerse().getSurahId();
     int verseNumber = result.getVerseView().getVerse().getVerseNumber();
 
-    Optional<ChapterView> chapterView = quranQueryService.getChapter(chapterId, "en");
-    if (chapterView.isPresent()) {
-      browsingController.showChapter(chapterView.get(), verseNumber, verseNumber, currentTranslationId);
-      toastManager.showInfo("Navigating", "Opening " + result.getVerseView().getVerseKey());
-    } else {
-      toastManager.showError(
-          "Navigation error",
-          "Unable to open chapter " + chapterId + " for " + result.getVerseView().getVerseKey()
-      );
-    }
+    DbAsync.runWithUi(
+        () -> quranQueryService.getChapter(chapterId, "en"),
+        chapterView -> {
+          if (chapterView.isPresent()) {
+            browsingController.showChapter(chapterView.get(), verseNumber, verseNumber, currentTranslationId);
+            toastManager.showInfo("Navigating", "Opening " + result.getVerseView().getVerseKey());
+          } else {
+            toastManager.showError(
+                "Navigation error",
+                "Unable to open chapter " + chapterId + " for " + result.getVerseView().getVerseKey());
+          }
+        },
+        err -> toastManager.showError("Navigation error", "Failed to resolve chapter: " + err.getMessage()));
   }
 
   /**

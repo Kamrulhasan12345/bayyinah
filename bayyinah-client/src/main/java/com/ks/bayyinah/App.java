@@ -117,14 +117,16 @@ public class App extends Application {
     var bookmarksRepo = new BookmarksRepository();
     var userPrefRepo = new UserPreferenceRepository();
     var readingProgressRepo = new ReadingProgressRepository();
+    var syncQueueRepo = new SyncQueueRepository();
     var userRepo = new UserRepository();
     var noteRepo = new NoteRepository();
 
     // Initialize services
     var authTokensService = new AuthTokensService(authTokensRepo);
-    var bookmarkService = new BookmarkService(bookmarksRepo);
+    var syncQueueService = new SyncQueueService(syncQueueRepo);
+    var bookmarkService = new BookmarkService(bookmarksRepo, syncQueueService);
     var userPreferenceService = new UserPreferenceService(userPrefRepo);
-    var readingProgressService = new ReadingProgressService(readingProgressRepo);
+    var readingProgressService = new ReadingProgressService(readingProgressRepo, syncQueueService);
     var userService = new UserService(userRepo);
     var noteService = new NoteService(noteRepo);
 
@@ -132,6 +134,7 @@ public class App extends Application {
     appContext.setBookmarkService(bookmarkService);
     appContext.setUserPreferenceService(userPreferenceService);
     appContext.setReadingProgressService(readingProgressService);
+    appContext.setSyncQueueService(syncQueueService);
     appContext.setUserService(userService);
     appContext.setNoteService(noteService);
 

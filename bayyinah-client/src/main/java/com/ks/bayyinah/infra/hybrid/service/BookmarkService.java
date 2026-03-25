@@ -23,28 +23,47 @@ public class BookmarkService {
   // The implementation details will depend on the specific requirements and data
   // models of the application.
   private final BookmarksRepository repository;
+  private final SyncQueueService syncQueueService;
 
   public BookmarkService(BookmarksRepository repository) {
+    this(repository, null);
+  }
+
+  public BookmarkService(BookmarksRepository repository, SyncQueueService syncQueueService) {
     this.repository = repository;
+    this.syncQueueService = syncQueueService;
   }
 
   public void addBookmark(int surahNumber, int ayahNumber) {
+    Optional<Bookmark> existing = repository.findByVerse(surahNumber, ayahNumber);
     Bookmark bookmark = new Bookmark(surahNumber, ayahNumber);
-    Long id = repository.findByVerse(surahNumber, ayahNumber).map(Bookmark::getId).orElse(null);
+    Long id = existing.map(Bookmark::getId).orElse(null);
     bookmark.setId(id);
-    if (repository.findByVerse(surahNumber, ayahNumber).isPresent()) {
+    if (existing.isPresent()) {
       repository.update(bookmark);
     } else {
       repository.insert(bookmark);
+    }
+
+    if (syncQueueService != null && bookmark.getId() != null) {
+      syncQueueService.enqueueUpsert("bookmarks", bookmark.getId(), buildBookmarkPayload(bookmark));
     }
   }
 
   public void removeBookmark(Long id) {
     repository.delete(id);
+    if (syncQueueService != null && id != null) {
+      syncQueueService.enqueueDelete("bookmarks", id, "{\"id\":" + id + "}");
+    }
   }
 
   public void removeBookmark(int surahNumber, int ayahNumber) {
+    Optional<Bookmark> existing = repository.findByVerse(surahNumber, ayahNumber);
     repository.deleteByVerse(surahNumber, ayahNumber);
+    if (syncQueueService != null && existing.isPresent() && existing.get().getId() != null) {
+      Bookmark bookmark = existing.get();
+      syncQueueService.enqueueDelete("bookmarks", bookmark.getId(), buildBookmarkPayload(bookmark));
+    }
   }
 
   public List<Bookmark> getAll() {
@@ -64,6 +83,17 @@ public class BookmarkService {
   }
 
   public List<Bookmark> getUnsynced() {
-    return List.of(); // repository.findUnsynced();
+    return repository.findUnsynced();
+  }
+
+  private String buildBookmarkPayload(Bookmark bookmark) {
+    String title = bookmark.getTitle() != null ? bookmark.getTitle().replace("\"", "\\\"") : "";
+    String color = bookmark.getColor() != null ? bookmark.getColor().replace("\"", "\\\"") : "";
+    return "{" +
+        "\"surahNumber\":" + bookmark.getSurahNumber() + "," +
+        "\"ayahNumber\":" + bookmark.getAyahNumber() + "," +
+        "\"title\":\"" + title + "\"," +
+        "\"color\":\"" + color + "\"" +
+        "}";
   }
 }

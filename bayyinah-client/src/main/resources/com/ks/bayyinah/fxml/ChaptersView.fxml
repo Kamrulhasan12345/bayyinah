@@ -1,35 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" spacing="20.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.ChaptersController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" spacing="16.0" styleClass="reader-page" stylesheets="@../css/chapters-reader.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.ChaptersController">
    <children>
       <HBox fx:id="header" disable="true" fillHeight="false" managed="false" prefHeight="100.0" prefWidth="200.0" visible="false" />
-      <VBox alignment="CENTER" prefHeight="141.0" prefWidth="900.0">
+      <VBox alignment="CENTER" prefWidth="900.0" spacing="6.0" styleClass="reader-hero">
          <children>
-            <Label fx:id="nameSimple" alignment="CENTER" prefHeight="18.0" prefWidth="909.0" text="Al-Fatihah" textAlignment="RIGHT">
+            <Label fx:id="nameSimple" alignment="CENTER" prefWidth="909.0" styleClass="chapter-name-simple" text="Al-Fatihah" textAlignment="CENTER">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="translatedName" alignment="CENTER" prefHeight="18.0" prefWidth="909.0" text="The Beginning" textAlignment="RIGHT">
+            <Label fx:id="translatedName" alignment="CENTER" prefWidth="909.0" styleClass="chapter-name-translated" text="The Beginning" textAlignment="CENTER">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="nameArabic" alignment="CENTER" nodeOrientation="RIGHT_TO_LEFT" prefHeight="18.0" prefWidth="909.0" text="الفاتحة" textAlignment="RIGHT">
+            <Label fx:id="nameArabic" alignment="CENTER" nodeOrientation="RIGHT_TO_LEFT" prefWidth="909.0" styleClass="chapter-name-arabic" text="الفاتحة" textAlignment="CENTER">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
+            <Label fx:id="chapterMeta" alignment="CENTER" prefWidth="909.0" styleClass="chapter-meta" text="7 ayahs • Meccan" textAlignment="CENTER" />
          </children>
       </VBox>
-    <ListView fx:id="verseListView" prefWidth="200.0" />
+      <HBox alignment="CENTER_LEFT" prefWidth="860.0" spacing="10.0" styleClass="reader-toolbar">
+         <children>
+            <Label styleClass="toolbar-label" text="Translation" />
+            <ComboBox fx:id="translationSelector" prefWidth="220.0" />
+            <Separator orientation="VERTICAL" prefHeight="22.0" />
+            <Button fx:id="tafsirToggleBtn" onAction="#onToggleTafsir" styleClass="reader-secondary-btn" text="Tafsir">
+               <graphic>
+                  <FontIcon iconLiteral="mdi2b-book-open-page-variant-outline" iconSize="16" />
+               </graphic>
+            </Button>
+            <Button fx:id="audioToggleBtn" onAction="#onToggleAudio" styleClass="reader-secondary-btn" text="Audio">
+               <graphic>
+                  <FontIcon iconLiteral="mdi2v-volume-high" iconSize="16" />
+               </graphic>
+            </Button>
+            <Region HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <ListView fx:id="verseListView" prefHeight="498.0" prefWidth="860.0" styleClass="verse-list" VBox.vgrow="ALWAYS" />
    </children>
    <padding>
       <Insets left="20.0" right="20.0" top="20.0" />

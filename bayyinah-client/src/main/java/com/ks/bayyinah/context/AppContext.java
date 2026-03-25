@@ -16,6 +16,7 @@ public class AppContext {
   private BookmarkService bookmarkService;
   private UserPreferenceService userPreferenceService;
   private ReadingProgressService readingProgressService;
+  private SyncQueueService syncQueueService;
   private NoteService noteService;
   private MainConfig mainConfig;
   private TokenManager tokenManager;

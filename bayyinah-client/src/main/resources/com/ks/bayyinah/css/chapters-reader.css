@@ -1,0 +1,129 @@
+.reader-page {
+    -fx-background-color: linear-gradient(to bottom, #f7f8fb, #eff1f5);
+}
+
+.reader-hero {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #e1e6ef;
+    -fx-border-radius: 12;
+    -fx-padding: 18 16 18 16;
+}
+
+.chapter-name-simple {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #576174;
+}
+
+.chapter-name-translated {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6b7485;
+}
+
+.chapter-name-arabic {
+    -fx-font-size: 34px;
+    -fx-font-family: "Traditional Arabic", "Arabic Typesetting";
+    -fx-text-fill: #172033;
+}
+
+.chapter-meta {
+    -fx-font-size: 12px;
+    -fx-text-fill: #7a8293;
+}
+
+.reader-toolbar {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #e1e6ef;
+    -fx-border-radius: 10;
+    -fx-padding: 10;
+}
+
+.toolbar-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a5468;
+}
+
+.combo-box {
+    -fx-background-radius: 8;
+}
+
+.reader-secondary-btn {
+    -fx-background-color: #f3f6fb;
+    -fx-border-color: #d9e2ef;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #344055;
+    -fx-cursor: hand;
+}
+
+.reader-secondary-btn:hover {
+    -fx-background-color: #eaf0f9;
+}
+
+.verse-list {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.verse-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 10 0;
+}
+
+.verse-list .list-cell:filled:selected,
+.verse-list .list-cell:filled:selected:focused {
+    -fx-background-color: transparent;
+}
+
+.verse-list .list-cell .label {
+    -fx-text-fill: #1f2937;
+}
+
+.ayah-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #e3e8f1;
+    -fx-border-radius: 12;
+    -fx-padding: 18;
+}
+
+.ayah-card:hover {
+    -fx-background-color: #fbfcff;
+    -fx-border-color: #d5dfec;
+}
+
+.ayah-index-col {
+    -fx-padding: 6 0 0 0;
+}
+
+.ayah-number {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2f3a4d;
+}
+
+.ayah-bookmark {
+    -fx-icon-color: #4b5a75;
+    -fx-cursor: hand;
+}
+
+.ayah-arabic-text {
+    -fx-font-size: 31px;
+    -fx-font-family: "Traditional Arabic", "Arabic Typesetting";
+    -fx-text-fill: #111827;
+    -fx-line-spacing: 10px;
+}
+
+.ayah-translation-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: #3f4a5f;
+    -fx-line-spacing: 4px;
+}
+
+.ayah-translation-meta {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6b7280;
+}
