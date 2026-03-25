@@ -209,3 +209,88 @@
 	-fx-text-fill: #64748b;
 	-fx-font-size: 10px;
 }
+
+.settings-root {
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 14;
+	-fx-border-color: #e7ebf4;
+	-fx-border-radius: 14;
+	-fx-border-width: 1;
+}
+
+.settings-title {
+	-fx-text-fill: #0f172a;
+	-fx-font-weight: 800;
+}
+
+.settings-subtitle {
+	-fx-text-fill: #475569;
+	-fx-font-size: 12px;
+}
+
+.settings-mode {
+	-fx-background-color: #eff6ff;
+	-fx-background-radius: 8;
+	-fx-text-fill: #1e3a8a;
+	-fx-padding: 8 10;
+	-fx-font-size: 12px;
+}
+
+.settings-section-title {
+	-fx-text-fill: #0f172a;
+	-fx-font-size: 14px;
+	-fx-font-weight: 700;
+}
+
+.settings-label {
+	-fx-text-fill: #334155;
+	-fx-font-size: 12px;
+	-fx-font-weight: 600;
+}
+
+.settings-save-btn {
+	-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);
+	-fx-text-fill: #ffffff;
+	-fx-background-radius: 8;
+	-fx-padding: 8 18;
+	-fx-font-weight: 700;
+	-fx-cursor: hand;
+}
+
+.settings-save-btn:hover {
+	-fx-background-color: linear-gradient(to right, #1e40af, #1d4ed8);
+}
+
+.settings-saved-hint {
+	-fx-text-fill: #475569;
+	-fx-font-size: 12px;
+}
+
+.settings-download-btn {
+	-fx-background-color: #ffffff;
+	-fx-text-fill: #1e3a8a;
+	-fx-border-color: #bfdbfe;
+	-fx-border-radius: 8;
+	-fx-background-radius: 8;
+	-fx-padding: 7 14;
+	-fx-font-weight: 700;
+	-fx-cursor: hand;
+}
+
+.settings-download-btn:hover {
+	-fx-background-color: #eff6ff;
+}
+
+.settings-warning-box {
+	-fx-background-color: #fff7ed;
+	-fx-border-color: #fdba74;
+	-fx-border-radius: 8;
+	-fx-background-radius: 8;
+	-fx-padding: 8 10;
+}
+
+.settings-warning-text {
+	-fx-text-fill: #9a3412;
+	-fx-font-size: 12px;
+	-fx-font-weight: 600;
+}

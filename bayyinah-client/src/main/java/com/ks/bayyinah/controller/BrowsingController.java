@@ -101,6 +101,7 @@ public class BrowsingController {
     splitPane.setDividerPosition(0, 0.22);
 
     sidebarController.setOnHomeBtnClick(this::handleHomeClicked);
+    sidebarController.setOnSettingsClicked(this::showSettings);
     sidebarController.setOnChapterSelected(this::showChapter);
     sidebarController.setOnLoginClicked(() -> {
       if (rootController != null) {
@@ -130,6 +131,24 @@ public class BrowsingController {
       contentArea.getChildren().setAll(homeView);
       contentArea.getChildren().add(loadingOverlay);
       currentShownChapterId = -1; // reset current chapter since we're on home
+      partialChapterView = true;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void showSettings() {
+    try {
+      FXMLLoader loader = new FXMLLoader(
+          App.class.getResource("fxml/SettingsView.fxml"));
+      Node settingsView = loader.load();
+      SettingsController settingsController = loader.getController();
+      settingsController.setAppContext(appContext);
+      settingsController.initializeSettings();
+
+      contentArea.getChildren().setAll(settingsView);
+      contentArea.getChildren().add(loadingOverlay);
+      currentShownChapterId = -1;
       partialChapterView = true;
     } catch (IOException e) {
       e.printStackTrace();

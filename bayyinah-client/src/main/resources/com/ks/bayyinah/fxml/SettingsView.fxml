@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.SettingsController">
+   <content>
+      <VBox maxWidth="860.0" prefWidth="860.0" spacing="14.0" styleClass="settings-root">
+         <children>
+            <Label styleClass="settings-title" text="Settings">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label styleClass="settings-subtitle" text="Change what can be edited locally. Save will update local DB and enqueue sync records." wrapText="true" />
+            <Label fx:id="modeLabel" styleClass="settings-mode" text="Mode" wrapText="true" />
+            <Separator />
+            <Label styleClass="settings-section-title" text="Editable Preferences" />
+            <GridPane hgap="16.0" vgap="12.0">
+               <children>
+                  <Label styleClass="settings-label" text="Theme" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                  <ComboBox fx:id="themeCombo" prefWidth="280.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                  <Label styleClass="settings-label" text="Font Size" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                  <Spinner fx:id="fontSizeSpinner" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                  <Label styleClass="settings-label" text="Default Translation ID" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                  <HBox alignment="CENTER_LEFT" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <children>
+                        <ComboBox fx:id="defaultTranslationCombo" prefWidth="420.0" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="downloadTranslationButton" mnemonicParsing="false" onAction="#onDownloadTranslation" styleClass="settings-download-btn" text="Download" />
+                     </children>
+                  </HBox>
+
+                  <HBox fx:id="translationAvailabilityBox" alignment="CENTER_LEFT" spacing="8.0" styleClass="settings-warning-box" visible="false" managed="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <children>
+                        <Label fx:id="translationAvailabilityLabel" styleClass="settings-warning-text" text="Translation unavailable" wrapText="true" />
+                     </children>
+                  </HBox>
+
+                  <Label styleClass="settings-label" text="Language" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                  <ComboBox fx:id="languageCombo" prefWidth="280.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                  <Label styleClass="settings-label" text="Reading Mode" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                  <ComboBox fx:id="readingModeCombo" prefWidth="280.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                  <Label styleClass="settings-label" text="Show Transliteration" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                  <CheckBox fx:id="showTransliterationCheck" text="Enabled" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+
+                  <Label styleClass="settings-label" text="Auto Scroll" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                  <CheckBox fx:id="autoScrollCheck" text="Enabled" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+               </children>
+               <columnConstraints>
+                  <javafx.scene.layout.ColumnConstraints minWidth="220.0" prefWidth="230.0" />
+                  <javafx.scene.layout.ColumnConstraints hgrow="ALWAYS" minWidth="240.0" />
+               </columnConstraints>
+            </GridPane>
+
+            <Separator />
+            <Label styleClass="settings-section-title" text="Unchangeable In Local Mode (Server Managed)" />
+            <GridPane hgap="16.0" vgap="12.0">
+               <children>
+                  <Label styleClass="settings-label" text="Preference ID" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                  <TextField fx:id="idField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                  <Label styleClass="settings-label" text="User ID" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                  <TextField fx:id="userIdField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                  <Label styleClass="settings-label" text="Created At" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                  <TextField fx:id="createdAtField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                  <Label styleClass="settings-label" text="Updated At" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                  <TextField fx:id="updatedAtField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               </children>
+               <columnConstraints>
+                  <javafx.scene.layout.ColumnConstraints minWidth="220.0" prefWidth="230.0" />
+                  <javafx.scene.layout.ColumnConstraints hgrow="ALWAYS" minWidth="240.0" />
+               </columnConstraints>
+            </GridPane>
+
+            <Separator />
+            <HBox alignment="CENTER_LEFT" spacing="12.0">
+               <children>
+                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveChanges" styleClass="settings-save-btn" text="Save Changes" />
+                  <Label fx:id="lastSavedLabel" styleClass="settings-saved-hint" text="No pending save in this session." wrapText="true" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="24.0" right="24.0" top="20.0" />
+         </padding>
+      </VBox>
+   </content>
+   <padding>
+      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+   </padding>
+</ScrollPane>

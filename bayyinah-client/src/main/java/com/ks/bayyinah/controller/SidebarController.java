@@ -52,6 +52,9 @@ public class SidebarController {
   @Setter
   private Runnable onHomeBtnClick;
 
+  @Setter
+  private Runnable onSettingsClicked;
+
   private List<ChapterView> allChapters;
   private PauseTransition searchDebounce;
   private final ObservableList<ChapterView> displayedChapters = FXCollections.observableArrayList();
@@ -162,9 +165,11 @@ public class SidebarController {
 
   private void setupSettingsButton() {
     if (settingsBtn != null) {
-      settingsBtn.setOnMouseClicked(e -> ToastManager.getInstance().showInfo(
-          "Settings",
-          "Settings panel will be available in the next step."));
+      settingsBtn.setOnMouseClicked(e -> {
+        if (onSettingsClicked != null) {
+          onSettingsClicked.run();
+        }
+      });
     }
   }
 

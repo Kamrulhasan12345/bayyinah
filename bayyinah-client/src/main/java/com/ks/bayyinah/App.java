@@ -128,7 +128,7 @@ public class App extends Application {
     var authTokensService = new AuthTokensService(authTokensRepo);
     var syncQueueService = new SyncQueueService(syncQueueRepo);
     var bookmarkService = new BookmarkService(bookmarksRepo, syncQueueService);
-    var userPreferenceService = new UserPreferenceService(userPrefRepo);
+    var userPreferenceService = new UserPreferenceService(userPrefRepo, syncQueueService);
     var readingProgressService = new ReadingProgressService(readingProgressRepo, syncQueueService);
     var userService = new UserService(userRepo);
     var noteService = new NoteService(noteRepo);

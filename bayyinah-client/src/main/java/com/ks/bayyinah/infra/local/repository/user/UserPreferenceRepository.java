@@ -13,7 +13,7 @@ public class UserPreferenceRepository {
       try (var conn = DatabaseManager.getUserConnection();
           var stmt = conn.prepareStatement(
               "INSERT INTO user_preferences (key, value) VALUES (?, ?) " +
-                  "ON CONFLICT(key) DO UPDATE SET value=excluded.value")) {
+              "ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=CURRENT_TIMESTAMP")) {
         stmt.setString(1, key);
         stmt.setString(2, value);
         stmt.executeUpdate();
