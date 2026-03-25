@@ -14,7 +14,9 @@ import com.ks.bayyinah.infra.local.database.DbAsync;
 import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
 import com.ks.bayyinah.ui.ToastManager;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Comparator;
+import java.util.Set;
 import java.util.Optional;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -206,11 +208,18 @@ public class ChaptersController {
     LocalQuranQueryService quranQueryService = LocalQuranQueryService.getInstance();
 
     DbAsync.runWithUi(
-        quranQueryService::getAvailableTranslations,
-        translations -> {
-          ArrayList<TranslationOption> options = new ArrayList<>();
+        () -> new TranslationOptionsPayload(
+            quranQueryService.getAvailableTranslations(),
+            quranQueryService.getTranslationIdsWithAvailableText()),
+        payload -> {
+          List<TranslationView> translations = payload.translations();
+          Set<Integer> availableIds = payload.availableTranslationIds();
+
+          List<TranslationOption> options = new ArrayList<>();
           for (TranslationView translation : translations) {
-            options.add(new TranslationOption(translation.getId(), buildTranslationLabel(translation)));
+            options.add(new TranslationOption(
+                translation.getId(),
+                buildTranslationLabel(translation, availableIds.contains(translation.getId()))));
           }
 
           if (options.isEmpty()) {
@@ -254,9 +263,9 @@ public class ChaptersController {
         err -> err.printStackTrace());
   }
 
-  private String buildTranslationLabel(TranslationView translationView) {
+  private String buildTranslationLabel(TranslationView translationView, boolean available) {
     if (translationView == null) {
-      return "Unknown - en";
+      return "Unknown - unknown (unavailable)";
     }
 
     Translation translation = translationView.getTranslation();
@@ -267,10 +276,11 @@ public class ChaptersController {
       authorName = "Translation #" + translationView.getId();
     }
     if (language == null || language.isBlank()) {
-      language = "en";
+      language = "english";
     }
 
-    return authorName + " - " + language;
+    String status = available ? "available" : "unavailable";
+    return authorName + " - " + language + " (" + status + ")";
   }
 
   private void reloadCurrentChapter() {
@@ -291,6 +301,9 @@ public class ChaptersController {
     public String toString() {
       return label;
     }
+  }
+
+  private record TranslationOptionsPayload(List<TranslationView> translations, Set<Integer> availableTranslationIds) {
   }
 
   private void initializeProgressTracking() {

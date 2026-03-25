@@ -15,4 +15,6 @@ public interface TranslationTextRepository {
   List<TranslationText> findTranslationsByChapterId(int chapterId);
 
   Page<TranslationText> findTranslationsByChapterId(int chapterId, PageRequest pageRequest);
+
+  List<Integer> findDistinctTranslationIdsWithTexts();
 }

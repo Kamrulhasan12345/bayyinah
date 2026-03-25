@@ -5,9 +5,11 @@ import com.ks.bayyinah.core.model.*;
 import com.ks.bayyinah.core.query.*;
 import com.ks.bayyinah.core.repository.*;
 import com.ks.bayyinah.infra.local.repository.quran.*;
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class LocalQuranQueryService implements QuranQueryService {
@@ -134,5 +136,9 @@ public class LocalQuranQueryService implements QuranQueryService {
 
   public void saveTranslation(int translationId) {
     // Implement logic to save a translation to the local data source
+  }
+
+  public Set<Integer> getTranslationIdsWithAvailableText() {
+    return new HashSet<>(translationTextRepository.findDistinctTranslationIdsWithTexts());
   }
 }

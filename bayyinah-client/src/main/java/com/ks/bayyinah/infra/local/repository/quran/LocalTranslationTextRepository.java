@@ -115,4 +115,23 @@ public class LocalTranslationTextRepository implements TranslationTextRepository
     }
     return 0;
   }
+
+  @Override
+  public List<Integer> findDistinctTranslationIdsWithTexts() {
+    try {
+      try (var connection = DatabaseManager.getQuranConnection();
+          var statement = connection.prepareStatement(
+              "SELECT DISTINCT translation_id FROM translation_text WHERE text IS NOT NULL AND TRIM(text) <> ''")) {
+        try (var resultSet = statement.executeQuery()) {
+          List<Integer> ids = new ArrayList<>();
+          while (resultSet.next()) {
+            ids.add(resultSet.getInt("translation_id"));
+          }
+          return ids;
+        }
+      }
+    } catch (Exception e) {
+      throw new RepositoryException("Failed to fetch distinct translation IDs with texts", e);
+    }
+  }
 }
