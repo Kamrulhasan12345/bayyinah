@@ -11,6 +11,7 @@ import java.io.IOException;
 import com.ks.bayyinah.infra.local.database.*;
 import com.ks.bayyinah.infra.local.repository.user.*;
 import com.ks.bayyinah.infra.remote.client.ApiClient;
+import com.ks.bayyinah.infra.remote.query.RemoteSyncQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteUserQueryService;
 import com.ks.bayyinah.infra.hybrid.service.*;
 import com.ks.bayyinah.infra.hybrid.model.*;
@@ -143,13 +144,24 @@ public class App extends Application {
 
     var tokenManager = new TokenManager(authTokensService);
     var apiClient = new ApiClient(mainConfig, tokenManager);
+    var remoteSyncQueryService = new RemoteSyncQueryService(apiClient);
+    var syncOrchestratorService = new SyncOrchestratorService(syncQueueService, bookmarkService,
+      readingProgressService, userPreferenceService, userService, remoteSyncQueryService);
 
     appContext.setMainConfig(mainConfig);
     appContext.setTokenManager(tokenManager);
     appContext.setApiClient(apiClient);
+    appContext.setRemoteSyncQueryService(remoteSyncQueryService);
+    appContext.setSyncOrchestratorService(syncOrchestratorService);
 
     var remoteUserQueryService = new RemoteUserQueryService(apiClient);
-    var authSessionQueryService = new AuthSessionQueryService(authTokensService, userService, remoteUserQueryService);
+    var authSessionQueryService = new AuthSessionQueryService(authTokensService, userService, remoteUserQueryService,
+      syncOrchestratorService);
+
+    authSessionQueryService.ensureGuestSession();
+    if (authSessionQueryService.isLoggedIn()) {
+      syncOrchestratorService.runSyncNowAsync();
+    }
 
     appContext.setRemoteUserQueryService(remoteUserQueryService);
     appContext.setAuthSessionQueryService(authSessionQueryService);

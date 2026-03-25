@@ -3,6 +3,8 @@ package com.ks.bayyinah.infra.hybrid.service;
 import com.ks.bayyinah.infra.hybrid.model.User;
 import com.ks.bayyinah.infra.local.repository.user.UserRepository;
 
+import java.time.LocalDateTime;
+
 public class UserService {
   private final UserRepository repository;
 
@@ -43,5 +45,9 @@ public class UserService {
     User guestUser = User.createGuest();
     saveUser(guestUser);
     return guestUser;
+  }
+
+  public void updateLastSyncAt(LocalDateTime lastSyncAt) {
+    repository.updateLastSyncAt(lastSyncAt);
   }
 }

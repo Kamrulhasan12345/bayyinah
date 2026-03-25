@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import com.ks.bayyinah.infra.hybrid.model.AuthTokens;
 import com.ks.bayyinah.infra.hybrid.model.User;
 import com.ks.bayyinah.infra.hybrid.service.AuthTokensService;
+import com.ks.bayyinah.infra.hybrid.service.SyncOrchestratorService;
 import com.ks.bayyinah.infra.hybrid.service.UserService;
 import com.ks.bayyinah.infra.remote.dto.auth.TokensResponse;
 import com.ks.bayyinah.infra.remote.query.RemoteUserQueryService;
@@ -17,6 +18,7 @@ public class AuthSessionQueryService {
   private final AuthTokensService authTokensService;
   private final UserService userService;
   private final RemoteUserQueryService remoteUserQueryService;
+  private final SyncOrchestratorService syncOrchestratorService;
 
   public User ensureGuestSession() {
     if (authTokensService.getAuthTokens().isEmpty()) {
@@ -42,6 +44,10 @@ public class AuthSessionQueryService {
           loginResponse.user().lastName());
 
       userService.saveUser(user);
+
+      if (syncOrchestratorService != null) {
+        syncOrchestratorService.runSyncNowAsync();
+      }
     }).join();
   }
 

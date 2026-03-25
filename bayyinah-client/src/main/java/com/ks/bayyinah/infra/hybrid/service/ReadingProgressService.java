@@ -74,6 +74,17 @@ public class ReadingProgressService {
     return repository.findByVerse(surahNumber, ayahNumber);
   }
 
+  public Optional<ReadingProgress> getById(Long id) {
+    return repository.findById(id);
+  }
+
+  public Optional<ReadingProgress> getByServerId(Long serverId) {
+    if (serverId == null) {
+      return Optional.empty();
+    }
+    return repository.findByServerId(serverId);
+  }
+
   public ReadingProgress getLatestProgressForSurah(int surahNumber) {
     return repository.findBySurah(surahNumber);
   }
@@ -88,6 +99,35 @@ public class ReadingProgressService {
 
   public void markAsSynced(Long id, Long serverId) {
     repository.markAsSynced(id, serverId);
+  }
+
+  public void upsertFromRemote(Long serverId, int surahNumber, int ayahNumber, LocalDateTime lastReadAt,
+      Integer totalReadTimeMinutes) {
+    Optional<ReadingProgress> existingByServerId = repository.findByServerId(serverId);
+    Optional<ReadingProgress> existingByVerse = repository.findByVerse(surahNumber, ayahNumber);
+
+    ReadingProgress target;
+    if (existingByServerId.isPresent()) {
+      target = existingByServerId.get();
+    } else if (existingByVerse.isPresent()) {
+      target = existingByVerse.get();
+    } else {
+      target = new ReadingProgress(surahNumber, ayahNumber);
+    }
+
+    target.setSurahNumber(surahNumber);
+    target.setAyahNumber(ayahNumber);
+    target.setLastReadAt(lastReadAt != null ? lastReadAt : LocalDateTime.now());
+    target.setTimeSpentSeconds(Math.max(0, (totalReadTimeMinutes == null ? 0 : totalReadTimeMinutes) * 60));
+    target.setServerId(serverId);
+    target.setSynced(true);
+    target.setDeleted(false);
+
+    if (target.getId() == null) {
+      repository.insert(target);
+    } else {
+      repository.update(target);
+    }
   }
 
   private void enqueueProgressUpsert(ReadingProgress progress) {

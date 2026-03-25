@@ -94,6 +94,7 @@
             <HBox alignment="CENTER_LEFT" spacing="12.0">
                <children>
                   <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveChanges" styleClass="settings-save-btn" text="Save Changes" />
+                  <Button fx:id="syncNowButton" mnemonicParsing="false" onAction="#onSyncNow" styleClass="settings-save-btn" text="Sync Now" />
                   <Label fx:id="lastSavedLabel" styleClass="settings-saved-hint" text="No pending save in this session." wrapText="true" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>

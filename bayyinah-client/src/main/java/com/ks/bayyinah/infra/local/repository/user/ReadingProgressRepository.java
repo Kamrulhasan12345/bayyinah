@@ -146,6 +146,74 @@ public class ReadingProgressRepository {
     return Optional.empty();
   }
 
+  public Optional<ReadingProgress> findById(Long id) {
+    try {
+      try (var connection = DatabaseManager.getUserConnection();
+          var statement = connection.prepareStatement(
+              "SELECT * FROM reading_progress WHERE id = ? LIMIT 1")) {
+
+        statement.setLong(1, id);
+        try (var resultSet = statement.executeQuery()) {
+          if (resultSet.next()) {
+            ReadingProgress progress = new ReadingProgress();
+            progress.setId(resultSet.getLong("id"));
+            progress.setSurahNumber(resultSet.getInt("surah_number"));
+            progress.setAyahNumber(resultSet.getInt("ayah_number"));
+            progress.setLastReadAt(resultSet.getTimestamp("last_read_at").toLocalDateTime());
+            progress.setTimeSpentSeconds(resultSet.getInt("time_spent_seconds"));
+            progress.setSynced(resultSet.getBoolean("synced"));
+
+            long serverId = resultSet.getLong("server_id");
+            if (!resultSet.wasNull()) {
+              progress.setServerId(serverId);
+            }
+
+            progress.setDeleted(resultSet.getBoolean("deleted"));
+            return Optional.of(progress);
+          }
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new RepositoryException("Failed to find reading progress by ID: " + id, e);
+    }
+    return Optional.empty();
+  }
+
+  public Optional<ReadingProgress> findByServerId(Long serverId) {
+    try {
+      try (var connection = DatabaseManager.getUserConnection();
+          var statement = connection.prepareStatement(
+              "SELECT * FROM reading_progress WHERE server_id = ? LIMIT 1")) {
+
+        statement.setLong(1, serverId);
+        try (var resultSet = statement.executeQuery()) {
+          if (resultSet.next()) {
+            ReadingProgress progress = new ReadingProgress();
+            progress.setId(resultSet.getLong("id"));
+            progress.setSurahNumber(resultSet.getInt("surah_number"));
+            progress.setAyahNumber(resultSet.getInt("ayah_number"));
+            progress.setLastReadAt(resultSet.getTimestamp("last_read_at").toLocalDateTime());
+            progress.setTimeSpentSeconds(resultSet.getInt("time_spent_seconds"));
+            progress.setSynced(resultSet.getBoolean("synced"));
+
+            long mappedServerId = resultSet.getLong("server_id");
+            if (!resultSet.wasNull()) {
+              progress.setServerId(mappedServerId);
+            }
+
+            progress.setDeleted(resultSet.getBoolean("deleted"));
+            return Optional.of(progress);
+          }
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new RepositoryException("Failed to find reading progress by server ID: " + serverId, e);
+    }
+    return Optional.empty();
+  }
+
   public Optional<ReadingProgress> findLatest() {
     try {
       try (var connection = DatabaseManager.getUserConnection();

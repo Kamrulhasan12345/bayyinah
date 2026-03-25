@@ -85,6 +85,9 @@ public class SettingsController {
   @FXML
   private Button saveButton;
 
+  @FXML
+  private Button syncNowButton;
+
   @Setter
   private AppContext appContext;
 
@@ -142,6 +145,37 @@ public class SettingsController {
       saveButton.setDisable(false);
       err.printStackTrace();
       ToastManager.getInstance().showError("Settings", "Failed to save settings: " + err.getMessage());
+    });
+  }
+
+  @FXML
+  private void onSyncNow() {
+    if (appContext == null || appContext.getSyncOrchestratorService() == null) {
+      ToastManager.getInstance().showError("Sync", "Sync service is not available.");
+      return;
+    }
+
+    if (syncNowButton != null) {
+      syncNowButton.setDisable(true);
+    }
+    lastSavedLabel.setText("Sync in progress...");
+
+    DbAsync.runWithUi(() -> {
+      appContext.getSyncOrchestratorService().runSyncNow();
+      return true;
+    }, ignored -> {
+      if (syncNowButton != null) {
+        syncNowButton.setDisable(false);
+      }
+      lastSavedLabel.setText("Sync completed successfully.");
+      ToastManager.getInstance().showSuccess("Sync", "Cloud sync completed.");
+    }, err -> {
+      if (syncNowButton != null) {
+        syncNowButton.setDisable(false);
+      }
+      String message = err.getMessage() == null ? "Unknown error" : err.getMessage();
+      lastSavedLabel.setText("Sync failed: " + message);
+      ToastManager.getInstance().showWarning("Sync", "Cloud sync failed. Data remains local.");
     });
   }
 

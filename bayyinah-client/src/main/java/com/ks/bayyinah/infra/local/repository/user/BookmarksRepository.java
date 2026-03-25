@@ -118,6 +118,22 @@ public class BookmarksRepository {
     }
   }
 
+  public void softDeleteByVerse(int surahNumber, int ayahNumber) {
+    String sql = "UPDATE bookmarks SET deleted = 1, synced = 0 WHERE surah_number = ? AND ayah_number = ?";
+
+    try (var connection = DatabaseManager.getUserConnection();
+        var statement = connection.prepareStatement(sql)) {
+
+      statement.setInt(1, surahNumber);
+      statement.setInt(2, ayahNumber);
+      statement.executeUpdate();
+
+    } catch (Exception e) {
+      throw new RepositoryException(
+          "Failed to soft delete bookmark for verse " + surahNumber + ":" + ayahNumber, e);
+    }
+  }
+
   public Optional<Bookmark> findById(Long id) {
     String sql = "SELECT * FROM bookmarks WHERE id = ?";
 
@@ -134,6 +150,25 @@ public class BookmarksRepository {
 
     } catch (Exception e) {
       throw new RepositoryException("Failed to find bookmark with ID: " + id, e);
+    }
+
+    return Optional.empty();
+  }
+
+  public Optional<Bookmark> findByServerId(Long serverId) {
+    String sql = "SELECT * FROM bookmarks WHERE server_id = ? LIMIT 1";
+
+    try (var connection = DatabaseManager.getUserConnection();
+        var statement = connection.prepareStatement(sql)) {
+
+      statement.setLong(1, serverId);
+      try (var resultSet = statement.executeQuery()) {
+        if (resultSet.next()) {
+          return Optional.of(mapToBookmark(resultSet));
+        }
+      }
+    } catch (Exception e) {
+      throw new RepositoryException("Failed to find bookmark by server ID: " + serverId, e);
     }
 
     return Optional.empty();
@@ -285,7 +320,11 @@ public class BookmarksRepository {
     try (var connection = DatabaseManager.getUserConnection();
         var statement = connection.prepareStatement(sql)) {
 
-      statement.setLong(1, serverId);
+      if (serverId != null) {
+        statement.setLong(1, serverId);
+      } else {
+        statement.setNull(1, Types.BIGINT);
+      }
       statement.setLong(2, id);
       statement.executeUpdate();
 

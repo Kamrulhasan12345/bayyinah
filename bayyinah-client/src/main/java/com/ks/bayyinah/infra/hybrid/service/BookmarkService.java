@@ -51,7 +51,7 @@ public class BookmarkService {
   }
 
   public void removeBookmark(Long id) {
-    repository.delete(id);
+    repository.softDelete(id);
     if (syncQueueService != null && id != null) {
       syncQueueService.enqueueDelete("bookmarks", id, "{\"id\":" + id + "}");
     }
@@ -59,7 +59,7 @@ public class BookmarkService {
 
   public void removeBookmark(int surahNumber, int ayahNumber) {
     Optional<Bookmark> existing = repository.findByVerse(surahNumber, ayahNumber);
-    repository.deleteByVerse(surahNumber, ayahNumber);
+    repository.softDeleteByVerse(surahNumber, ayahNumber);
     if (syncQueueService != null && existing.isPresent() && existing.get().getId() != null) {
       Bookmark bookmark = existing.get();
       syncQueueService.enqueueDelete("bookmarks", bookmark.getId(), buildBookmarkPayload(bookmark));
@@ -82,8 +82,47 @@ public class BookmarkService {
     return repository.findById(id);
   }
 
+  public Optional<Bookmark> getByServerId(Long serverId) {
+    if (serverId == null) {
+      return Optional.empty();
+    }
+    return repository.findByServerId(serverId);
+  }
+
   public List<Bookmark> getUnsynced() {
     return repository.findUnsynced();
+  }
+
+  public void markAsSynced(Long id, Long serverId) {
+    repository.markAsSynced(id, serverId);
+  }
+
+  public void upsertFromRemote(Long serverId, int surahNumber, int ayahNumber, String title, String color) {
+    Optional<Bookmark> existingByServerId = repository.findByServerId(serverId);
+    Optional<Bookmark> existingByVerse = repository.findByVerse(surahNumber, ayahNumber);
+
+    Bookmark target;
+    if (existingByServerId.isPresent()) {
+      target = existingByServerId.get();
+    } else if (existingByVerse.isPresent()) {
+      target = existingByVerse.get();
+    } else {
+      target = new Bookmark(surahNumber, ayahNumber);
+    }
+
+    target.setSurahNumber(surahNumber);
+    target.setAyahNumber(ayahNumber);
+    target.setTitle(title);
+    target.setColor(color);
+    target.setServerId(serverId);
+    target.setSynced(true);
+    target.setDeleted(false);
+
+    if (target.getId() == null) {
+      repository.insert(target);
+    } else {
+      repository.update(target);
+    }
   }
 
   private String buildBookmarkPayload(Bookmark bookmark) {

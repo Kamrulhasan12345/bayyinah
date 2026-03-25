@@ -11,7 +11,7 @@ public enum ApiRoute {
   /* FIXME: ALL EXCEPT AUTH INACTIVE FOR NOW */
   // User routes (user API)
   USER_PROFILE("/api/users/me"),
-  USER_PREFERENCES("/api/users/preferences"),
+  USER_PREFERENCES("/api/users/me/preferences"),
 
   // Bookmark routes (user API)
   BOOKMARKS("/api/bookmarks"),
@@ -26,6 +26,7 @@ public enum ApiRoute {
 
   // Progress routes (user API)
   PROGRESS("/api/progress"),
+  PROGRESS_BY_ID("/api/progress/{id}"),
   PROGRESS_STATS("/api/progress/stats"),
   PROGRESS_SYNC("/api/progress/sync"),
 

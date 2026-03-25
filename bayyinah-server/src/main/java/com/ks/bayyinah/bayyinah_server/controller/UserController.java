@@ -22,10 +22,13 @@ import com.ks.bayyinah.bayyinah_server.model.UserDetailsImpl;
 import com.ks.bayyinah.bayyinah_server.model.UserPreference;
 import com.ks.bayyinah.bayyinah_server.service.UserPreferenceService;
 import com.ks.bayyinah.bayyinah_server.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+  private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
   @Autowired
   private UserService userService;
@@ -76,11 +79,17 @@ public class UserController {
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     User currentUser = userDetails.getUser();
 
+    logger.info("User preferences fetch requested. userId={}", currentUser.getId());
+
     Optional<UserPreference> userPreferenceOpt = userPreferenceService.findByUserId(currentUser.getId());
 
     if (userPreferenceOpt.isEmpty()) {
+      logger.info("User preferences not found. userId={}", currentUser.getId());
       return ResponseEntity.ok(new UserPreferenceResponse("No preferences found for user", null));
     }
+
+    logger.info("User preferences fetched. userId={} preferenceId={}",
+        currentUser.getId(), userPreferenceOpt.get().getId());
 
     return ResponseEntity
         .ok(new UserPreferenceResponse("User preferences retrieved successfully", userPreferenceOpt.get()));
@@ -93,6 +102,10 @@ public class UserController {
     Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     User currentUser = userDetails.getUser();
+
+    logger.info("User preferences update requested. userId={} theme={} fontSize={} defaultTranslation={} language={} readingMode={}",
+      currentUser.getId(), updatedPreferences.theme(), updatedPreferences.fontSize(),
+      updatedPreferences.defaultTranslation(), updatedPreferences.language(), updatedPreferences.readingMode());
 
     Optional<UserPreference> userPreferenceOpt = userPreferenceService.findByUserId(currentUser.getId());
 
@@ -108,6 +121,7 @@ public class UserController {
           .autoScroll(updatedPreferences.autoScroll())
           .build();
       userPreferenceService.save(newPreference);
+      logger.info("User preferences created. userId={} preferenceId={}", currentUser.getId(), newPreference.getId());
       return ResponseEntity.ok(new UserPreferenceResponse("User preferences created successfully", newPreference));
     }
     UserPreference existingPreference = userPreferenceOpt.get();
@@ -134,6 +148,7 @@ public class UserController {
       existingPreference.setAutoScroll(updatedPreferences.autoScroll());
     }
     userPreferenceService.save(existingPreference);
+    logger.info("User preferences updated. userId={} preferenceId={}", currentUser.getId(), existingPreference.getId());
 
     return ResponseEntity
         .ok(new UserPreferenceResponse("User preferences updated successfully", existingPreference));

@@ -21,10 +21,14 @@ import com.ks.bayyinah.bayyinah_server.model.ReadingProgress;
 import com.ks.bayyinah.bayyinah_server.model.User;
 import com.ks.bayyinah.bayyinah_server.model.UserDetailsImpl;
 import com.ks.bayyinah.bayyinah_server.service.ReadingProgressService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/progress")
 public class ReadingProgressController {
+  private static final Logger logger = LoggerFactory.getLogger(ReadingProgressController.class);
+
   @Autowired
   private ReadingProgressService readingProgressService;
 
@@ -35,6 +39,7 @@ public class ReadingProgressController {
     User currentUser = userDetails.getUser();
 
     List<ReadingProgress> progresses = readingProgressService.getReadingProgressByUserId(currentUser.getId());
+    logger.info("Reading progress fetched. userId={} count={}", currentUser.getId(), progresses.size());
 
     return ResponseEntity.ok(progresses);
   }
@@ -80,12 +85,17 @@ public class ReadingProgressController {
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     User currentUser = userDetails.getUser();
 
+    logger.info("Reading progress create requested. userId={} surah={} ayah={}",
+      currentUser.getId(), readingProgress.surahNumber(), readingProgress.ayahNumber());
+
     ReadingProgress progressToSave = ReadingProgress.builder()
         .userId(currentUser.getId())
         .surahNumber(readingProgress.surahNumber())
         .ayahNumber(readingProgress.ayahNumber())
         .build();
     ReadingProgress savedProgress = readingProgressService.saveReadingProgress(progressToSave);
+    logger.info("Reading progress created. userId={} progressId={} surah={} ayah={}",
+      currentUser.getId(), savedProgress.getId(), savedProgress.getSurahNumber(), savedProgress.getAyahNumber());
 
     return ResponseEntity.ok(savedProgress);
   }
@@ -96,7 +106,10 @@ public class ReadingProgressController {
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     User currentUser = userDetails.getUser();
 
+    logger.info("Reading progress delete requested. userId={} progressId={}", currentUser.getId(), id);
+
     readingProgressService.deleteReadingProgressByIdAndUserId(id, currentUser.getId());
+    logger.info("Reading progress delete completed. userId={} progressId={}", currentUser.getId(), id);
     return ResponseEntity.ok(new ReadingProgressDeletionResponse("Reading progress deleted successfully"));
   }
 }

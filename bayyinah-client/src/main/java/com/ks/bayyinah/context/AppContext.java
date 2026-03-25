@@ -5,6 +5,7 @@ import com.ks.bayyinah.infra.hybrid.query.AuthSessionQueryService;
 import com.ks.bayyinah.infra.hybrid.query.TokenManager;
 import com.ks.bayyinah.infra.hybrid.service.*;
 import com.ks.bayyinah.infra.remote.client.ApiClient;
+import com.ks.bayyinah.infra.remote.query.RemoteSyncQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteUserQueryService;
 import lombok.Data;
 
@@ -22,6 +23,8 @@ public class AppContext {
   private TokenManager tokenManager;
   private ApiClient apiClient;
   private RemoteUserQueryService remoteUserQueryService;
+  private RemoteSyncQueryService remoteSyncQueryService;
+  private SyncOrchestratorService syncOrchestratorService;
 
   private AppContext() {
     // Private constructor to prevent instantiation
