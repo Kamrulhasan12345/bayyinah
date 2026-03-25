@@ -21,4 +21,16 @@ public class AppContext {
   private TokenManager tokenManager;
   private ApiClient apiClient;
   private RemoteUserQueryService remoteUserQueryService;
+
+  private AppContext() {
+    // Private constructor to prevent instantiation
+  }
+
+  private static class Holder {
+    private static final AppContext INSTANCE = new AppContext();
+  }
+
+  public static AppContext getInstance() {
+    return Holder.INSTANCE;
+  }
 }

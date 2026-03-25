@@ -4,6 +4,9 @@ import javafx.application.Platform;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import com.ks.bayyinah.ui.ToastManager;
+
 import java.util.concurrent.CompletableFuture;
 
 public final class DbAsync {
@@ -16,7 +19,10 @@ public final class DbAsync {
         T result = dbTask.get();
         Platform.runLater(() -> onSuccess.accept(result));
       } catch (Exception e) {
-        Platform.runLater(() -> onError.accept(e));
+        Platform.runLater(() -> {
+          onError.accept(e);
+          ToastManager.getInstance().showError("Database operation failed", e.getMessage());
+        });
         return;
       }
     });

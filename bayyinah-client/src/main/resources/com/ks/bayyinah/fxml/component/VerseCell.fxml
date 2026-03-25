@@ -15,7 +15,7 @@
                <font>
                   <Font size="18.0" />
                </font></Label>
-            <FontIcon iconLiteral="mdi2b-bookmark-outline" iconSize="32" />
+            <FontIcon fx:id="bookmarkBtn" iconLiteral="mdi2b-bookmark-outline" iconSize="32" />
          </children>
       </VBox>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="504.0" spacing="10.0" HBox.hgrow="ALWAYS">

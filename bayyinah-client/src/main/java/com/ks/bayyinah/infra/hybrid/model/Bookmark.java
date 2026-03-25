@@ -30,6 +30,16 @@ public class Bookmark {
     this.deleted = false;
   }
 
+  public Bookmark(int surahNumber, int ayahNumber) {
+    this.surahNumber = surahNumber;
+    this.ayahNumber = ayahNumber;
+    this.title = "Bookmark for " + surahNumber + ":" + ayahNumber;
+    this.color = "#FFD700"; // Default gold
+    this.createdAt = LocalDateTime.now();
+    this.synced = false;
+    this.deleted = false;
+  }
+
   /**
    * Get verse reference string (e.g., "2:255")
    */

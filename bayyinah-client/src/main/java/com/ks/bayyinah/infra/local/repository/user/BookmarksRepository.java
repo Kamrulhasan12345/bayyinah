@@ -102,6 +102,22 @@ public class BookmarksRepository {
     }
   }
 
+  public void deleteByVerse(int surahNumber, int ayahNumber) {
+    String sql = "DELETE FROM bookmarks WHERE surah_number = ? AND ayah_number = ?";
+
+    try (var connection = DatabaseManager.getUserConnection();
+        var statement = connection.prepareStatement(sql)) {
+
+      statement.setInt(1, surahNumber);
+      statement.setInt(2, ayahNumber);
+      statement.executeUpdate();
+
+    } catch (Exception e) {
+      throw new RepositoryException(
+          "Failed to delete bookmark for verse " + surahNumber + ":" + ayahNumber, e);
+    }
+  }
+
   public Optional<Bookmark> findById(Long id) {
     String sql = "SELECT * FROM bookmarks WHERE id = ?";
 

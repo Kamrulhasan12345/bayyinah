@@ -110,7 +110,7 @@ public class App extends Application {
   }
 
   private void initializeUserServices() {
-    appContext = new AppContext();
+    appContext = AppContext.getInstance();
 
     // Initialize repositories
     var authTokensRepo = new AuthTokensRepository();
