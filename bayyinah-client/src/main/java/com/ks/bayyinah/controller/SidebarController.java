@@ -236,13 +236,26 @@ public class SidebarController {
     toggleAuthBtn.setIconLiteral("mdi2l-logout");
     toggleAuthBtn.setOnMouseClicked(e -> {
       DbAsync.runWithUi(() -> {
-        authSessionQueryService.logout();
-        return null;
-      }, ignored -> {
+        return authSessionQueryService.logout();
+      }, logoutResult -> {
         // Read user state from storage after logout so label/icon are always in sync.
         refreshAuthState();
+
+        if (logoutResult == null) {
+          ToastManager.getInstance().showWarning("Authentication", "Signed out locally.");
+          return;
+        }
+
+        if (logoutResult.reason() == AuthSessionQueryService.LogoutReason.SUCCESS) {
+          ToastManager.getInstance().showSuccess("Authentication", "Signed out successfully.");
+          return;
+        }
+
+        ToastManager.getInstance().showWarning("Authentication", logoutResult.message());
       }, err -> {
         err.printStackTrace();
+        refreshAuthState();
+        ToastManager.getInstance().showWarning("Authentication", "Signed out locally. Please log in again.");
       });
     });
   }
