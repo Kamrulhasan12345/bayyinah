@@ -13,33 +13,33 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" spacing="16.0" styleClass="reader-page" stylesheets="@../css/chapters-reader.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.ChaptersController">
+<VBox spacing="16.0" styleClass="reader-page" stylesheets="@../css/chapters-reader.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.ChaptersController">
    <children>
-      <HBox fx:id="header" disable="true" fillHeight="false" managed="false" prefHeight="100.0" prefWidth="200.0" visible="false" />
-      <VBox alignment="CENTER" prefWidth="900.0" spacing="6.0" styleClass="reader-hero">
+      <HBox fx:id="header" disable="true" fillHeight="false" managed="false" visible="false" />
+      <VBox alignment="CENTER" spacing="6.0" styleClass="reader-hero">
          <children>
-            <Label fx:id="nameSimple" alignment="CENTER" prefWidth="909.0" styleClass="chapter-name-simple" text="Al-Fatihah" textAlignment="CENTER">
+            <Label fx:id="nameSimple" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="chapter-name-simple" text="Al-Fatihah" textAlignment="CENTER">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="translatedName" alignment="CENTER" prefWidth="909.0" styleClass="chapter-name-translated" text="The Beginning" textAlignment="CENTER">
+            <Label fx:id="translatedName" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="chapter-name-translated" text="The Beginning" textAlignment="CENTER">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="nameArabic" alignment="CENTER" nodeOrientation="RIGHT_TO_LEFT" prefWidth="909.0" styleClass="chapter-name-arabic" text="الفاتحة" textAlignment="CENTER">
+            <Label fx:id="nameArabic" alignment="CENTER" maxWidth="1.7976931348623157E308" nodeOrientation="RIGHT_TO_LEFT" styleClass="chapter-name-arabic" text="الفاتحة" textAlignment="CENTER">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="chapterMeta" alignment="CENTER" prefWidth="909.0" styleClass="chapter-meta" text="7 ayahs • Meccan" textAlignment="CENTER" />
+            <Label fx:id="chapterMeta" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="chapter-meta" text="7 ayahs • Meccan" textAlignment="CENTER" />
          </children>
       </VBox>
-      <HBox alignment="CENTER_LEFT" prefWidth="860.0" spacing="10.0" styleClass="reader-toolbar">
+      <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="reader-toolbar">
          <children>
             <Label styleClass="toolbar-label" text="Translation" />
-            <ComboBox fx:id="translationSelector" prefWidth="220.0" />
+            <ComboBox fx:id="translationSelector" prefWidth="220.0" HBox.hgrow="ALWAYS" />
             <Separator orientation="VERTICAL" prefHeight="22.0" />
             <Button fx:id="tafsirToggleBtn" onAction="#onToggleTafsir" styleClass="reader-secondary-btn" text="Tafsir">
                <graphic>
@@ -54,7 +54,7 @@
             <Region HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
-      <ListView fx:id="verseListView" prefHeight="498.0" prefWidth="860.0" styleClass="verse-list" VBox.vgrow="ALWAYS" />
+      <ListView fx:id="verseListView" styleClass="verse-list" VBox.vgrow="ALWAYS" />
    </children>
    <padding>
       <Insets left="20.0" right="20.0" top="20.0" />

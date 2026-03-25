@@ -28,7 +28,7 @@ public class ToastNotification extends VBox {
     // Container styling
     // Remove fixed height constraints
     this.setPrefWidth(TOAST_WIDTH);
-    this.setMinWidth(TOAST_WIDTH);
+    this.setMinWidth(Region.USE_COMPUTED_SIZE);
     this.setMaxWidth(TOAST_WIDTH);
 
     // Let height grow with content

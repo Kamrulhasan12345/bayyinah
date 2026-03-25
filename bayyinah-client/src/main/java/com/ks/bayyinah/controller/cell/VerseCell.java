@@ -5,6 +5,7 @@ import com.ks.bayyinah.controller.VerseController;
 import com.ks.bayyinah.core.dto.VerseView;
 
 import java.io.IOException;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
@@ -31,7 +32,7 @@ public class VerseCell extends ListCell<VerseView> {
           Region region = (Region) root;
           region
               .prefWidthProperty()
-              .bind(getListView().widthProperty().subtract(20));
+              .bind(Bindings.max(0, getListView().widthProperty().subtract(20)));
           region.setMaxWidth(Double.MAX_VALUE);
         } catch (IOException e) {
           e.printStackTrace();

@@ -5,7 +5,6 @@ import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.core.dto.ChapterView;
 import java.io.IOException;
 
-import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,7 +48,6 @@ public class BrowsingController {
   }
 
   public void initializeBrowsingController() {
-    // make the split pane divider fixed at 20%
     setupSidebar();
 
     createLoadingOverlay();
@@ -86,30 +84,21 @@ public class BrowsingController {
   }
 
   private void showLoading() {
-    Platform.runLater(() -> {
-      loadingOverlay.setVisible(true);
-      loadingOverlay.setManaged(true);
-      loadingOverlay.toFront();
-    });
+    loadingOverlay.setVisible(true);
+    loadingOverlay.setManaged(true);
+    loadingOverlay.toFront();
   }
 
   private void hideLoading() {
     System.out.println("Hiding loading overlay");
-    Platform.runLater(() -> {
-      loadingOverlay.setVisible(false);
-      loadingOverlay.setManaged(false);
-    });
+    loadingOverlay.setVisible(false);
+    loadingOverlay.setManaged(false);
   }
 
   private void setupSidebar() {
-    SplitPane.Divider divider = splitPane.getDividers().get(0);
-
-    divider
-        .positionProperty()
-        .addListener((observable, oldValue, newValue) -> {
-          double clamped = newValue.doubleValue() > 0.2 ? 0.2 : newValue.doubleValue();
-          divider.setPosition(clamped);
-        });
+    sidebarContainer.setMinWidth(220);
+    sidebarContainer.setPrefWidth(260);
+    splitPane.setDividerPosition(0, 0.22);
 
     sidebarController.setOnHomeBtnClick(this::handleHomeClicked);
     sidebarController.setOnChapterSelected(this::showChapter);

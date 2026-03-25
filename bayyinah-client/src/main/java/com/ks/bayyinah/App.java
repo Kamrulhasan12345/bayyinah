@@ -64,6 +64,9 @@ public class App extends Application {
 
     stage.setScene(scene);
     stage.setTitle("Bayyinah");
+    stage.setMinWidth(960);
+    stage.setMinHeight(600);
+    stage.setResizable(true);
 
     ToastManager.getInstance().initialize(stage);
 

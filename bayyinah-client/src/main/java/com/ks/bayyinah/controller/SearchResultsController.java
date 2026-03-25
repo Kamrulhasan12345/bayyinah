@@ -28,7 +28,7 @@ public class SearchResultsController {
   @FXML
   private VBox resultsContainer;
   @FXML
-  private HBox paginationBox;
+  private FlowPane paginationBox;
   @FXML
   private Button firstPageBtn;
   @FXML
@@ -217,10 +217,12 @@ public class SearchResultsController {
     // Arabic text
     Text arabicText = new Text(result.getVerseView().getArabicText());
     arabicText.getStyleClass().add("arabic-text");
-    arabicText.setWrappingWidth(750);
 
     TextFlow arabicFlow = new TextFlow(arabicText);
     arabicFlow.setNodeOrientation(javafx.geometry.NodeOrientation.RIGHT_TO_LEFT);
+    arabicFlow.setMaxWidth(Double.MAX_VALUE);
+    arabicFlow.prefWidthProperty().bind(card.widthProperty().subtract(30));
+    arabicText.wrappingWidthProperty().bind(arabicFlow.widthProperty());
 
     // Translation text (if available)
     VBox translationBox = null;
@@ -228,7 +230,8 @@ public class SearchResultsController {
       Label translationLabel = new Label(result.getVerseView().getTranslatedText());
       translationLabel.getStyleClass().add("translation-text");
       translationLabel.setWrapText(true);
-      translationLabel.setMaxWidth(750);
+      translationLabel.setMaxWidth(Double.MAX_VALUE);
+      translationLabel.prefWidthProperty().bind(card.widthProperty().subtract(30));
 
       translationBox = new VBox(translationLabel);
       translationBox.setPadding(new Insets(5, 0, 0, 0));

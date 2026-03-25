@@ -6,6 +6,15 @@
 	-fx-alignment: center;
 }
 
+.auth-overlay-scroll {
+	-fx-fit-to-width: true;
+	-fx-padding: 20;
+}
+
+.auth-overlay-scroll > .viewport {
+	-fx-background-color: transparent;
+}
+
 .auth-modal-card {
 	-fx-background-color: #ffffff;
 	-fx-background-radius: 14;
@@ -16,13 +25,13 @@
 }
 
 .list-view .scroll-bar:vertical {
-	-fx-opacity: 0;
-	-fx-max-width: 0;
+	-fx-opacity: 0.8;
+	-fx-pref-width: 10;
 }
 
 .list-view .scroll-bar:horizontal {
-	-fx-opacity: 0;
-	-fx-max-height: 0;
+	-fx-opacity: 0.8;
+	-fx-pref-height: 10;
 }
 
 /* Modern splitbar styling scoped to the browsing layout */
@@ -39,9 +48,9 @@
 	-fx-background-insets: 0;
 	-fx-background-radius: 999;
 	-fx-background-color: linear-gradient(to bottom, #d9dfeb, #cfd7e7);
-	-fx-min-width: 2;
-	-fx-pref-width: 2;
-	-fx-max-width: 2;
+	-fx-min-width: 4;
+	-fx-pref-width: 4;
+	-fx-max-width: 6;
 }
 
 .browsing-split-pane > .split-pane-divider:hover > .vertical-grabber {
@@ -71,6 +80,7 @@
 	-fx-border-color: #d6dbe8;
 	-fx-border-radius: 8;
 	-fx-padding: 6 10;
+	-fx-min-width: 120;
 }
 
 .sidebar-search-field:focused {
@@ -102,11 +112,11 @@
 
 .chapters-list .scroll-bar:vertical,
 .chapters-list .scroll-bar:horizontal {
-	-fx-opacity: 0;
-	-fx-pref-width: 0;
-	-fx-pref-height: 0;
-	-fx-max-width: 0;
-	-fx-max-height: 0;
+	-fx-opacity: 0.7;
+	-fx-pref-width: 8;
+	-fx-pref-height: 8;
+	-fx-max-width: 8;
+	-fx-max-height: 8;
 	-fx-padding: 0;
 }
 
@@ -116,10 +126,10 @@
 .chapters-list .scroll-bar .decrement-button,
 .chapters-list .scroll-bar .increment-arrow,
 .chapters-list .scroll-bar .decrement-arrow {
-	-fx-opacity: 0;
+	-fx-opacity: 0.75;
 	-fx-padding: 0;
 	-fx-background-insets: 0;
-	-fx-background-color: transparent;
+	-fx-background-color: #cbd5e1;
 }
 
 .chapters-list .corner {
