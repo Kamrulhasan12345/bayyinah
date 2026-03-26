@@ -35,13 +35,21 @@ public class BookmarkService {
   }
 
   public void addBookmark(int surahNumber, int ayahNumber) {
-    Optional<Bookmark> existing = repository.findByVerse(surahNumber, ayahNumber);
-    Bookmark bookmark = new Bookmark(surahNumber, ayahNumber);
-    Long id = existing.map(Bookmark::getId).orElse(null);
-    bookmark.setId(id);
+    // Try to find an existing bookmark for this verse, including soft-deleted entries,
+    // so that we can resurrect them instead of violating the UNIQUE constraint.
+    Optional<Bookmark> existing = repository.findByVerseIncludingDeleted(surahNumber, ayahNumber);
+
+    Bookmark bookmark;
     if (existing.isPresent()) {
+      // Resurrect or update the existing bookmark
+      bookmark = existing.get();
+      // Clear soft-delete flag and reset sync state so it will be re-synced
+      bookmark.setDeleted(false);
+      bookmark.setSynced(false);
       repository.update(bookmark);
     } else {
+      // No existing (even soft-deleted) bookmark; create a new one
+      bookmark = new Bookmark(surahNumber, ayahNumber);
       repository.insert(bookmark);
     }
 
