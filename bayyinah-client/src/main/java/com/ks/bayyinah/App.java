@@ -28,7 +28,7 @@ import com.ks.bayyinah.ui.ToastManager;
  */
 public class App extends Application {
 
-  private static final boolean ENABLE_STARTUP_SAMPLE_TOASTS = true;
+  private static final boolean ENABLE_STARTUP_SAMPLE_TOASTS = false;
 
   private static Scene scene;
 
@@ -146,7 +146,7 @@ public class App extends Application {
     var apiClient = new ApiClient(mainConfig, tokenManager);
     var remoteSyncQueryService = new RemoteSyncQueryService(apiClient);
     var syncOrchestratorService = new SyncOrchestratorService(syncQueueService, bookmarkService,
-      readingProgressService, userPreferenceService, userService, remoteSyncQueryService);
+        readingProgressService, userPreferenceService, userService, remoteSyncQueryService);
 
     appContext.setMainConfig(mainConfig);
     appContext.setTokenManager(tokenManager);
@@ -156,7 +156,7 @@ public class App extends Application {
 
     var remoteUserQueryService = new RemoteUserQueryService(apiClient);
     var authSessionQueryService = new AuthSessionQueryService(authTokensService, userService, remoteUserQueryService,
-      syncOrchestratorService);
+        syncOrchestratorService);
 
     authSessionQueryService.ensureGuestSession();
     if (authSessionQueryService.isLoggedIn()) {

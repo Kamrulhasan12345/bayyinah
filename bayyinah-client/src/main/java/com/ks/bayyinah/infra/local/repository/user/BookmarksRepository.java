@@ -240,6 +240,30 @@ public class BookmarksRepository {
     return Optional.empty();
   }
 
+  public Optional<Bookmark> findByVerseIncludingDeleted(int surahNumber, int ayahNumber) {
+    String sql = "SELECT * FROM bookmarks WHERE surah_number = ? AND ayah_number = ?";
+
+    try (var connection = DatabaseManager.getUserConnection();
+        var statement = connection.prepareStatement(sql)) {
+
+      statement.setInt(1, surahNumber);
+      statement.setInt(2, ayahNumber);
+
+      try (var resultSet = statement.executeQuery()) {
+        if (resultSet.next()) {
+          return Optional.of(mapToBookmark(resultSet));
+        }
+      }
+
+    } catch (Exception e) {
+      throw new RepositoryException(
+          "Failed to find bookmark (including deleted) for verse " + surahNumber + ":" + ayahNumber,
+          e);
+    }
+
+    return Optional.empty();
+  }
+
   public List<Bookmark> findUnsynced() {
     String sql = "SELECT * FROM bookmarks WHERE synced = 0 ORDER BY created_at";
 

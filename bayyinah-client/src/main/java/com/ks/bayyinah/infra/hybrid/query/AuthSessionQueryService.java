@@ -48,7 +48,8 @@ public class AuthSessionQueryService {
     }
 
     AuthTokens tokens = tokensOpt.get();
-    if (tokens.isExpired() && tokens.isRefreshTokenExpired()) {
+    System.out.println("Heres the tokens: " + tokens);
+    if (tokens.isExpired() || tokens.isRefreshTokenExpired()) {
       authTokensService.clearAuthTokens();
       userService.clearUser();
       return userService.createGuestUser();

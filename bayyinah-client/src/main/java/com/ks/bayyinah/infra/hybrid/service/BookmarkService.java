@@ -35,7 +35,8 @@ public class BookmarkService {
   }
 
   public void addBookmark(int surahNumber, int ayahNumber) {
-    // Try to find an existing bookmark for this verse, including soft-deleted entries,
+    // Try to find an existing bookmark for this verse, including soft-deleted
+    // entries,
     // so that we can resurrect them instead of violating the UNIQUE constraint.
     Optional<Bookmark> existing = repository.findByVerseIncludingDeleted(surahNumber, ayahNumber);
 
