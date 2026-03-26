@@ -3,6 +3,7 @@ package com.ks.bayyinah.infra.hybrid.service;
 import com.ks.bayyinah.infra.hybrid.model.SyncQueueItem;
 import com.ks.bayyinah.infra.local.repository.user.SyncQueueRepository;
 import java.util.List;
+import java.util.Optional;
 
 public class SyncQueueService {
   // This service will manage a queue of actions that need to be synced with the
@@ -41,13 +42,16 @@ public class SyncQueueService {
   }
 
   public void markFailed(Long id, String lastError) {
-    List<SyncQueueItem> candidates = repository.findPending(Integer.MAX_VALUE);
-    for (SyncQueueItem item : candidates) {
-      if (item.getId() != null && item.getId().equals(id)) {
-        int retryCount = item.getRetryCount() + 1;
-        repository.markFailed(id, retryCount, lastError);
+    Optional<SyncQueueItem> itemOpt = repository.findById(id);
+
+    if (itemOpt.isPresent()) {
+      SyncQueueItem item = itemOpt.get();
+      if (item.hasExceededRetries()) {
+        repository.delete(id); // TODO: decide what to do after max retries
         return;
       }
+      int retryCount = item.getRetryCount() + 1;
+      repository.markFailed(id, retryCount, lastError);
     }
   }
 

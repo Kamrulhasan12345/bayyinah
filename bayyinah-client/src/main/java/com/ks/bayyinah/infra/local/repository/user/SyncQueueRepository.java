@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SyncQueueRepository {
   // This repository will manage the sync queue for user data. It will interact
@@ -77,6 +78,37 @@ public class SyncQueueRepository {
       throw new RepositoryException("Failed to load pending sync items", e);
     }
     return items;
+  }
+
+  public Optional<SyncQueueItem> findById(Long id) {
+    String sql = "SELECT * FROM sync_queue WHERE id = ?";
+    try (var connection = DatabaseManager.getUserConnection();
+        var statement = connection.prepareStatement(sql)) {
+
+      statement.setLong(1, id);
+      try (var resultSet = statement.executeQuery()) {
+        if (resultSet.next()) {
+          SyncQueueItem item = new SyncQueueItem();
+          item.setId(resultSet.getLong("id"));
+          item.setOperation(resultSet.getString("operation"));
+          item.setTableName(resultSet.getString("table_name"));
+          item.setRecordId(resultSet.getLong("record_id"));
+          item.setPayload(resultSet.getString("payload"));
+
+          var createdAt = resultSet.getTimestamp("created_at");
+          if (createdAt != null) {
+            item.setCreatedAt(createdAt.toLocalDateTime());
+          }
+
+          item.setRetryCount(resultSet.getInt("retry_count"));
+          item.setLastError(resultSet.getString("last_error"));
+          return Optional.of(item);
+        }
+      }
+    } catch (Exception e) {
+      throw new RepositoryException("Failed to load sync item by ID", e);
+    }
+    return Optional.empty();
   }
 
   public void markFailed(Long id, int retryCount, String lastError) {
