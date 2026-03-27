@@ -49,7 +49,7 @@ public class ErrorMapper {
     // Authentication errors
     if (throwable instanceof UnauthorizedException) {
       String message = throwable.getMessage();
-      if (message != null && message.contains("token expired")) {
+      if (message != null && isSessionExpiredMessage(message)) {
         return ErrorCategory.AUTH_TOKEN_EXPIRED;
       }
       return ErrorCategory.AUTH_UNAUTHORIZED;
@@ -59,6 +59,10 @@ public class ErrorMapper {
     if (throwable instanceof ApiException) {
       ApiException apiEx = (ApiException) throwable;
       String message = apiEx.getMessage();
+
+      if (message != null && isSessionExpiredMessage(message)) {
+        return ErrorCategory.AUTH_TOKEN_EXPIRED;
+      }
 
       if (message != null && message.contains("401")) {
         return ErrorCategory.AUTH_INVALID_CREDENTIALS;
@@ -109,5 +113,15 @@ public class ErrorMapper {
       current = cause;
     }
     return current;
+  }
+
+  private static boolean isSessionExpiredMessage(String message) {
+    String normalized = message.toLowerCase();
+    return normalized.contains("token expired")
+        || normalized.contains("refresh token expired")
+        || normalized.contains("session expired")
+        || normalized.contains("failed to refresh access token")
+        || normalized.contains("failed to refresh token")
+        || normalized.contains("unauthorized");
   }
 }

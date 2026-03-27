@@ -11,23 +11,26 @@ import java.io.IOException;
 import com.ks.bayyinah.infra.local.database.*;
 import com.ks.bayyinah.infra.local.repository.user.*;
 import com.ks.bayyinah.infra.remote.client.ApiClient;
+import com.ks.bayyinah.infra.remote.query.RemoteSyncQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteUserQueryService;
 import com.ks.bayyinah.infra.hybrid.service.*;
 import com.ks.bayyinah.infra.hybrid.model.*;
 import com.ks.bayyinah.infra.hybrid.query.*;
 import com.ks.bayyinah.infra.hybrid.query.TokenManager;
+import com.ks.bayyinah.infra.json.JsonSupport;
 import com.ks.bayyinah.config.ConfigManager;
 import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.controller.RootController;
 import com.ks.bayyinah.error.GlobalExceptionHandler;
 import com.ks.bayyinah.ui.ToastManager;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * JavaFX App
  */
 public class App extends Application {
 
-  private static final boolean ENABLE_STARTUP_SAMPLE_TOASTS = true;
+  private static final boolean ENABLE_STARTUP_SAMPLE_TOASTS = false;
 
   private static Scene scene;
 
@@ -64,6 +67,9 @@ public class App extends Application {
 
     stage.setScene(scene);
     stage.setTitle("Bayyinah");
+    stage.setMinWidth(960);
+    stage.setMinHeight(600);
+    stage.setResizable(true);
 
     ToastManager.getInstance().initialize(stage);
 
@@ -110,21 +116,24 @@ public class App extends Application {
   }
 
   private void initializeUserServices() {
-    appContext = new AppContext();
+    appContext = AppContext.getInstance();
 
     // Initialize repositories
     var authTokensRepo = new AuthTokensRepository();
     var bookmarksRepo = new BookmarksRepository();
     var userPrefRepo = new UserPreferenceRepository();
     var readingProgressRepo = new ReadingProgressRepository();
+    var syncQueueRepo = new SyncQueueRepository();
     var userRepo = new UserRepository();
     var noteRepo = new NoteRepository();
 
     // Initialize services
+    ObjectMapper objectMapper = JsonSupport.objectMapper();
     var authTokensService = new AuthTokensService(authTokensRepo);
-    var bookmarkService = new BookmarkService(bookmarksRepo);
-    var userPreferenceService = new UserPreferenceService(userPrefRepo);
-    var readingProgressService = new ReadingProgressService(readingProgressRepo);
+    var syncQueueService = new SyncQueueService(syncQueueRepo);
+    var bookmarkService = new BookmarkService(bookmarksRepo, syncQueueService, objectMapper);
+    var userPreferenceService = new UserPreferenceService(userPrefRepo, syncQueueService, objectMapper);
+    var readingProgressService = new ReadingProgressService(readingProgressRepo, syncQueueService, objectMapper);
     var userService = new UserService(userRepo);
     var noteService = new NoteService(noteRepo);
 
@@ -132,18 +141,31 @@ public class App extends Application {
     appContext.setBookmarkService(bookmarkService);
     appContext.setUserPreferenceService(userPreferenceService);
     appContext.setReadingProgressService(readingProgressService);
+    appContext.setSyncQueueService(syncQueueService);
     appContext.setUserService(userService);
     appContext.setNoteService(noteService);
+    appContext.setObjectMapper(objectMapper);
 
     var tokenManager = new TokenManager(authTokensService);
-    var apiClient = new ApiClient(mainConfig, tokenManager);
+    var apiClient = new ApiClient(mainConfig, tokenManager, objectMapper);
+    var remoteSyncQueryService = new RemoteSyncQueryService(apiClient);
+    var syncOrchestratorService = new SyncOrchestratorService(syncQueueService, bookmarkService,
+      readingProgressService, userPreferenceService, userService, remoteSyncQueryService, objectMapper);
 
     appContext.setMainConfig(mainConfig);
     appContext.setTokenManager(tokenManager);
     appContext.setApiClient(apiClient);
+    appContext.setRemoteSyncQueryService(remoteSyncQueryService);
+    appContext.setSyncOrchestratorService(syncOrchestratorService);
 
     var remoteUserQueryService = new RemoteUserQueryService(apiClient);
-    var authSessionQueryService = new AuthSessionQueryService(authTokensService, userService, remoteUserQueryService);
+    var authSessionQueryService = new AuthSessionQueryService(authTokensService, userService, remoteUserQueryService,
+        syncOrchestratorService);
+
+    authSessionQueryService.ensureGuestSession();
+    if (authSessionQueryService.isLoggedIn()) {
+      syncOrchestratorService.runSyncNowAsync();
+    }
 
     appContext.setRemoteUserQueryService(remoteUserQueryService);
     appContext.setAuthSessionQueryService(authSessionQueryService);

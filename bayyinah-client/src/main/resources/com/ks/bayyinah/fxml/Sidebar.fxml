@@ -9,34 +9,34 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="246.0" spacing="10.0" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.SidebarController">
+<VBox prefWidth="246.0" spacing="10.0" styleClass="sidebar-root" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.SidebarController">
    <children>
-      <HBox prefHeight="100.0" prefWidth="200.0">
+      <HBox alignment="CENTER_LEFT" styleClass="sidebar-header">
          <children>
-            <Label maxWidth="1.7976931348623157E308" prefHeight="20.0" stylesheets="@../css/stylesheet.css" text="Surah List" HBox.hgrow="ALWAYS">
+            <Label maxWidth="1.7976931348623157E308" prefHeight="20.0" styleClass="sidebar-title" stylesheets="@../css/stylesheet.css" text="Surah List" HBox.hgrow="ALWAYS">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <FontIcon fx:id="homeBtn" iconLiteral="mdi2h-home" iconSize="24" />
+            <FontIcon fx:id="homeBtn" iconLiteral="mdi2h-home" iconSize="24" styleClass="sidebar-icon" />
          </children>
       </HBox>
-      <HBox alignment="CENTER" prefHeight="31.0" prefWidth="226.0">
+      <HBox alignment="CENTER" styleClass="sidebar-search-row">
          <children>
-            <TextField fx:id="searchField" prefHeight="26.0" prefWidth="26.0" promptText="Search Surah" stylesheets="@../css/stylesheet.css" HBox.hgrow="ALWAYS" />
+            <TextField fx:id="searchField" prefHeight="26.0" promptText="Search Surah" styleClass="sidebar-search-field" stylesheets="@../css/stylesheet.css" HBox.hgrow="ALWAYS" />
             <VBox alignment="CENTER" prefHeight="26.0" prefWidth="26.0">
                <children>
-                  <FontIcon iconLiteral="mdi2m-magnify" iconSize="20" wrappingWidth="20.0" />
+                  <FontIcon iconLiteral="mdi2m-magnify" iconSize="20" styleClass="sidebar-search-icon" wrappingWidth="20.0" />
                </children>
             </VBox>
          </children>
       </HBox>
-      <ListView id="chaptersListSidebar" fx:id="chaptersListView" prefHeight="616.0" prefWidth="195.0" stylesheets="@../css/stylesheet.css" />
-      <HBox prefHeight="32.0" spacing="5.0">
+      <ListView id="chaptersListSidebar" fx:id="chaptersListView" styleClass="chapters-list" stylesheets="@../css/stylesheet.css" VBox.vgrow="ALWAYS" />
+      <HBox alignment="CENTER_LEFT" spacing="5.0" styleClass="sidebar-footer">
          <children>
-            <FontIcon fx:id="toggleAuthBtn" iconLiteral="mdi2l-logout" iconSize="24" />
-            <Label fx:id="username" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="314.0" text="Guest User" HBox.hgrow="ALWAYS" />
-            <FontIcon fx:id="settingsBtn" iconLiteral="mdi2c-cog" iconSize="24" />
+            <FontIcon fx:id="toggleAuthBtn" iconLiteral="mdi2l-logout" iconSize="24" styleClass="sidebar-icon" />
+            <Label fx:id="username" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="sidebar-username" text="Guest User" HBox.hgrow="ALWAYS" />
+            <FontIcon fx:id="settingsBtn" iconLiteral="mdi2c-cog" iconSize="24" styleClass="sidebar-icon" />
          </children>
          <VBox.margin>
             <Insets />

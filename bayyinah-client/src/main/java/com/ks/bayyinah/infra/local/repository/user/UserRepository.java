@@ -162,4 +162,21 @@ public class UserRepository {
     }
   }
 
+  public void updateLastSyncAt(LocalDateTime lastSyncAt) {
+    try {
+      try (var connection = DatabaseManager.getUserConnection();
+          var statement = connection.prepareStatement("UPDATE users SET last_sync_at = ? WHERE id = 1")) {
+        if (lastSyncAt != null) {
+          statement.setTimestamp(1, Timestamp.valueOf(lastSyncAt));
+        } else {
+          statement.setNull(1, Types.TIMESTAMP);
+        }
+        statement.executeUpdate();
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new RepositoryException("Failed to update user last sync timestamp", e);
+    }
+  }
+
 }

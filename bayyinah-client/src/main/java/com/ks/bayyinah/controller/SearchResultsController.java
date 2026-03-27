@@ -28,7 +28,7 @@ public class SearchResultsController {
   @FXML
   private VBox resultsContainer;
   @FXML
-  private HBox paginationBox;
+  private FlowPane paginationBox;
   @FXML
   private Button firstPageBtn;
   @FXML
@@ -217,10 +217,12 @@ public class SearchResultsController {
     // Arabic text
     Text arabicText = new Text(result.getVerseView().getArabicText());
     arabicText.getStyleClass().add("arabic-text");
-    arabicText.setWrappingWidth(750);
 
     TextFlow arabicFlow = new TextFlow(arabicText);
     arabicFlow.setNodeOrientation(javafx.geometry.NodeOrientation.RIGHT_TO_LEFT);
+    arabicFlow.setMaxWidth(Double.MAX_VALUE);
+    arabicFlow.prefWidthProperty().bind(card.widthProperty().subtract(30));
+    arabicText.wrappingWidthProperty().bind(arabicFlow.widthProperty());
 
     // Translation text (if available)
     VBox translationBox = null;
@@ -228,7 +230,8 @@ public class SearchResultsController {
       Label translationLabel = new Label(result.getVerseView().getTranslatedText());
       translationLabel.getStyleClass().add("translation-text");
       translationLabel.setWrapText(true);
-      translationLabel.setMaxWidth(750);
+      translationLabel.setMaxWidth(Double.MAX_VALUE);
+      translationLabel.prefWidthProperty().bind(card.widthProperty().subtract(30));
 
       translationBox = new VBox(translationLabel);
       translationBox.setPadding(new Insets(5, 0, 0, 0));
@@ -353,16 +356,19 @@ public class SearchResultsController {
     int chapterId = result.getVerseView().getVerse().getSurahId();
     int verseNumber = result.getVerseView().getVerse().getVerseNumber();
 
-    Optional<ChapterView> chapterView = quranQueryService.getChapter(chapterId, "en");
-    if (chapterView.isPresent()) {
-      browsingController.showChapter(chapterView.get(), verseNumber, verseNumber, currentTranslationId);
-      toastManager.showInfo("Navigating", "Opening " + result.getVerseView().getVerseKey());
-    } else {
-      toastManager.showError(
-          "Navigation error",
-          "Unable to open chapter " + chapterId + " for " + result.getVerseView().getVerseKey()
-      );
-    }
+    DbAsync.runWithUi(
+        () -> quranQueryService.getChapter(chapterId, "en"),
+        chapterView -> {
+          if (chapterView.isPresent()) {
+            browsingController.showChapter(chapterView.get(), verseNumber, verseNumber, currentTranslationId);
+            toastManager.showInfo("Navigating", "Opening " + result.getVerseView().getVerseKey());
+          } else {
+            toastManager.showError(
+                "Navigation error",
+                "Unable to open chapter " + chapterId + " for " + result.getVerseView().getVerseKey());
+          }
+        },
+        err -> toastManager.showError("Navigation error", "Failed to resolve chapter: " + err.getMessage()));
   }
 
   /**

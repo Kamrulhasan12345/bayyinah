@@ -4,6 +4,7 @@ import com.ks.bayyinah.App;
 import com.ks.bayyinah.controller.ChapterSidebarController;
 import com.ks.bayyinah.core.dto.ChapterView;
 import java.io.IOException;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
@@ -31,8 +32,8 @@ public class ChapterSidebarCell extends ListCell<ChapterView> {
           Region region = (Region) root;
           region
             .prefWidthProperty()
-            .bind(getListView().widthProperty().subtract(20));
-          region.maxWidth(Double.MAX_VALUE);
+            .bind(Bindings.max(0, getListView().widthProperty().subtract(20)));
+          region.setMaxWidth(Double.MAX_VALUE);
         } catch (IOException e) {
           e.printStackTrace();
         }

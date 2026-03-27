@@ -6,6 +6,7 @@ import com.ks.bayyinah.context.AppContext;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -57,6 +58,15 @@ public class RootController {
       FXMLLoader loader = new FXMLLoader(App.class.getResource(fxmlPath));
       Node authView = loader.load();
       authView.setOnMouseClicked(e -> e.consume());
+
+      ScrollPane scrollContainer = new ScrollPane(authView);
+      scrollContainer.setFitToWidth(true);
+      scrollContainer.setFitToHeight(true);
+      scrollContainer.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+      scrollContainer.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+      scrollContainer.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+      scrollContainer.getStyleClass().add("auth-overlay-scroll");
+      scrollContainer.setOnMouseClicked(e -> e.consume());
       
       Object c = loader.getController();
       if (c instanceof LoginController lc) {
@@ -67,7 +77,7 @@ public class RootController {
         rc.setRootController(this);
       }
 
-      overlay.getChildren().setAll(authView);
+      overlay.getChildren().setAll(scrollContainer);
       overlay.setVisible(true);
       overlay.setManaged(true);
 

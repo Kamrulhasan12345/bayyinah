@@ -12,7 +12,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.LoginController" styleClass="auth-modal-root" stylesheets="@../css/stylesheet.css">
    <children>
-   <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="450.0" spacing="40.0" styleClass="auth-modal-card">
+   <VBox alignment="CENTER" maxWidth="450.0" spacing="40.0" styleClass="auth-modal-card">
          <children>
             <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Bayyinah" textAlignment="CENTER" />
             <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Login" textAlignment="CENTER" />

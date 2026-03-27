@@ -5,7 +5,6 @@ import java.net.http.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import com.ks.bayyinah.infra.exception.UnauthorizedException;
 import com.ks.bayyinah.infra.hybrid.model.AuthTokens;
@@ -28,10 +27,14 @@ public class ApiClient {
   private final GlobalExceptionHandler exceptionHandler;
 
   public ApiClient(MainConfig mainConfig, TokenManager tokenManager) {
+    this(mainConfig, tokenManager, null);
+  }
+
+  public ApiClient(MainConfig mainConfig, TokenManager tokenManager, ObjectMapper objectMapper) {
     this.exceptionHandler = new GlobalExceptionHandler();
     this.mainConfig = mainConfig;
     this.routeResolver = new RouteResolver(mainConfig);
-    this.objectMapper = new ObjectMapper();
+    this.objectMapper = objectMapper == null ? new ObjectMapper() : objectMapper;
     this.tokenManager = tokenManager;
     this.httpClient = HttpClient.newBuilder()
         .connectTimeout(Duration.ofSeconds(mainConfig.getApi().getConnectTimeoutSeconds()))
@@ -286,10 +289,16 @@ public class ApiClient {
     // Try to parse error message from body
     try {
       ErrorResponse error = objectMapper.readValue(body, ErrorResponse.class);
-      throw new ApiException(error.getMessage());
+      if (error != null && error.message() != null && !error.message().isBlank()) {
+        throw new ApiException(error.message());
+      }
+    } catch (ApiException e) {
+      throw e;
     } catch (Exception e) {
-      throw new ApiException("Request failed with status: " + statusCode);
+      throw new ApiException("Request failed with status: " + statusCode, e);
     }
+
+    throw new ApiException("Request failed with status: " + statusCode);
   }
 
   public static class ApiException extends RuntimeException {
@@ -302,15 +311,6 @@ public class ApiClient {
     }
   }
 
-  private static class ErrorResponse {
-    private String message;
-
-    public String getMessage() {
-      return message;
-    }
-
-    public void setMessage(String message) {
-      this.message = message;
-    }
+  private record ErrorResponse(String message) {
   }
 }

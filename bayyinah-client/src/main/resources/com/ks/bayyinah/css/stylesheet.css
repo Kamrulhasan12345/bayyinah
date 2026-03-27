@@ -1,42 +1,296 @@
 .overlay {
-  -fx-background-color: rgba(0, 0, 0, 0.5);
+	-fx-background-color: rgba(0, 0, 0, 0.5);
 }
 
 .auth-modal-root {
-    -fx-alignment: center;
+	-fx-alignment: center;
+}
+
+.auth-overlay-scroll {
+	-fx-fit-to-width: true;
+	-fx-padding: 20;
+}
+
+.auth-overlay-scroll > .viewport {
+	-fx-background-color: transparent;
 }
 
 .auth-modal-card {
-    -fx-background-color: #ffffff;
-    -fx-background-radius: 14;
-    -fx-border-color: #e5e7eb;
-    -fx-border-radius: 14;
-    -fx-border-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 24, 0.2, 0, 8);
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 14;
+	-fx-border-color: #e5e7eb;
+	-fx-border-radius: 14;
+	-fx-border-width: 1;
+	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 24, 0.2, 0, 8);
 }
 
 .list-view .scroll-bar:vertical {
-    -fx-opacity: 0;
-    -fx-max-width: 0;
+	-fx-opacity: 0.8;
+	-fx-pref-width: 10;
 }
 
 .list-view .scroll-bar:horizontal {
-    -fx-opacity: 0;
-    -fx-max-height: 0;
+	-fx-opacity: 0.8;
+	-fx-pref-height: 10;
 }
 
-/* Disable divider interaction */
-.split-pane-divider {
-    -fx-background-color: #ccc;   /* keep visible if you want */
-    -fx-cursor: default;          /* no resize cursor */
-    -fx-max-width: 1px;             /* optional: collapse divider width */
-    /*-fx-max-height: 0;*/            /* optional: collapse divider height */
-    -fx-opacity: 1;               /* keep visible, or set 0 to hide */
-    -fx-pointer-events: none; /* ignores mouse events */
+/* Modern splitbar styling scoped to the browsing layout */
+.browsing-split-pane {
+	-fx-background-color: #f5f7fb;
 }
 
-.split-pane-divider:hover {
-    -fx-cursor: default;          /* prevent drag cursor */
+.browsing-split-pane > .split-pane-divider {
+	-fx-padding: 0 4 0 4;
+	-fx-background-color: transparent;
 }
 
+.browsing-split-pane > .split-pane-divider > .vertical-grabber {
+	-fx-background-insets: 0;
+	-fx-background-radius: 999;
+	-fx-background-color: linear-gradient(to bottom, #d9dfeb, #cfd7e7);
+	-fx-min-width: 4;
+	-fx-pref-width: 4;
+	-fx-max-width: 6;
+}
 
+.browsing-split-pane > .split-pane-divider:hover > .vertical-grabber {
+	-fx-background-color: linear-gradient(to bottom, #8fb8ff, #6aa5ff);
+	-fx-effect: dropshadow(gaussian, rgba(76, 128, 234, 0.35), 6, 0.4, 0, 0);
+}
+
+.browsing-split-pane > .split-pane-divider:pressed > .vertical-grabber {
+	-fx-background-color: linear-gradient(to bottom, #4f8dff, #3777f2);
+}
+
+.sidebar-root {
+	-fx-background-color: #f7f8fc;
+	-fx-border-color: #e5e9f2;
+	-fx-border-width: 0 1 0 0;
+}
+
+.sidebar-title {
+	-fx-font-size: 15px;
+	-fx-font-weight: 700;
+	-fx-text-fill: #1f2937;
+}
+
+.sidebar-search-field {
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 8;
+	-fx-border-color: #d6dbe8;
+	-fx-border-radius: 8;
+	-fx-padding: 6 10;
+	-fx-min-width: 120;
+}
+
+.sidebar-search-field:focused {
+	-fx-border-color: #3b82f6;
+	-fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.18), 8, 0.4, 0, 0);
+}
+
+.sidebar-search-icon {
+	-fx-icon-color: #6b7280;
+}
+
+.sidebar-icon {
+	-fx-icon-color: #4b5563;
+	-fx-cursor: hand;
+}
+
+.sidebar-icon:hover {
+	-fx-icon-color: #0f172a;
+}
+
+.sidebar-username {
+	-fx-text-fill: #334155;
+	-fx-font-size: 12px;
+}
+
+.chapters-list {
+	-fx-background-color: transparent;
+}
+
+.chapters-list .scroll-bar:vertical,
+.chapters-list .scroll-bar:horizontal {
+	-fx-opacity: 0.7;
+	-fx-pref-width: 8;
+	-fx-pref-height: 8;
+	-fx-max-width: 8;
+	-fx-max-height: 8;
+	-fx-padding: 0;
+}
+
+.chapters-list .scroll-bar .track,
+.chapters-list .scroll-bar .thumb,
+.chapters-list .scroll-bar .increment-button,
+.chapters-list .scroll-bar .decrement-button,
+.chapters-list .scroll-bar .increment-arrow,
+.chapters-list .scroll-bar .decrement-arrow {
+	-fx-opacity: 0.75;
+	-fx-padding: 0;
+	-fx-background-insets: 0;
+	-fx-background-color: #cbd5e1;
+}
+
+.chapters-list .corner {
+	-fx-background-color: transparent;
+	-fx-padding: 0;
+}
+
+.chapters-list .list-cell {
+	-fx-background-color: transparent;
+	-fx-padding: 3 6;
+}
+
+.chapters-list .list-cell:filled:hover {
+	-fx-background-color: #eef4ff;
+	-fx-background-radius: 12;
+}
+
+.chapters-list .list-cell:filled:selected,
+.chapters-list .list-cell:filled:selected:focused {
+	-fx-background-color: linear-gradient(to right, #dbeafe, #eaf3ff);
+	-fx-background-radius: 12;
+	-fx-border-color: #8eb4ff;
+	-fx-border-width: 1;
+	-fx-border-radius: 12;
+}
+
+.chapter-sidebar-row {
+	-fx-alignment: center-left;
+	-fx-spacing: 10;
+	-fx-background-color: rgba(255, 255, 255, 0.8);
+	-fx-background-radius: 10;
+	-fx-border-color: #e6ebf5;
+	-fx-border-radius: 10;
+	-fx-border-width: 1;
+}
+
+.chapters-list .list-cell:filled:hover .chapter-sidebar-row {
+	-fx-background-color: #ffffff;
+	-fx-border-color: #dbe7ff;
+}
+
+.chapters-list .list-cell:filled:selected .chapter-sidebar-row,
+.chapters-list .list-cell:filled:selected:focused .chapter-sidebar-row {
+	-fx-background-color: #ffffff;
+	-fx-border-color: #9abaff;
+	-fx-effect: dropshadow(gaussian, rgba(74, 132, 243, 0.2), 8, 0.3, 0, 1);
+}
+
+.chapter-badge {
+	-fx-fill: linear-gradient(to bottom, #63a4ff, #3f82ff);
+}
+
+.chapter-id {
+	-fx-text-fill: #ffffff;
+	-fx-font-weight: 700;
+	-fx-font-size: 10px;
+}
+
+.chapter-name-simple {
+	-fx-text-fill: #1f2937;
+	-fx-font-size: 12px;
+	-fx-font-weight: 600;
+}
+
+.chapter-name-arabic {
+	-fx-text-fill: #334155;
+	-fx-font-size: 13px;
+	-fx-font-weight: 600;
+}
+
+.chapter-name-translated {
+	-fx-text-fill: #4b5563;
+	-fx-font-size: 11px;
+}
+
+.chapter-meta {
+	-fx-text-fill: #64748b;
+	-fx-font-size: 10px;
+}
+
+.settings-root {
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 14;
+	-fx-border-color: #e7ebf4;
+	-fx-border-radius: 14;
+	-fx-border-width: 1;
+}
+
+.settings-title {
+	-fx-text-fill: #0f172a;
+	-fx-font-weight: 800;
+}
+
+.settings-subtitle {
+	-fx-text-fill: #475569;
+	-fx-font-size: 12px;
+}
+
+.settings-mode {
+	-fx-background-color: #eff6ff;
+	-fx-background-radius: 8;
+	-fx-text-fill: #1e3a8a;
+	-fx-padding: 8 10;
+	-fx-font-size: 12px;
+}
+
+.settings-section-title {
+	-fx-text-fill: #0f172a;
+	-fx-font-size: 14px;
+	-fx-font-weight: 700;
+}
+
+.settings-label {
+	-fx-text-fill: #334155;
+	-fx-font-size: 12px;
+	-fx-font-weight: 600;
+}
+
+.settings-save-btn {
+	-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);
+	-fx-text-fill: #ffffff;
+	-fx-background-radius: 8;
+	-fx-padding: 8 18;
+	-fx-font-weight: 700;
+	-fx-cursor: hand;
+}
+
+.settings-save-btn:hover {
+	-fx-background-color: linear-gradient(to right, #1e40af, #1d4ed8);
+}
+
+.settings-saved-hint {
+	-fx-text-fill: #475569;
+	-fx-font-size: 12px;
+}
+
+.settings-download-btn {
+	-fx-background-color: #ffffff;
+	-fx-text-fill: #1e3a8a;
+	-fx-border-color: #bfdbfe;
+	-fx-border-radius: 8;
+	-fx-background-radius: 8;
+	-fx-padding: 7 14;
+	-fx-font-weight: 700;
+	-fx-cursor: hand;
+}
+
+.settings-download-btn:hover {
+	-fx-background-color: #eff6ff;
+}
+
+.settings-warning-box {
+	-fx-background-color: #fff7ed;
+	-fx-border-color: #fdba74;
+	-fx-border-radius: 8;
+	-fx-background-radius: 8;
+	-fx-padding: 8 10;
+}
+
+.settings-warning-text {
+	-fx-text-fill: #9a3412;
+	-fx-font-size: 12px;
+	-fx-font-weight: 600;
+}

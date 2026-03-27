@@ -2,6 +2,9 @@ package com.ks.bayyinah.infra.hybrid.service;
 
 import com.ks.bayyinah.infra.hybrid.model.UserPreference;
 import com.ks.bayyinah.infra.local.repository.user.UserPreferenceRepository;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import tools.jackson.databind.ObjectMapper;
 
 public class UserPreferenceService {
   // This service will manage user preferences. It will interact with the local
@@ -19,13 +22,39 @@ public class UserPreferenceService {
   // The implementation details will depend on the specific requirements and data
   // models of the application.
   private final UserPreferenceRepository repository;
+  private final SyncQueueService syncQueueService;
+  private final ObjectMapper objectMapper;
 
   public UserPreferenceService(UserPreferenceRepository repository) {
+    this(repository, null, null);
+  }
+
+  public UserPreferenceService(UserPreferenceRepository repository, SyncQueueService syncQueueService) {
+    this(repository, syncQueueService, null);
+  }
+
+  public UserPreferenceService(
+      UserPreferenceRepository repository,
+      SyncQueueService syncQueueService,
+      ObjectMapper objectMapper) {
     this.repository = repository;
+    this.syncQueueService = syncQueueService;
+    this.objectMapper = objectMapper == null ? new ObjectMapper() : objectMapper;
   }
 
   public void setPreference(String key, String value) {
     repository.insertOrUpdate(key, value);
+    enqueuePreferenceUpsert(key, value);
+  }
+
+  public void setPreferences(Map<String, String> preferences) {
+    if (preferences == null || preferences.isEmpty()) {
+      return;
+    }
+
+    for (Map.Entry<String, String> entry : preferences.entrySet()) {
+      setPreference(entry.getKey(), entry.getValue());
+    }
   }
 
   public UserPreference getPreference(String key) {
@@ -43,5 +72,36 @@ public class UserPreferenceService {
       }
     }
     return 20; // or return a default translation ID
+  }
+
+  public Map<String, String> getAllAsMap() {
+    Map<String, String> values = new LinkedHashMap<>();
+    for (UserPreference pref : repository.findAll()) {
+      values.put(pref.getKey(), pref.getValue());
+    }
+    return values;
+  }
+
+  public void applyRemotePreferences(Map<String, String> preferences) {
+    if (preferences == null || preferences.isEmpty()) {
+      return;
+    }
+
+    for (Map.Entry<String, String> entry : preferences.entrySet()) {
+      repository.insertOrUpdate(entry.getKey(), entry.getValue());
+    }
+  }
+
+  private void enqueuePreferenceUpsert(String key, String value) {
+    if (syncQueueService == null || key == null || key.isBlank()) {
+      return;
+    }
+
+    long recordId = Integer.toUnsignedLong(key.hashCode());
+    String payload = objectMapper.writeValueAsString(new PreferencePayload(key, value == null ? "" : value));
+    syncQueueService.enqueueUpsert("user_preferences", recordId, payload);
+  }
+
+  private record PreferencePayload(String key, String value) {
   }
 }

@@ -1,8 +1,11 @@
 package com.ks.bayyinah.controller;
 
 import com.ks.bayyinah.context.AppContext;
+import com.ks.bayyinah.error.ErrorCategory;
+import com.ks.bayyinah.error.ErrorMapper;
 import com.ks.bayyinah.infra.hybrid.query.AuthSessionQueryService;
 import com.ks.bayyinah.infra.local.database.DbAsync;
+import com.ks.bayyinah.ui.ToastManager;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -31,7 +34,7 @@ public class LoginController {
 
   public void login() {
     if (usernameField.getText().trim().isEmpty() || passwordField.getText().isEmpty()) {
-      System.out.println("Please enter both username and password.");
+      ToastManager.getInstance().showWarning("Login", "Please enter both username and password.");
       return;
     }
 
@@ -42,9 +45,12 @@ public class LoginController {
       return null;
     }, ignored -> {
       rootController.onAuthStateChanged();
-        rootController.hideOverlay();
+      rootController.hideOverlay();
+      ToastManager.getInstance().showSuccess("Login", "Logged in successfully.");
     }, err -> {
       err.printStackTrace();
+      ErrorCategory category = ErrorMapper.mapException(err);
+      ToastManager.getInstance().showError(category);
     });
   }
 
