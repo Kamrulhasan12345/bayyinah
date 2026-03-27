@@ -4,6 +4,7 @@ import com.ks.bayyinah.infra.hybrid.model.UserPreference;
 import com.ks.bayyinah.infra.local.repository.user.UserPreferenceRepository;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import tools.jackson.databind.ObjectMapper;
 
 public class UserPreferenceService {
   // This service will manage user preferences. It will interact with the local
@@ -22,14 +23,23 @@ public class UserPreferenceService {
   // models of the application.
   private final UserPreferenceRepository repository;
   private final SyncQueueService syncQueueService;
+  private final ObjectMapper objectMapper;
 
   public UserPreferenceService(UserPreferenceRepository repository) {
-    this(repository, null);
+    this(repository, null, null);
   }
 
   public UserPreferenceService(UserPreferenceRepository repository, SyncQueueService syncQueueService) {
+    this(repository, syncQueueService, null);
+  }
+
+  public UserPreferenceService(
+      UserPreferenceRepository repository,
+      SyncQueueService syncQueueService,
+      ObjectMapper objectMapper) {
     this.repository = repository;
     this.syncQueueService = syncQueueService;
+    this.objectMapper = objectMapper == null ? new ObjectMapper() : objectMapper;
   }
 
   public void setPreference(String key, String value) {
@@ -88,18 +98,10 @@ public class UserPreferenceService {
     }
 
     long recordId = Integer.toUnsignedLong(key.hashCode());
-    String payload = "{" +
-        "\"key\":\"" + escapeJson(key) + "\"," +
-        "\"value\":\"" + escapeJson(value == null ? "" : value) + "\"" +
-        "}";
+    String payload = objectMapper.writeValueAsString(new PreferencePayload(key, value == null ? "" : value));
     syncQueueService.enqueueUpsert("user_preferences", recordId, payload);
   }
 
-  private String escapeJson(String input) {
-    return input
-        .replace("\\", "\\\\")
-        .replace("\"", "\\\"")
-        .replace("\n", "\\n")
-        .replace("\r", "\\r");
+  private record PreferencePayload(String key, String value) {
   }
 }

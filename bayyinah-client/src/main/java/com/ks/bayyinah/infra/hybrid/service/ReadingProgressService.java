@@ -5,6 +5,7 @@ import com.ks.bayyinah.infra.local.repository.user.ReadingProgressRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import tools.jackson.databind.ObjectMapper;
 
 public class ReadingProgressService {
   // This service will manage the reading progress of the user. It will interact
@@ -24,14 +25,23 @@ public class ReadingProgressService {
 
   private final ReadingProgressRepository repository;
   private final SyncQueueService syncQueueService;
+  private final ObjectMapper objectMapper;
 
   public ReadingProgressService(ReadingProgressRepository repository) {
-    this(repository, null);
+    this(repository, null, null);
   }
 
   public ReadingProgressService(ReadingProgressRepository repository, SyncQueueService syncQueueService) {
+    this(repository, syncQueueService, null);
+  }
+
+  public ReadingProgressService(
+      ReadingProgressRepository repository,
+      SyncQueueService syncQueueService,
+      ObjectMapper objectMapper) {
     this.repository = repository;
     this.syncQueueService = syncQueueService;
+    this.objectMapper = objectMapper == null ? new ObjectMapper() : objectMapper;
   }
 
   public void recordProgress(int surahNumber, int ayahNumber) {
@@ -135,13 +145,19 @@ public class ReadingProgressService {
       return;
     }
 
-    String payload = "{" +
-        "\"surahNumber\":" + progress.getSurahNumber() + "," +
-        "\"ayahNumber\":" + progress.getAyahNumber() + "," +
-        "\"lastReadAt\":\"" + progress.getLastReadAt() + "\"," +
-        "\"timeSpentSeconds\":" + progress.getTimeSpentSeconds() +
-        "}";
+    String payload = objectMapper.writeValueAsString(new ReadingProgressPayload(
+        progress.getSurahNumber(),
+        progress.getAyahNumber(),
+        progress.getLastReadAt() == null ? null : progress.getLastReadAt().toString(),
+        progress.getTimeSpentSeconds()));
     syncQueueService.enqueueUpsert("reading_progress", progress.getId(), payload);
+  }
+
+  private record ReadingProgressPayload(
+      Integer surahNumber,
+      Integer ayahNumber,
+      String lastReadAt,
+      Integer timeSpentSeconds) {
   }
 
 }

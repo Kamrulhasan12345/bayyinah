@@ -5,6 +5,7 @@ import com.ks.bayyinah.infra.hybrid.model.Bookmark;
 
 import java.util.Optional;
 import java.util.List;
+import tools.jackson.databind.ObjectMapper;
 
 public class BookmarkService {
   // This service will manage bookmarks for the user. It will interact with the
@@ -24,14 +25,23 @@ public class BookmarkService {
   // models of the application.
   private final BookmarksRepository repository;
   private final SyncQueueService syncQueueService;
+  private final ObjectMapper objectMapper;
 
   public BookmarkService(BookmarksRepository repository) {
-    this(repository, null);
+    this(repository, null, null);
   }
 
   public BookmarkService(BookmarksRepository repository, SyncQueueService syncQueueService) {
+    this(repository, syncQueueService, null);
+  }
+
+  public BookmarkService(
+      BookmarksRepository repository,
+      SyncQueueService syncQueueService,
+      ObjectMapper objectMapper) {
     this.repository = repository;
     this.syncQueueService = syncQueueService;
+    this.objectMapper = objectMapper == null ? new ObjectMapper() : objectMapper;
   }
 
   public void addBookmark(int surahNumber, int ayahNumber) {
@@ -62,7 +72,7 @@ public class BookmarkService {
   public void removeBookmark(Long id) {
     repository.softDelete(id);
     if (syncQueueService != null && id != null) {
-      syncQueueService.enqueueDelete("bookmarks", id, "{\"id\":" + id + "}");
+      syncQueueService.enqueueDelete("bookmarks", id, objectMapper.writeValueAsString(new BookmarkDeletePayload(id)));
     }
   }
 
@@ -135,13 +145,20 @@ public class BookmarkService {
   }
 
   private String buildBookmarkPayload(Bookmark bookmark) {
-    String title = bookmark.getTitle() != null ? bookmark.getTitle().replace("\"", "\\\"") : "";
-    String color = bookmark.getColor() != null ? bookmark.getColor().replace("\"", "\\\"") : "";
-    return "{" +
-        "\"surahNumber\":" + bookmark.getSurahNumber() + "," +
-        "\"ayahNumber\":" + bookmark.getAyahNumber() + "," +
-        "\"title\":\"" + title + "\"," +
-        "\"color\":\"" + color + "\"" +
-        "}";
+    return objectMapper.writeValueAsString(new BookmarkPayload(
+      bookmark.getSurahNumber(),
+      bookmark.getAyahNumber(),
+      bookmark.getTitle() == null ? "" : bookmark.getTitle(),
+      bookmark.getColor() == null ? "" : bookmark.getColor()));
+    }
+
+    private record BookmarkPayload(
+      Integer surahNumber,
+      Integer ayahNumber,
+      String title,
+      String color) {
+    }
+
+    private record BookmarkDeletePayload(Long id) {
   }
 }

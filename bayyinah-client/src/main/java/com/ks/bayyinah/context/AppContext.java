@@ -8,6 +8,7 @@ import com.ks.bayyinah.infra.remote.client.ApiClient;
 import com.ks.bayyinah.infra.remote.query.RemoteSyncQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteUserQueryService;
 import lombok.Data;
+import tools.jackson.databind.ObjectMapper;
 
 @Data
 public class AppContext {
@@ -25,6 +26,7 @@ public class AppContext {
   private RemoteUserQueryService remoteUserQueryService;
   private RemoteSyncQueryService remoteSyncQueryService;
   private SyncOrchestratorService syncOrchestratorService;
+  private ObjectMapper objectMapper;
 
   private AppContext() {
     // Private constructor to prevent instantiation

@@ -2,6 +2,7 @@ package com.ks.bayyinah.infra.hybrid.query;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 import java.lang.reflect.InvocationTargetException;
@@ -58,7 +59,7 @@ public class AuthSessionQueryService {
   }
 
   public void login(String username, String password) {
-    remoteUserQueryService.login(username, password).thenAccept(loginResponse -> {
+    await(remoteUserQueryService.login(username, password).thenAccept(loginResponse -> {
       TokensResponse tokensResponse = loginResponse.tokens();
       LocalDateTime expiresAt = LocalDateTime.now().plus(Duration.ofMillis(tokensResponse.getExpiresIn()));
       AuthTokens authTokens = new AuthTokens(tokensResponse.getAccessToken(), tokensResponse.getRefreshToken(),
@@ -78,13 +79,13 @@ public class AuthSessionQueryService {
       if (syncOrchestratorService != null) {
         syncOrchestratorService.runSyncNowAsync();
       }
-    }).join();
+    }));
   }
 
   public void register(String username, String email, String password, String firstName, String lastName) {
-    remoteUserQueryService.register(username, email, password, firstName, lastName).thenAccept(regResponse -> {
+    await(remoteUserQueryService.register(username, email, password, firstName, lastName).thenAccept(regResponse -> {
       login(username, password);
-    }).join();
+    }));
   }
 
   public LogoutResult logout() {
@@ -97,7 +98,7 @@ public class AuthSessionQueryService {
 
     try {
       if (refreshToken != null) {
-        remoteUserQueryService.logout(refreshToken).join();
+        await(remoteUserQueryService.logout(refreshToken));
         remoteLogoutSucceeded = true;
       } else {
         remoteLogoutSucceeded = true;
@@ -135,7 +136,7 @@ public class AuthSessionQueryService {
     String refreshToken = authTokensService.getAuthTokens()
         .map(AuthTokens::getRefreshToken)
         .orElseThrow(() -> new IllegalStateException("No refresh token available"));
-    TokensResponse refreshResponse = remoteUserQueryService.refreshTokens(refreshToken).join();
+    TokensResponse refreshResponse = await(remoteUserQueryService.refreshTokens(refreshToken));
     LocalDateTime expiresAt = LocalDateTime.now().plus(Duration.ofMillis(refreshResponse.getExpiresIn()));
     AuthTokens newTokens = new AuthTokens(refreshResponse.getAccessToken(), refreshResponse.getRefreshToken(),
         expiresAt);
@@ -183,5 +184,17 @@ public class AuthSessionQueryService {
       current = cause;
     }
     return current;
+  }
+
+  private <T> T await(CompletableFuture<T> future) {
+    try {
+      return future.join();
+    } catch (CompletionException e) {
+      Throwable unwrapped = unwrap(e);
+      if (unwrapped instanceof RuntimeException runtimeException) {
+        throw runtimeException;
+      }
+      throw new RuntimeException(unwrapped.getMessage(), unwrapped);
+    }
   }
 }

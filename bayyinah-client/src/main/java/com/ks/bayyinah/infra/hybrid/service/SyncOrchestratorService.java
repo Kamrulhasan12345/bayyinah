@@ -17,8 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.lang.reflect.InvocationTargetException;
 import tools.jackson.databind.ObjectMapper;
 
 public class SyncOrchestratorService {
@@ -40,13 +43,31 @@ public class SyncOrchestratorService {
       UserPreferenceService userPreferenceService,
       UserService userService,
       RemoteSyncQueryService remoteSyncQueryService) {
+    this(
+        syncQueueService,
+        bookmarkService,
+        readingProgressService,
+        userPreferenceService,
+        userService,
+        remoteSyncQueryService,
+        null);
+  }
+
+  public SyncOrchestratorService(
+      SyncQueueService syncQueueService,
+      BookmarkService bookmarkService,
+      ReadingProgressService readingProgressService,
+      UserPreferenceService userPreferenceService,
+      UserService userService,
+      RemoteSyncQueryService remoteSyncQueryService,
+      ObjectMapper objectMapper) {
     this.syncQueueService = syncQueueService;
     this.bookmarkService = bookmarkService;
     this.readingProgressService = readingProgressService;
     this.userPreferenceService = userPreferenceService;
     this.userService = userService;
     this.remoteSyncQueryService = remoteSyncQueryService;
-    this.objectMapper = new ObjectMapper();
+    this.objectMapper = objectMapper == null ? new ObjectMapper() : objectMapper;
   }
 
   public CompletableFuture<Void> runSyncNowAsync() {
@@ -117,7 +138,7 @@ public class SyncOrchestratorService {
       if (bookmark.isPresent() && bookmark.get().getServerId() != null) {
         logger.info("Pushing bookmark delete. queueId={} localRecordId={} serverId={}",
             item.getId(), item.getRecordId(), bookmark.get().getServerId());
-        remoteSyncQueryService.deleteBookmark(bookmark.get().getServerId()).join();
+        await(remoteSyncQueryService.deleteBookmark(bookmark.get().getServerId()));
       } else {
         logger.info("Skipping bookmark delete push due to missing server mapping. queueId={} localRecordId={}",
             item.getId(), item.getRecordId());
@@ -132,7 +153,7 @@ public class SyncOrchestratorService {
     try {
       logger.info("Pushing bookmark upsert. queueId={} localRecordId={} surah={} ayah={}",
           item.getId(), item.getRecordId(), payload.surahNumber(), payload.ayahNumber());
-      RemoteBookmarkDto created = remoteSyncQueryService.createBookmark(request).join();
+        RemoteBookmarkDto created = await(remoteSyncQueryService.createBookmark(request));
       if (item.getRecordId() != null && created != null && created.id() != null) {
         bookmarkService.markAsSynced(item.getRecordId(), created.id());
         logger.info("Bookmark upsert acknowledged. queueId={} localRecordId={} serverId={}",
@@ -163,7 +184,7 @@ public class SyncOrchestratorService {
       if (progress.isPresent() && progress.get().getServerId() != null) {
         logger.info("Pushing reading progress delete. queueId={} localRecordId={} serverId={}",
             item.getId(), item.getRecordId(), progress.get().getServerId());
-        remoteSyncQueryService.deleteReadingProgress(progress.get().getServerId()).join();
+        await(remoteSyncQueryService.deleteReadingProgress(progress.get().getServerId()));
       } else {
         logger.info("Skipping reading progress delete push due to missing server mapping. queueId={} localRecordId={}",
             item.getId(), item.getRecordId());
@@ -177,7 +198,7 @@ public class SyncOrchestratorService {
 
     logger.info("Pushing reading progress upsert. queueId={} localRecordId={} surah={} ayah={}",
         item.getId(), item.getRecordId(), payload.surahNumber(), payload.ayahNumber());
-    RemoteReadingProgressDto created = remoteSyncQueryService.upsertReadingProgress(request).join();
+    RemoteReadingProgressDto created = await(remoteSyncQueryService.upsertReadingProgress(request));
     if (item.getRecordId() != null && created != null && created.id() != null) {
       readingProgressService.markAsSynced(item.getRecordId(), created.id());
       logger.info("Reading progress upsert acknowledged. queueId={} localRecordId={} serverId={}",
@@ -193,13 +214,13 @@ public class SyncOrchestratorService {
     Map<String, String> preferences = userPreferenceService.getAllAsMap();
     logger.info("Pushing user preferences snapshot. keyCount={}", preferences.size());
     RemoteUserPreferenceUpdateRequest request = buildPreferenceRequest(preferences);
-    remoteSyncQueryService.updateUserPreferences(request).join();
+    await(remoteSyncQueryService.updateUserPreferences(request));
     logger.info("User preferences push acknowledged");
   }
 
   private void pullLatestState() {
     logger.info("Sync pull phase started");
-    RemoteBookmarkDto[] remoteBookmarks = remoteSyncQueryService.getBookmarks().join();
+    RemoteBookmarkDto[] remoteBookmarks = await(remoteSyncQueryService.getBookmarks());
     logger.info("Pulled bookmarks from server. count={}", remoteBookmarks == null ? 0 : remoteBookmarks.length);
     if (remoteBookmarks != null) {
       for (RemoteBookmarkDto bookmark : remoteBookmarks) {
@@ -215,7 +236,7 @@ public class SyncOrchestratorService {
       }
     }
 
-    RemoteReadingProgressDto[] remoteProgress = remoteSyncQueryService.getReadingProgress().join();
+    RemoteReadingProgressDto[] remoteProgress = await(remoteSyncQueryService.getReadingProgress());
     logger.info("Pulled reading progress from server. count={}", remoteProgress == null ? 0 : remoteProgress.length);
     if (remoteProgress != null) {
       for (RemoteReadingProgressDto progress : remoteProgress) {
@@ -231,7 +252,7 @@ public class SyncOrchestratorService {
       }
     }
 
-    RemoteUserPreferenceResponse remotePreferenceResponse = remoteSyncQueryService.getUserPreferences().join();
+    RemoteUserPreferenceResponse remotePreferenceResponse = await(remoteSyncQueryService.getUserPreferences());
     if (remotePreferenceResponse != null && remotePreferenceResponse.userPreference() != null) {
       userPreferenceService.applyRemotePreferences(toPreferenceMap(remotePreferenceResponse.userPreference()));
       logger.info("Pulled and applied user preferences from server");
@@ -311,7 +332,7 @@ public class SyncOrchestratorService {
       return null;
     }
 
-    RemoteBookmarkDto[] remoteBookmarks = remoteSyncQueryService.getBookmarks().join();
+    RemoteBookmarkDto[] remoteBookmarks = await(remoteSyncQueryService.getBookmarks());
     if (remoteBookmarks == null) {
       return null;
     }
@@ -328,11 +349,42 @@ public class SyncOrchestratorService {
   }
 
   private String safeError(Throwable throwable) {
-    String message = throwable.getMessage();
+    Throwable unwrapped = unwrapThrowable(throwable);
+    String message = unwrapped.getMessage();
     if (message == null || message.isBlank()) {
-      return throwable.getClass().getSimpleName();
+      return unwrapped.getClass().getSimpleName();
     }
     return message;
+  }
+
+  private <T> T await(CompletableFuture<T> future) {
+    try {
+      return future.join();
+    } catch (CompletionException e) {
+      throw rethrowUnwrapped(e);
+    }
+  }
+
+  private RuntimeException rethrowUnwrapped(Throwable throwable) {
+    Throwable unwrapped = unwrapThrowable(throwable);
+    if (unwrapped instanceof RuntimeException runtimeException) {
+      return runtimeException;
+    }
+    return new RuntimeException(unwrapped.getMessage(), unwrapped);
+  }
+
+  private Throwable unwrapThrowable(Throwable throwable) {
+    Throwable current = throwable;
+    while (current instanceof CompletionException
+        || current instanceof ExecutionException
+        || current instanceof InvocationTargetException) {
+      Throwable cause = current.getCause();
+      if (cause == null || cause == current) {
+        break;
+      }
+      current = cause;
+    }
+    return current;
   }
 
   private String defaultString(String value, String fallback) {
