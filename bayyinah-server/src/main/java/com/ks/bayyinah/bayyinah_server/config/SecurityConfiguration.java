@@ -36,6 +36,8 @@ public class SecurityConfiguration {
                 .requestMatchers("/error").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/actuator/info").permitAll()
+                .requestMatchers("/ws").permitAll()
+                .requestMatchers("/ws/**").permitAll()
                 .anyRequest().authenticated()
 
         )
