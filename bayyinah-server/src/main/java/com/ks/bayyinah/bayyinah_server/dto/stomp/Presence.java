@@ -8,6 +8,6 @@ import lombok.*;
 public class Presence {
   private String roomId;
   private String senderId;
-  private PresenceType type; // "join" or "leave"
+  private PresenceType type; // "JOIN" or "LEAVE"
   private String displayName;
 }
