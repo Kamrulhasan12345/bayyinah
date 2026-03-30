@@ -13,6 +13,6 @@
 		"typescript": "^5.9.3"
 	},
 	"dependencies": {
-		"@quranjs/api": "^2.1.0"
+		"@quranjs/api": "^2.2.0"
 	}
 }
