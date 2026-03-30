@@ -73,7 +73,8 @@ public class HalaqahController {
         || chatMessage.getRoomId().isEmpty() || roomId.equals(chatMessage.getRoomId()) == false) {
       return new ChatMessage(); // Invalid message, ignore
     }
-    return new ChatMessage(roomId, chatMessage.getSenderId(), chatMessage.getDisplayName(),
+    return new ChatMessage(roomId, chatMessage.getSenderId(),
+        HtmlUtils.htmlEscape(chatMessage.getDisplayName()),
         HtmlUtils.htmlEscape(chatMessage.getContent()), HtmlUtils.htmlEscape(chatMessage.getTimestamp()));
   }
 }
