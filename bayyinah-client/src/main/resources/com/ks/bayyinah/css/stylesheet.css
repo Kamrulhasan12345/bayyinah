@@ -39,6 +39,71 @@
 	-fx-background-color: #f5f7fb;
 }
 
+.rail-host {
+	-fx-background-color: #f7f8fc;
+	-fx-border-color: #e5e9f2;
+	-fx-border-width: 0 1 0 0;
+}
+
+.rail-root {
+	-fx-background-color: #f7f8fc;
+}
+
+.rail-section {
+	-fx-alignment: top-center;
+}
+
+.rail-section-bottom {
+	-fx-alignment: bottom-center;
+}
+
+.rail-button {
+	-fx-min-width: 44;
+	-fx-min-height: 44;
+	-fx-max-width: 44;
+	-fx-max-height: 44;
+	-fx-background-color: transparent;
+	-fx-background-radius: 12;
+	-fx-cursor: hand;
+}
+
+.rail-button:hover {
+	-fx-background-color: #e8eefc;
+}
+
+.rail-button:focused {
+	-fx-background-color: #e0eaff;
+	-fx-border-color: #8eb4ff;
+	-fx-border-radius: 12;
+	-fx-border-width: 1;
+}
+
+.rail-button-active {
+	-fx-background-color: linear-gradient(to bottom, #dbeafe, #eaf3ff);
+	-fx-border-color: #8eb4ff;
+	-fx-border-width: 1;
+	-fx-border-radius: 12;
+}
+
+.rail-icon {
+	-fx-icon-color: #334155;
+}
+
+.rail-button-active .rail-icon {
+	-fx-icon-color: #0f172a;
+}
+
+.rail-logo-icon {
+	-fx-icon-color: #0f172a;
+}
+
+.rail-tooltip {
+	-fx-background-color: #0f172a;
+	-fx-text-fill: #ffffff;
+	-fx-background-radius: 8;
+	-fx-padding: 6 10;
+}
+
 .browsing-split-pane > .split-pane-divider {
 	-fx-padding: 0 4 0 4;
 	-fx-background-color: transparent;
@@ -279,6 +344,21 @@
 
 .settings-download-btn:hover {
 	-fx-background-color: #eff6ff;
+}
+
+.placeholder-view {
+	-fx-background-color: #f8fafc;
+}
+
+.placeholder-title {
+	-fx-text-fill: #0f172a;
+	-fx-font-size: 26px;
+	-fx-font-weight: 800;
+}
+
+.placeholder-subtitle {
+	-fx-text-fill: #475569;
+	-fx-font-size: 13px;
 }
 
 .settings-warning-box {

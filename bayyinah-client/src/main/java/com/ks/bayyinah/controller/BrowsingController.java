@@ -29,6 +29,9 @@ public class BrowsingController {
   private SidebarController sidebarController;
 
   @FXML
+  private RailNavigationController railNavigationController;
+
+  @FXML
   private StackPane contentArea;
 
   @FXML
@@ -61,6 +64,9 @@ public class BrowsingController {
     System.out.println("Home button clicked in BrowsingController");
     if (sidebarController != null) {
       sidebarController.clearSelection();
+    }
+    if (railNavigationController != null) {
+      railNavigationController.activateReaderTab();
     }
     showHome();
   }
@@ -96,9 +102,7 @@ public class BrowsingController {
   }
 
   private void setupSidebar() {
-    sidebarContainer.setMinWidth(220);
-    sidebarContainer.setPrefWidth(260);
-    splitPane.setDividerPosition(0, 0.22);
+    applySidebarVisibility(true);
 
     sidebarController.setOnHomeBtnClick(this::handleHomeClicked);
     sidebarController.setOnSettingsClicked(this::showSettings);
@@ -111,15 +115,35 @@ public class BrowsingController {
     sidebarController.setAppContext(appContext);
 
     sidebarController.initializeSidebar();
+
+    if (railNavigationController != null) {
+      railNavigationController.setOnReaderClicked(this::handleHomeClicked);
+      railNavigationController.setOnBookmarksClicked(this::showBookmarks);
+      railNavigationController.setOnReadingProgressClicked(this::showReadingProgress);
+      railNavigationController.setOnMeetingClicked(this::showMeeting);
+      railNavigationController.setOnSettingsClicked(this::showSettings);
+      railNavigationController.setOnLoginClicked(() -> {
+        if (rootController != null) {
+          rootController.showLoginOverlay();
+        }
+      });
+      railNavigationController.setOnAuthStateChanged(this::refreshAuthUi);
+      railNavigationController.setAppContext(appContext);
+      railNavigationController.initializeRail();
+    }
   }
 
   public void refreshAuthUi() {
     if (sidebarController != null) {
       sidebarController.refreshAuthState();
     }
+    if (railNavigationController != null) {
+      railNavigationController.refreshAuthState();
+    }
   }
 
   private void showHome() {
+    applySidebarVisibility(true);
     try {
       FXMLLoader loader = new FXMLLoader(
           App.class.getResource("fxml/HomeView.fxml"));
@@ -138,6 +162,10 @@ public class BrowsingController {
   }
 
   private void showSettings() {
+    applySidebarVisibility(false);
+    if (sidebarController != null) {
+      sidebarController.clearSelection();
+    }
     try {
       FXMLLoader loader = new FXMLLoader(
           App.class.getResource("fxml/SettingsView.fxml"));
@@ -147,6 +175,38 @@ public class BrowsingController {
       settingsController.initializeSettings();
 
       contentArea.getChildren().setAll(settingsView);
+      contentArea.getChildren().add(loadingOverlay);
+      currentShownChapterId = -1;
+      partialChapterView = true;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void showBookmarks() {
+    loadSimpleView("fxml/BookmarksView.fxml", false);
+  }
+
+  private void showReadingProgress() {
+    loadSimpleView("fxml/ReadingProgressView.fxml", false);
+  }
+
+  private void showMeeting() {
+    loadSimpleView("fxml/MeetingView.fxml", true);
+  }
+
+  private void loadSimpleView(String fxmlPath, boolean showSidebar) {
+    applySidebarVisibility(showSidebar);
+
+    if (sidebarController != null) {
+      sidebarController.clearSelection();
+    }
+
+    try {
+      FXMLLoader loader = new FXMLLoader(App.class.getResource(fxmlPath));
+      Node view = loader.load();
+
+      contentArea.getChildren().setAll(view);
       contentArea.getChildren().add(loadingOverlay);
       currentShownChapterId = -1;
       partialChapterView = true;
@@ -170,6 +230,11 @@ public class BrowsingController {
     }
 
     showLoading();
+    applySidebarVisibility(true);
+
+    if (railNavigationController != null) {
+      railNavigationController.activateReaderTab();
+    }
 
     try {
       FXMLLoader loader = new FXMLLoader(
@@ -198,5 +263,27 @@ public class BrowsingController {
       e.printStackTrace();
       hideLoading();
     }
+  }
+
+  private void applySidebarVisibility(boolean showSidebar) {
+    if (sidebarContainer == null || splitPane == null) {
+      return;
+    }
+
+    sidebarContainer.setVisible(showSidebar);
+    sidebarContainer.setManaged(showSidebar);
+
+    if (showSidebar) {
+      sidebarContainer.setMinWidth(220);
+      sidebarContainer.setPrefWidth(260);
+      sidebarContainer.setMaxWidth(Double.MAX_VALUE);
+      splitPane.setDividerPosition(0, 0.22);
+      return;
+    }
+
+    sidebarContainer.setMinWidth(0);
+    sidebarContainer.setPrefWidth(0);
+    sidebarContainer.setMaxWidth(0);
+    splitPane.setDividerPosition(0, 0.001);
   }
 }
