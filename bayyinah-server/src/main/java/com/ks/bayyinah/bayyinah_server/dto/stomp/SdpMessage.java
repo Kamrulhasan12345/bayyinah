@@ -6,8 +6,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SdpMessage {
-  private String type;
+  private SdpType type; // OFFER or ANSWER
   private String senderId;
   private String roomId;
-  private String sdp;
+  private String sdp; // SDP content
+
+  public enum SdpType {
+    OFFER, ANSWER
+  }
 }
