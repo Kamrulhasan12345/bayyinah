@@ -7,6 +7,13 @@ module com.ks.bayyinah {
   requires jakarta.persistence;
   requires org.slf4j;
   requires fr.brouillard.oss.cssfx;
+  requires spring.core;
+  requires spring.beans;
+  requires spring.web;
+  requires spring.context;
+  requires spring.websocket;
+  requires spring.messaging;
+  requires webrtc.java;
 
   requires tools.jackson.core;
   requires tools.jackson.databind;
@@ -24,6 +31,8 @@ module com.ks.bayyinah {
   opens com.ks.bayyinah.infra.hybrid.service to tools.jackson.databind;
   opens com.ks.bayyinah.infra.remote.dto.auth to tools.jackson.databind;
   opens com.ks.bayyinah.infra.remote.dto.sync to tools.jackson.databind;
+  opens com.ks.bayyinah.infra.remote.dto.stomp to tools.jackson.databind;
+  opens com.ks.bayyinah.infra.remote.client to spring.core, spring.beans, spring.context;
 
   exports com.ks.bayyinah.controller;
   exports com.ks.bayyinah;

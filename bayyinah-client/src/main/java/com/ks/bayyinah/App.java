@@ -77,7 +77,6 @@ public class App extends Application {
     stage.show();
     CSSFX.start();
 
-
     if (ENABLE_STARTUP_SAMPLE_TOASTS) {
       ToastManager.getInstance().showInfo("Welcome", "Welcome to Bayyinah!");
       ToastManager.getInstance().showInfo("Getting Started", "Use the menu to explore features.");
@@ -153,7 +152,7 @@ public class App extends Application {
     var apiClient = new ApiClient(mainConfig, tokenManager, objectMapper);
     var remoteSyncQueryService = new RemoteSyncQueryService(apiClient);
     var syncOrchestratorService = new SyncOrchestratorService(syncQueueService, bookmarkService,
-      readingProgressService, userPreferenceService, userService, remoteSyncQueryService, objectMapper);
+        readingProgressService, userPreferenceService, userService, remoteSyncQueryService, objectMapper);
 
     appContext.setMainConfig(mainConfig);
     appContext.setTokenManager(tokenManager);
