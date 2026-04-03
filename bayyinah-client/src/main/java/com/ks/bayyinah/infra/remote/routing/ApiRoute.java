@@ -31,9 +31,10 @@ public enum ApiRoute {
   PROGRESS_SYNC("/api/progress/sync"),
 
   // HALAQAH routes (user API)
-  HALAQAH_CREATE_ROOM("/api/room/create"),
-  HALAQAH_JOIN_ROOM("/api/room/join"),
-  HALAQAH_LEAVE_ROOM("/api/room/leave"),
+  HALAQAH_ROOM("/api/halaqah/{code}"),
+  HALAQAH_CREATE_ROOM("/api/halaqah/create"),
+  HALAQAH_JOIN_ROOM("/api/halaqah/join"),
+  HALAQAH_LEAVE_ROOM("/api/halaqah/leave"),
 
   // External Quran API routes (quran API)
   QURAN_CHAPTERS("/chapters"),

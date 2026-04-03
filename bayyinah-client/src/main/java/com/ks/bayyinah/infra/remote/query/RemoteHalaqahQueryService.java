@@ -29,4 +29,8 @@ public class RemoteHalaqahQueryService {
     RoomLeaveRequest request = new RoomLeaveRequest(code);
     return apiClient.post(ApiRoute.HALAQAH_LEAVE_ROOM, request, Void.class);
   }
+
+  public CompletableFuture<RoomResponse> getRoom(String code) {
+    return apiClient.get(ApiRoute.HALAQAH_ROOM, RoomResponse.class, code);
+  }
 }
