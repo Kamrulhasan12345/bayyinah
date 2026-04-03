@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.ks.bayyinah.bayyinah_server.dto.*;
@@ -25,8 +26,8 @@ public class HalaqahRestController {
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<RoomResponse> createRoom(
       @RequestBody RoomCreationRequest request,
-      Authentication auth) {
-    String userId = ((UserDetailsImpl) auth.getPrincipal()).getUser().getId().toString();
+      @AuthenticationPrincipal UserDetailsImpl user) {
+    String userId = user.getUser().getId().toString();
 
     Participant leader = new Participant(userId, request.displayName(), LocalDateTime.now(), true, false);
 
@@ -41,8 +42,8 @@ public class HalaqahRestController {
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<RoomResponse> joinRoom(
       @RequestBody RoomJoinRequest request,
-      Authentication auth) {
-    String userId = ((UserDetailsImpl) auth.getPrincipal()).getUser().getId().toString();
+      @AuthenticationPrincipal UserDetailsImpl user) {
+    String userId = user.getUser().getId().toString();
 
     Room room = roomService.getRoom(request.code())
         .orElseThrow(() -> new IllegalArgumentException("Room not found"));
@@ -65,23 +66,23 @@ public class HalaqahRestController {
     }
   }
 
-  @PostMapping("/leave/{roomId}")
+  @PostMapping("/leave")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Void> leaveRoom(
-      @PathVariable String roomId,
-      Authentication auth) {
-    String userId = ((UserDetailsImpl) auth.getPrincipal()).getUser().getId().toString();
+      @RequestBody RoomLeaveRequest request,
+      @AuthenticationPrincipal UserDetailsImpl user) {
+    String userId = user.getUser().getId().toString();
 
     try {
 
-      Room room = roomService.getRoom(roomId)
+      Room room = roomService.getRoom(request.code())
           .orElseThrow(() -> new IllegalArgumentException("Room not found"));
 
       Participant participant = room.getParticipants().get(userId);
       if (participant == null) {
         throw new IllegalArgumentException("User not found in room");
       }
-      roomService.leaveRoom(roomId, participant);
+      roomService.leaveRoom(request.code(), participant);
       return ResponseEntity.ok().build();
     } catch (IllegalArgumentException e) {
       return ResponseEntity.notFound().build();
