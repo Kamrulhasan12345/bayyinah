@@ -71,6 +71,7 @@ public class RailNavigationController {
     setupClickHandlers();
     setupDisplayNameTooltip();
     refreshAuthState();
+    activateReaderTab();
   }
 
   private void setupClickHandlers() {

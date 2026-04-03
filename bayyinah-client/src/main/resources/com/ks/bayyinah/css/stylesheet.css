@@ -36,17 +36,21 @@
 
 /* Modern splitbar styling scoped to the browsing layout */
 .browsing-split-pane {
-	-fx-background-color: #f5f7fb;
+	-fx-background-color: #f1f3f7;
 }
 
 .rail-host {
-	-fx-background-color: #f7f8fc;
-	-fx-border-color: #e5e9f2;
-	-fx-border-width: 0 1 0 0;
+	-fx-background-color: #edf1f7;
+	-fx-padding: 12 6 12 10;
 }
 
 .rail-root {
-	-fx-background-color: #f7f8fc;
+	-fx-background-color: #f9fbff;
+	-fx-background-radius: 14;
+	-fx-border-color: #d6ddea;
+	-fx-border-radius: 14;
+	-fx-border-width: 1;
+	-fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.08), 14, 0.26, 0, 4);
 }
 
 .rail-section {
@@ -58,43 +62,44 @@
 }
 
 .rail-button {
-	-fx-min-width: 44;
-	-fx-min-height: 44;
-	-fx-max-width: 44;
-	-fx-max-height: 44;
+	-fx-min-width: 42;
+	-fx-min-height: 42;
+	-fx-max-width: 42;
+	-fx-max-height: 42;
 	-fx-background-color: transparent;
-	-fx-background-radius: 12;
+	-fx-background-radius: 9;
 	-fx-cursor: hand;
 }
 
 .rail-button:hover {
-	-fx-background-color: #e8eefc;
+	-fx-background-color: #edf2fa;
 }
 
 .rail-button:focused {
-	-fx-background-color: #e0eaff;
-	-fx-border-color: #8eb4ff;
-	-fx-border-radius: 12;
+	-fx-background-color: #e9eff9;
+	-fx-border-color: #c9d4e8;
+	-fx-border-radius: 9;
 	-fx-border-width: 1;
 }
 
 .rail-button-active {
-	-fx-background-color: linear-gradient(to bottom, #dbeafe, #eaf3ff);
-	-fx-border-color: #8eb4ff;
+	-fx-background-color: #dde7f6;
+	-fx-border-color: #c0cfe6;
 	-fx-border-width: 1;
-	-fx-border-radius: 12;
+	-fx-border-radius: 9;
+	-fx-effect: dropshadow(gaussian, rgba(51, 65, 85, 0.12), 6, 0.2, 0, 1);
 }
 
 .rail-icon {
-	-fx-icon-color: #334155;
+	-fx-icon-color: #667084;
 }
 
 .rail-button-active .rail-icon {
-	-fx-icon-color: #0f172a;
+	-fx-icon-color: #1f2937;
 }
 
 .rail-logo-icon {
-	-fx-icon-color: #0f172a;
+	-fx-icon-color: #1f2937;
 }
 
 .rail-tooltip {
@@ -128,8 +133,8 @@
 }
 
 .sidebar-root {
-	-fx-background-color: #f7f8fc;
-	-fx-border-color: #e5e9f2;
+	-fx-background-color: #f5f6f8;
+	-fx-border-color: #dde3ec;
 	-fx-border-width: 0 1 0 0;
 }
 

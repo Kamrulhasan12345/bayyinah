@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<HBox prefHeight="64.0" styleClass="chapter-sidebar-row" stylesheets="@../../css/stylesheet.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.ChapterSidebarController">
+<HBox prefHeight="58.0" styleClass="chapter-sidebar-row" stylesheets="@../../css/stylesheet.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.ChapterSidebarController">
    <children>
       <StackPane prefHeight="34.0" prefWidth="34.0" styleClass="chapter-badge-wrap" stylesheets="@../../css/stylesheet.css">
          <children>

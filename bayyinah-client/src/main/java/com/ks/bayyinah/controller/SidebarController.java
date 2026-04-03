@@ -78,6 +78,7 @@ public class SidebarController {
     setupKeyboardNavigation();
 
     chaptersListView.setItems(displayedChapters);
+    chaptersListView.setFixedCellSize(60);
 
     DbAsync.runWithUi(() -> quranQueryService.getAllChapters("en"),
         chapters -> {

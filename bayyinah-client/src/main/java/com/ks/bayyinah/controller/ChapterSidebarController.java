@@ -36,6 +36,8 @@ public class ChapterSidebarController {
     nameArabic.setText(chapterData.getNameArabic() != null ? chapterData.getNameArabic() : "-");
     nameSimple.setText(chapterData.getNameSimple() != null ? chapterData.getNameSimple() : "Unknown");
     translatedName.setText(resolveTranslatedName(chapterData, chapterI18n));
+    translatedName.setVisible(false);
+    translatedName.setManaged(false);
     chapterMeta.setText(formatChapterMeta(chapterData));
 
     // TODO: maybe some other buttons .setOnAction(e -> { ... }) for bookmarking,
