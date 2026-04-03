@@ -6,6 +6,7 @@ module com.ks.bayyinah {
   requires com.zaxxer.hikari;
   requires jakarta.persistence;
   requires org.slf4j;
+  requires fr.brouillard.oss.cssfx;
 
   requires tools.jackson.core;
   requires tools.jackson.databind;

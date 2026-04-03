@@ -40,18 +40,18 @@
 }
 
 .rail-host {
-	-fx-background-color: #edf1f7;
-	-fx-padding: 12 6 12 10;
+	-fx-background-color: #ffffff;
+	/* -fx-padding: 5 5 5 5; */
 }
 
-.rail-root {
+/* .rail-root {
 	-fx-background-color: #f9fbff;
-	-fx-background-radius: 14;
+	-fx-background-radius: 10;
 	-fx-border-color: #d6ddea;
-	-fx-border-radius: 14;
+	-fx-border-radius: 10;
 	-fx-border-width: 1;
 	-fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.08), 14, 0.26, 0, 4);
-}
+} */
 
 .rail-section {
 	-fx-alignment: top-center;
@@ -62,32 +62,28 @@
 }
 
 .rail-button {
-	-fx-min-width: 42;
-	-fx-min-height: 42;
-	-fx-max-width: 42;
-	-fx-max-height: 42;
+	-fx-min-width: 35;
+	-fx-min-height: 35;
+	-fx-max-width: 35;
+	-fx-max-height: 35;
 	-fx-background-color: transparent;
-	-fx-background-radius: 9;
+	-fx-background-radius: 5;
 	-fx-cursor: hand;
 }
 
 .rail-button:hover {
-	-fx-background-color: #edf2fa;
+	-fx-background-color: #f4f6f8;
 }
 
 .rail-button:focused {
-	-fx-background-color: #e9eff9;
-	-fx-border-color: #c9d4e8;
-	-fx-border-radius: 9;
-	-fx-border-width: 1;
+	-fx-background-color: #e5e6e7;
+	-fx-border-radius: 5;
 }
 
 .rail-button-active {
-	-fx-background-color: #dde7f6;
-	-fx-border-color: #c0cfe6;
-	-fx-border-width: 1;
-	-fx-border-radius: 9;
-	-fx-effect: dropshadow(gaussian, rgba(51, 65, 85, 0.12), 6, 0.2, 0, 1);
+	-fx-background-color: #eeeff1;
+	-fx-border-radius: 5;
+	/* -fx-effect: dropshadow(gaussian, rgba(51, 65, 85, 0.12), 6, 0.2, 0, 1); */
 }
 
 .rail-icon {

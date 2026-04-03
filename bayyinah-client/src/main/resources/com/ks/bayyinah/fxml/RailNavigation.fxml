@@ -19,22 +19,22 @@
          <children>
             <StackPane fx:id="readerBtn" focusTraversable="true" styleClass="rail-button">
                <children>
-                  <FontIcon iconLiteral="mdi2b-book-open-page-variant-outline" iconSize="20" styleClass="rail-icon" />
+                  <FontIcon iconLiteral="mdi2b-book-open-page-variant-outline" iconSize="18" styleClass="rail-icon" />
                </children>
             </StackPane>
             <StackPane fx:id="bookmarksBtn" focusTraversable="true" styleClass="rail-button">
                <children>
-                  <FontIcon iconLiteral="mdi2b-bookmark-outline" iconSize="20" styleClass="rail-icon" />
+                  <FontIcon iconLiteral="mdi2b-bookmark-outline" iconSize="18" styleClass="rail-icon" />
                </children>
             </StackPane>
             <StackPane fx:id="progressBtn" focusTraversable="true" styleClass="rail-button">
                <children>
-                  <FontIcon iconLiteral="mdi2c-chart-line-variant" iconSize="20" styleClass="rail-icon" />
+                  <FontIcon iconLiteral="mdi2c-chart-line-variant" iconSize="18" styleClass="rail-icon" />
                </children>
             </StackPane>
             <StackPane fx:id="meetingBtn" focusTraversable="true" styleClass="rail-button">
                <children>
-                  <FontIcon iconLiteral="mdi2a-account-group-outline" iconSize="20" styleClass="rail-icon" />
+                  <FontIcon iconLiteral="mdi2a-account-group-outline" iconSize="18" styleClass="rail-icon" />
                </children>
             </StackPane>
          </children>
@@ -46,17 +46,17 @@
          <children>
             <StackPane fx:id="peopleBtn" focusTraversable="true" styleClass="rail-button">
                <children>
-                  <FontIcon iconLiteral="mdi2a-account-circle-outline" iconSize="20" styleClass="rail-icon" />
+                  <FontIcon iconLiteral="mdi2a-account-circle-outline" iconSize="18" styleClass="rail-icon" />
                </children>
             </StackPane>
             <StackPane fx:id="authBtn" focusTraversable="true" styleClass="rail-button">
                <children>
-                  <FontIcon fx:id="authIcon" iconLiteral="mdi2l-login" iconSize="20" styleClass="rail-icon" />
+                  <FontIcon fx:id="authIcon" iconLiteral="mdi2l-login" iconSize="18" styleClass="rail-icon" />
                </children>
             </StackPane>
             <StackPane fx:id="settingsBtn" focusTraversable="true" styleClass="rail-button">
                <children>
-                  <FontIcon iconLiteral="mdi2c-cog-outline" iconSize="20" styleClass="rail-icon" />
+                  <FontIcon iconLiteral="mdi2c-cog-outline" iconSize="18" styleClass="rail-icon" />
                </children>
             </StackPane>
          </children>

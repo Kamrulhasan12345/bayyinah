@@ -16,13 +16,14 @@ import com.ks.bayyinah.infra.remote.query.RemoteUserQueryService;
 import com.ks.bayyinah.infra.hybrid.service.*;
 import com.ks.bayyinah.infra.hybrid.model.*;
 import com.ks.bayyinah.infra.hybrid.query.*;
-import com.ks.bayyinah.infra.hybrid.query.TokenManager;
 import com.ks.bayyinah.infra.json.JsonSupport;
 import com.ks.bayyinah.config.ConfigManager;
 import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.controller.RootController;
 import com.ks.bayyinah.error.GlobalExceptionHandler;
 import com.ks.bayyinah.ui.ToastManager;
+
+import fr.brouillard.oss.cssfx.CSSFX;
 import tools.jackson.databind.ObjectMapper;
 
 /**
@@ -74,6 +75,8 @@ public class App extends Application {
     ToastManager.getInstance().initialize(stage);
 
     stage.show();
+    CSSFX.start();
+
 
     if (ENABLE_STARTUP_SAMPLE_TOASTS) {
       ToastManager.getInstance().showInfo("Welcome", "Welcome to Bayyinah!");
