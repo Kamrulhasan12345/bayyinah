@@ -23,13 +23,19 @@ public class RoomService {
   @Autowired
   private SimpMessagingTemplate messagingTemplate;
 
+  private static final int DEFAULT_MAX_PARTICIPANTS = 10;
+  private static final int MIN_MAX_PARTICIPANTS = 2;
+  private static final int MAX_MAX_PARTICIPANTS = 50;
+
   /**
    * Create a new room with the given leader and max participants.
    */
   public Room createRoom(Participant leader, Integer maxParticipants) {
     String code = storage.generateUniqueCode();
 
-    Room room = Room.create(code, leader, maxParticipants);
+    int normalizedMaxParticipants = normalizeMaxParticipants(maxParticipants);
+
+    Room room = Room.create(code, leader, normalizedMaxParticipants);
 
     storage.save(room);
 
@@ -85,12 +91,25 @@ public class RoomService {
    * Close room by code.
    */
   public void closeRoom(Room room) {
+    closeRoom(room, true);
+  }
+
+  /**
+   * Close room by code without broadcasting a control message.
+   */
+  public void closeRoomSilently(Room room) {
+    closeRoom(room, false);
+  }
+
+  private void closeRoom(Room room, boolean broadcastControlEvent) {
     room.setStatus(Room.RoomStatus.CLOSED);
     storage.save(room);
 
-    messagingTemplate.convertAndSend("/topic/room/" + room.getCode() + "/control",
-        new Message(Message.MessageType.ROOM_CLOSED, room.getCode(), "system", "Room has been closed",
-            Long.toString(System.currentTimeMillis())));
+    if (broadcastControlEvent) {
+      messagingTemplate.convertAndSend("/topic/room/" + room.getCode() + "/control",
+          new Message(Message.MessageType.ROOM_CLOSED, room.getCode(), "system", "Room has been closed",
+              Long.toString(System.currentTimeMillis())));
+    }
 
     logger.info("Closed room {}", room.getCode());
   }
@@ -146,5 +165,18 @@ public class RoomService {
     participant.setMuted(muted);
     storage.save(room);
     logger.info("Participant {} mute state in room {} set to {}", userId, code, muted);
+  }
+
+  private int normalizeMaxParticipants(Integer requestedMaxParticipants) {
+    if (requestedMaxParticipants == null) {
+      return DEFAULT_MAX_PARTICIPANTS;
+    }
+
+    if (requestedMaxParticipants < MIN_MAX_PARTICIPANTS || requestedMaxParticipants > MAX_MAX_PARTICIPANTS) {
+      throw new IllegalArgumentException(
+          "maxParticipants must be between " + MIN_MAX_PARTICIPANTS + " and " + MAX_MAX_PARTICIPANTS);
+    }
+
+    return requestedMaxParticipants;
   }
 }

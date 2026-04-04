@@ -11,6 +11,7 @@ import java.io.IOException;
 import com.ks.bayyinah.infra.local.database.*;
 import com.ks.bayyinah.infra.local.repository.user.*;
 import com.ks.bayyinah.infra.remote.client.ApiClient;
+import com.ks.bayyinah.infra.remote.query.RemoteHalaqahQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteSyncQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteUserQueryService;
 import com.ks.bayyinah.infra.hybrid.service.*;
@@ -151,6 +152,7 @@ public class App extends Application {
     var tokenManager = new TokenManager(authTokensService);
     var apiClient = new ApiClient(mainConfig, tokenManager, objectMapper);
     var remoteSyncQueryService = new RemoteSyncQueryService(apiClient);
+    var remoteHalaqahQueryService = new RemoteHalaqahQueryService(apiClient);
     var syncOrchestratorService = new SyncOrchestratorService(syncQueueService, bookmarkService,
         readingProgressService, userPreferenceService, userService, remoteSyncQueryService, objectMapper);
 
@@ -158,6 +160,7 @@ public class App extends Application {
     appContext.setTokenManager(tokenManager);
     appContext.setApiClient(apiClient);
     appContext.setRemoteSyncQueryService(remoteSyncQueryService);
+    appContext.setRemoteHalaqahQueryService(remoteHalaqahQueryService);
     appContext.setSyncOrchestratorService(syncOrchestratorService);
 
     var remoteUserQueryService = new RemoteUserQueryService(apiClient);

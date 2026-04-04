@@ -11,9 +11,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class BayyinahServerApplication {
 
-  @RequestMapping("/")
+  @RequestMapping("/health")
   String home() {
-    return "Hello World!";
+    return "Apps Working fine!";
   }
 
   public static void main(String[] args) {

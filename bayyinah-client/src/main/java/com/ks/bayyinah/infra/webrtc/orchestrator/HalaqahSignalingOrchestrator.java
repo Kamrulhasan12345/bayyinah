@@ -80,6 +80,15 @@ public class HalaqahSignalingOrchestrator {
       return true;
     }
 
-    return sessionId != null && trackedSessionIds.contains(sessionId);
+    if (sessionId != null && trackedSessionIds.contains(sessionId)) {
+      return true;
+    }
+
+    // Allow explicitly targeted frames so newly-created sessions are not dropped
+    // before local tracking is updated.
+    return targetUserId != null
+        && !targetUserId.isBlank()
+        && localUserId != null
+        && localUserId.equals(targetUserId);
   }
 }

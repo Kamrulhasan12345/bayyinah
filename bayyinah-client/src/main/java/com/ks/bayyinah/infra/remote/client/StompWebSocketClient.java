@@ -65,7 +65,17 @@ public class StompWebSocketClient {
 
     // Create WebSocket client
     List<Transport> transports = new ArrayList<>();
-    transports.add(new WebSocketTransport(new StandardWebSocketClient()));
+    try {
+      transports.add(new WebSocketTransport(new StandardWebSocketClient()));
+    } catch (Throwable throwable) {
+      String rootMessage = throwable.getMessage() == null ? throwable.getClass().getSimpleName() : throwable.getMessage();
+      IllegalStateException wrapped = new IllegalStateException(
+          "WebSocket runtime is unavailable. Ensure Jakarta websocket API and Tyrus client runtime are on the classpath. Root cause: "
+              + rootMessage,
+          throwable);
+      logger.error("WebSocket transport initialization failed", wrapped);
+      return CompletableFuture.failedFuture(wrapped);
+    }
 
     SockJsClient sockJsClient = new SockJsClient(transports);
 

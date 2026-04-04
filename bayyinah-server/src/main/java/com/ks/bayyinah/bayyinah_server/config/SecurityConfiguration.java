@@ -40,6 +40,8 @@ public class SecurityConfiguration {
                 .requestMatchers("/actuator/info").permitAll()
                 .requestMatchers("/ws").permitAll()
                 .requestMatchers("/ws/**").permitAll()
+                .requestMatchers("/*.html").permitAll()
+                .requestMatchers("/static/**").permitAll()
                 .anyRequest().authenticated()
 
         )

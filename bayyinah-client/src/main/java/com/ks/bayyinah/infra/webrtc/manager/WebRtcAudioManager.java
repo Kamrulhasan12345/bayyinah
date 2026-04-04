@@ -23,7 +23,10 @@ public class WebRtcAudioManager {
   private PeerConnectionFactory factory;
   private RTCPeerConnection peerConnection;
   private AudioDeviceModule audioDeviceModule;
+  private RTCRtpSender localAudioSender;
   private AudioTrack localAudioTrack;
+  private final List<RTCIceCandidate> pendingRemoteCandidates = new ArrayList<>();
+  private volatile boolean remoteDescriptionSet;
 
   // Callbacks
   private Consumer<String> onSdpCreated;
@@ -41,20 +44,33 @@ public class WebRtcAudioManager {
    * Initialize WebRTC factory and audio device
    */
   private void initializeWebRtc() {
+    Throwable defaultFactoryFailure = null;
+
     try {
-      // Initialize audio device module
-      // TODO: this is where i get to hook it up to any dropdown stuff to get a
-      // "configured" audioDeviceModule
+      // Official quickstart path: default factory handles native audio setup.
+      factory = new PeerConnectionFactory();
+      logger.info("WebRTC initialized using default PeerConnectionFactory");
+      return;
+    } catch (Throwable throwable) {
+      defaultFactoryFailure = throwable;
+      logger.warn("Default WebRTC factory initialization failed, falling back to explicit AudioDeviceModule",
+          throwable);
+    }
+
+    try {
+      // Optional path for explicit audio device selection and custom audio layer.
       audioDeviceModule = new AudioDeviceModule();
-
-      // Create peer connection factory
       factory = new PeerConnectionFactory(audioDeviceModule);
-
-      logger.info("WebRTC initialized");
-
-    } catch (Exception e) {
-      logger.error("Failed to initialize WebRTC", e);
-      throw new RuntimeException("WebRTC initialization failed", e);
+      logger.info("WebRTC initialized using explicit AudioDeviceModule");
+    } catch (Throwable throwable) {
+      IllegalStateException wrapped = new IllegalStateException(
+          "WebRTC initialization failed. Verify webrtc-java native runtime for this platform, a 64-bit JDK, and required Windows VC++ runtime.",
+          throwable);
+      if (defaultFactoryFailure != null) {
+        wrapped.addSuppressed(defaultFactoryFailure);
+      }
+      logger.error("Failed to initialize WebRTC", wrapped);
+      throw wrapped;
     }
   }
 
@@ -63,6 +79,12 @@ public class WebRtcAudioManager {
    */
   public void createPeerConnection(boolean isLeader) {
     this.isLeader = isLeader;
+    this.remoteDescriptionSet = false;
+    this.pendingRemoteCandidates.clear();
+
+    if (factory == null) {
+      throw new IllegalStateException("WebRTC factory is not initialized");
+    }
 
     // ICE servers (STUN for NAT traversal)
     RTCConfiguration config = new RTCConfiguration();
@@ -106,11 +128,17 @@ public class WebRtcAudioManager {
   }
 
   /**
-   * Start audio capture (leader only)
+   * Start local audio capture and attach track to the current peer connection.
    */
   public void startAudioCapture() {
-    if (!isLeader) {
-      logger.warn("Only leader can capture audio");
+    if (peerConnection == null) {
+      logger.warn("Cannot start audio capture before peer connection is created");
+      return;
+    }
+
+    if (localAudioTrack != null) {
+      localAudioTrack.setEnabled(true);
+      logger.info("Audio capture already active");
       return;
     }
 
@@ -127,7 +155,7 @@ public class WebRtcAudioManager {
       localAudioTrack = factory.createAudioTrack("audio-track-" + userId, audioSource);
 
       // Add track to peer connection
-      peerConnection.addTrack(localAudioTrack, List.of("stream-" + userId));
+      localAudioSender = peerConnection.addTrack(localAudioTrack, List.of("stream-" + userId));
 
       logger.info("Audio capture started");
 
@@ -196,6 +224,8 @@ public class WebRtcAudioManager {
       @Override
       public void onSuccess() {
         logger.info("Remote offer set, creating answer");
+        remoteDescriptionSet = true;
+        flushPendingRemoteCandidates();
 
         // Create answer
         RTCAnswerOptions answerOptions = new RTCAnswerOptions();
@@ -237,27 +267,60 @@ public class WebRtcAudioManager {
   /**
    * Handle received SDP answer (leader receives)
    */
-  public void handleAnswer(String sdp) {
+  public CompletableFuture<Void> handleAnswer(String sdp) {
+    CompletableFuture<Void> future = new CompletableFuture<>();
     RTCSessionDescription answer = new RTCSessionDescription(RTCSdpType.ANSWER, sdp);
 
     peerConnection.setRemoteDescription(answer, new SetSessionDescriptionObserver() {
       @Override
       public void onSuccess() {
         logger.info("Remote answer set successfully");
+        remoteDescriptionSet = true;
+        flushPendingRemoteCandidates();
+        future.complete(null);
       }
 
       @Override
       public void onFailure(String error) {
         logger.error("Failed to set remote answer: {}", error);
+        future.completeExceptionally(new RuntimeException(error));
       }
     });
+
+    return future;
   }
 
   /**
    * Add ICE candidate
    */
-  public void addIceCandidate(String candidate, String sdpMid, int sdpMLineIndex) {
+  public synchronized void addIceCandidate(String candidate, String sdpMid, int sdpMLineIndex) {
     RTCIceCandidate iceCandidate = new RTCIceCandidate(sdpMid, sdpMLineIndex, candidate);
+
+    if (!remoteDescriptionSet) {
+      pendingRemoteCandidates.add(iceCandidate);
+      logger.info("Buffered ICE candidate until remote description is set");
+      return;
+    }
+
+    applyIceCandidate(iceCandidate);
+  }
+
+  private synchronized void flushPendingRemoteCandidates() {
+    if (!remoteDescriptionSet || pendingRemoteCandidates.isEmpty()) {
+      return;
+    }
+
+    for (RTCIceCandidate candidate : pendingRemoteCandidates) {
+      applyIceCandidate(candidate);
+    }
+    pendingRemoteCandidates.clear();
+  }
+
+  private void applyIceCandidate(RTCIceCandidate iceCandidate) {
+    if (peerConnection == null) {
+      logger.warn("Ignoring ICE candidate because peer connection is not available");
+      return;
+    }
 
     peerConnection.addIceCandidate(iceCandidate);
     logger.info("ICE candidate added");
@@ -290,17 +353,70 @@ public class WebRtcAudioManager {
   /**
    * Cleanup
    */
-  public void dispose() {
-    if (localAudioTrack != null) {
-      localAudioTrack.dispose();
+  public synchronized void dispose() {
+    RTCPeerConnection connection = peerConnection;
+    RTCRtpSender sender = localAudioSender;
+    AudioTrack track = localAudioTrack;
+    PeerConnectionFactory currentFactory = factory;
+    AudioDeviceModule currentAudioDeviceModule = audioDeviceModule;
+
+    // Null references first to make dispose idempotent and avoid re-entrancy issues.
+    peerConnection = null;
+    localAudioSender = null;
+    localAudioTrack = null;
+    factory = null;
+    audioDeviceModule = null;
+    onSdpCreated = null;
+    onIceCandidateGenerated = null;
+    remoteDescriptionSet = false;
+    pendingRemoteCandidates.clear();
+
+    if (track != null) {
+      try {
+        track.setEnabled(false);
+      } catch (Throwable throwable) {
+        logger.debug("Failed to disable local audio track during dispose", throwable);
+      }
     }
 
-    if (peerConnection != null) {
-      peerConnection.close();
+    if (connection != null && sender != null) {
+      try {
+        connection.removeTrack(sender);
+      } catch (Throwable throwable) {
+        logger.debug("Failed to remove sender from peer connection during dispose", throwable);
+      }
     }
 
-    if (factory != null) {
-      factory.dispose();
+    if (connection != null) {
+      try {
+        connection.close();
+      } catch (Throwable throwable) {
+        logger.warn("Failed to close peer connection during dispose", throwable);
+      }
+    }
+
+    if (track != null) {
+      try {
+        track.dispose();
+      } catch (Throwable throwable) {
+        logger.warn("Failed to dispose local audio track cleanly", throwable);
+      }
+    }
+
+    if (currentFactory != null) {
+      try {
+        currentFactory.dispose();
+      } catch (Throwable throwable) {
+        logger.warn("Failed to dispose peer connection factory cleanly", throwable);
+      }
+    }
+
+    if (currentAudioDeviceModule != null) {
+      try {
+        currentAudioDeviceModule.dispose();
+      } catch (Throwable throwable) {
+        logger.warn("Failed to dispose audio device module cleanly", throwable);
+      }
     }
 
     logger.info("WebRTC disposed");

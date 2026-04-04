@@ -1,11 +1,12 @@
 package com.ks.bayyinah.bayyinah_server.controller;
 
+import java.security.Principal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.util.HtmlUtils;
 
@@ -23,30 +24,35 @@ public class HalaqahController {
 
   @MessageMapping("/room/{roomId}/presence")
   @SendTo("/topic/room/{roomId}/presence")
-  @PreAuthorize("isAuthenticated()")
   public Presence handlePresence(@DestinationVariable String roomId, Presence presence,
-      @AuthenticationPrincipal UserDetailsImpl user) {
-    validateMessage(roomId, presence.getRoomId(), presence.getSenderId(), user, false);
+      Principal principal) {
+    String authenticatedUserId = validateMessage(roomId, presence.getRoomId(), presence.getSenderId(), principal,
+        false);
 
+    if (presence.getType() == null) {
+      throw new IllegalArgumentException("Presence type is required");
+    }
+
+    presence.setSenderId(authenticatedUserId);
     presence.setDisplayName(HtmlUtils.htmlEscape(presence.getDisplayName()));
 
     Room room = roomService.getRoom(roomId)
         .orElseThrow(() -> new IllegalArgumentException("Room not found"));
 
-    Participant participant = room.getParticipants().get(presence.getSenderId());
+    Participant participant = room.getParticipants().get(authenticatedUserId);
 
     if (presence.getType() == Presence.PresenceType.JOIN && participant == null) {
       Participant joiningParticipant = new Participant(
-          presence.getSenderId(),
+          authenticatedUserId,
           presence.getDisplayName(),
           java.time.LocalDateTime.now(),
           false,
           false);
       roomService.joinRoom(roomId, joiningParticipant);
-      logger.info("User {} joined room {}", presence.getSenderId(), roomId);
+      logger.info("User {} joined room {}", authenticatedUserId, roomId);
     } else if (presence.getType() == Presence.PresenceType.LEAVE && participant != null) {
       roomService.leaveRoom(roomId, participant);
-      logger.info("User {} left room {}", presence.getSenderId(), roomId);
+      logger.info("User {} left room {}", authenticatedUserId, roomId);
     } else if (presence.getType() == Presence.PresenceType.LEAVE) {
       throw new IllegalArgumentException("User not found in room");
     }
@@ -59,12 +65,12 @@ public class HalaqahController {
 
   @MessageMapping("/room/{roomId}/offer")
   @SendTo("/topic/room/{roomId}/offer")
-  @PreAuthorize("isAuthenticated()")
   public SdpMessage handleOffer(@DestinationVariable String roomId, SdpMessage offer,
-      @AuthenticationPrincipal UserDetailsImpl user) {
-    validateMessage(roomId, offer.getRoomId(), offer.getSenderId(), user, true);
+      Principal principal) {
+    String authenticatedUserId = validateMessage(roomId, offer.getRoomId(), offer.getSenderId(), principal, true);
     validateSignalingRoute(roomId, offer.getTargetUserId(), offer.getSessionId());
 
+    offer.setSenderId(authenticatedUserId);
     offer.setSdp(HtmlUtils.htmlEscape(offer.getSdp()));
     offer.setTargetUserId(HtmlUtils.htmlEscape(offer.getTargetUserId()));
     offer.setSessionId(HtmlUtils.htmlEscape(offer.getSessionId()));
@@ -76,12 +82,12 @@ public class HalaqahController {
 
   @MessageMapping("/room/{roomId}/answer")
   @SendTo("/topic/room/{roomId}/answer")
-  @PreAuthorize("isAuthenticated()")
   public SdpMessage handleAnswer(@DestinationVariable String roomId, SdpMessage answer,
-      @AuthenticationPrincipal UserDetailsImpl user) {
-    validateMessage(roomId, answer.getRoomId(), answer.getSenderId(), user, true);
+      Principal principal) {
+    String authenticatedUserId = validateMessage(roomId, answer.getRoomId(), answer.getSenderId(), principal, true);
     validateSignalingRoute(roomId, answer.getTargetUserId(), answer.getSessionId());
 
+    answer.setSenderId(authenticatedUserId);
     answer.setSdp(HtmlUtils.htmlEscape(answer.getSdp()));
     answer.setTargetUserId(HtmlUtils.htmlEscape(answer.getTargetUserId()));
     answer.setSessionId(HtmlUtils.htmlEscape(answer.getSessionId()));
@@ -93,14 +99,16 @@ public class HalaqahController {
 
   @MessageMapping("/room/{roomId}/candidate")
   @SendTo("/topic/room/{roomId}/candidate")
-  @PreAuthorize("isAuthenticated()")
   public Candidate handleCandidate(@DestinationVariable String roomId, Candidate candidate,
-      @AuthenticationPrincipal UserDetailsImpl user) {
-    validateMessage(roomId, candidate.getRoomId(), candidate.getSenderId(), user, true);
+      Principal principal) {
+    String authenticatedUserId = validateMessage(roomId, candidate.getRoomId(), candidate.getSenderId(), principal,
+        true);
     validateSignalingRoute(roomId, candidate.getTargetUserId(), candidate.getSessionId());
 
+    candidate.setSenderId(authenticatedUserId);
     candidate.setCandidate(HtmlUtils.htmlEscape(candidate.getCandidate()));
     candidate.setSdpMid(HtmlUtils.htmlEscape(candidate.getSdpMid()));
+
     candidate.setTargetUserId(HtmlUtils.htmlEscape(candidate.getTargetUserId()));
     candidate.setSessionId(HtmlUtils.htmlEscape(candidate.getSessionId()));
 
@@ -109,19 +117,31 @@ public class HalaqahController {
 
   @MessageMapping("/room/{roomId}/control")
   @SendTo("/topic/room/{roomId}/control")
-  @PreAuthorize("isAuthenticated()")
   public Message handleControlMessage(@DestinationVariable String roomId, Message message,
-      @AuthenticationPrincipal UserDetailsImpl user) {
-    validateMessage(roomId, message.getRoomId(), message.getSenderId(), user, true);
+      Principal principal) {
+    String authenticatedUserId = validateMessage(roomId, message.getRoomId(), message.getSenderId(), principal, true);
 
-    if (message.getType() == Message.MessageType.MUTE || message.getType() == Message.MessageType.UNMUTE) {
-      roomService.setParticipantMuted(roomId, message.getSenderId(), message.getType() == Message.MessageType.MUTE);
+    if (message.getType() == null) {
+      throw new IllegalArgumentException("Control message type is required");
     }
 
-    if (message.getType() == Message.MessageType.VERSE_NAVIGATION) {
-      if (!roomService.getRoom(roomId).map(r -> r.isLeader(message.getSenderId())).orElse(false)) {
-        throw new SecurityException("Only leader can navigate verses");
-      }
+    message.setSenderId(authenticatedUserId);
+
+    if (message.getType() == Message.MessageType.MUTE || message.getType() == Message.MessageType.UNMUTE) {
+      roomService.setParticipantMuted(roomId, authenticatedUserId, message.getType() == Message.MessageType.MUTE);
+    }
+
+    if (message.getType() == Message.MessageType.VERSE_NAVIGATION
+        || message.getType() == Message.MessageType.ROOM_CLOSED
+        || message.getType() == Message.MessageType.KICK) {
+      requireLeader(roomId, authenticatedUserId);
+    }
+
+    if (message.getType() == Message.MessageType.ROOM_CLOSED) {
+      Room room = roomService.getRoom(roomId)
+          .orElseThrow(() -> new IllegalArgumentException("Room not found"));
+      roomService.closeRoomSilently(room);
+      message.setContent("Room has been closed");
     }
 
     message.setContent(HtmlUtils.htmlEscape(message.getContent()));
@@ -135,41 +155,38 @@ public class HalaqahController {
 
   @MessageMapping("/room/{roomId}/chat")
   @SendTo("/topic/room/{roomId}/chat")
-  @PreAuthorize("isAuthenticated()")
   public ChatMessage handleChatMessage(@DestinationVariable String roomId, ChatMessage chatMessage,
-      @AuthenticationPrincipal UserDetailsImpl user) {
-    validateMessage(roomId, chatMessage.getRoomId(), chatMessage.getSenderId(), user, true);
+      Principal principal) {
+    String authenticatedUserId = validateMessage(roomId, chatMessage.getRoomId(), chatMessage.getSenderId(),
+        principal, true);
+
+    chatMessage.setSenderId(authenticatedUserId);
 
     chatMessage.setDisplayName(HtmlUtils.htmlEscape(chatMessage.getDisplayName()));
     chatMessage.setContent(HtmlUtils.htmlEscape(chatMessage.getContent()));
     chatMessage.setTimestamp(HtmlUtils.htmlEscape(chatMessage.getTimestamp()));
 
     return chatMessage;
+        
   }
 
-  private void validateMessage(String roomId, String messageRoomId, String senderId, UserDetailsImpl user,
+  private String validateMessage(String roomId, String messageRoomId, String senderId, Principal principal,
       boolean requireInRoom) {
     if (roomId == null || !roomId.equals(messageRoomId)) {
       throw new IllegalArgumentException("Room ID mismatch");
     }
 
-    if (user == null || user.getUser() == null || user.getUser().getId() == null) {
-      throw new SecurityException("Unauthenticated user");
-    }
+    String authenticatedUserId = extractAuthenticatedUserId(principal);
 
-    String userId = user.getUser().getId().toString();
-
-    if (userId == null || senderId == null || userId.isEmpty() || senderId.isEmpty()) {
-      throw new IllegalArgumentException("User ID or Sender ID is missing");
-    }
-
-    if (!userId.equals(senderId)) {
+    if (senderId != null && !senderId.isBlank() && !authenticatedUserId.equals(senderId)) {
       throw new SecurityException("Sender ID mismatch");
     }
 
-    if (requireInRoom && !roomService.isUserInRoom(roomId, senderId)) {
+    if (requireInRoom && !roomService.isUserInRoom(roomId, authenticatedUserId)) {
       throw new SecurityException("User not in room");
     }
+
+    return authenticatedUserId;
   }
 
   private void validateSignalingRoute(String roomId, String targetUserId, String sessionId) {
@@ -183,6 +200,27 @@ public class HalaqahController {
 
     if (!roomService.isUserInRoom(roomId, targetUserId)) {
       throw new SecurityException("Target user not in room");
+    }
+  }
+
+  private String extractAuthenticatedUserId(Principal principal) {
+    if (!(principal instanceof UsernamePasswordAuthenticationToken authenticationToken)) {
+      throw new SecurityException("Unauthenticated user");
+    }
+
+    Object principalObject = authenticationToken.getPrincipal();
+    if (!(principalObject instanceof UserDetailsImpl userDetails)
+        || userDetails.getUser() == null
+        || userDetails.getUser().getId() == null) {
+      throw new SecurityException("Unauthenticated user");
+    }
+
+    return userDetails.getUser().getId().toString();
+  }
+
+  private void requireLeader(String roomId, String authenticatedUserId) {
+    if (!roomService.getRoom(roomId).map(r -> r.isLeader(authenticatedUserId)).orElse(false)) {
+      throw new SecurityException("Only leader can perform this action");
     }
   }
 

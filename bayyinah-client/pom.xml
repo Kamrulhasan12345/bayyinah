@@ -108,21 +108,39 @@
         <dependency>
             <groupId>dev.onvoid.webrtc</groupId>
             <artifactId>webrtc-java</artifactId>
-      <version>0.14.0</version>
-      <scope>compile</scope>
-    </dependency>
-      <dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-websocket</artifactId>
-    <version>7.0.6</version>
-    <scope>compile</scope>
-    </dependency>
-<dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-messaging</artifactId>
-    <version>7.0.6</version>
-    <scope>compile</scope>
-</dependency>
+            <version>0.14.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>7.0.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+            <version>7.0.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.websocket</groupId>
+            <artifactId>jakarta.websocket-client-api</artifactId>
+            <version>2.2.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-client</artifactId>
+            <version>2.2.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-container-jdk-client</artifactId>
+            <version>2.2.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
