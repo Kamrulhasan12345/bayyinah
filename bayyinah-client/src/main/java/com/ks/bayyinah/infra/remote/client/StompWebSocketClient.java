@@ -1,11 +1,17 @@
 package com.ks.bayyinah.infra.remote.client;
 
+import com.ks.bayyinah.infra.remote.dto.stomp.Candidate;
+import com.ks.bayyinah.infra.remote.dto.stomp.ChatMessage;
+import com.ks.bayyinah.infra.remote.dto.stomp.Message;
+import com.ks.bayyinah.infra.remote.dto.stomp.Presence;
+import com.ks.bayyinah.infra.remote.dto.stomp.SdpMessage;
 import tools.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
+import lombok.Data;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.converter.JacksonJsonMessageConverter;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.*;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -19,10 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * STOMP WebSocket client for collaborative sessions
  */
+@Data
 public class StompWebSocketClient {
 
   private static final Logger logger = LoggerFactory.getLogger(StompWebSocketClient.class);
@@ -33,6 +41,7 @@ public class StompWebSocketClient {
   private WebSocketStompClient stompClient;
   private StompSession session;
   private String roomId;
+  private String localUserId;
 
   public StompWebSocketClient(String serverUrl, ObjectMapper objectMapper) {
     this.serverUrl = serverUrl;
@@ -43,7 +52,16 @@ public class StompWebSocketClient {
    * Connect to WebSocket with JWT authentication
    */
   public CompletableFuture<Void> connect(String roomId, String jwtToken, StompSessionHandler sessionHandler) {
+    return connect(roomId, jwtToken, null, sessionHandler);
+  }
+
+  /**
+   * Connect to WebSocket with JWT authentication and local user context.
+   */
+  public CompletableFuture<Void> connect(String roomId, String jwtToken, String localUserId,
+      StompSessionHandler sessionHandler) {
     this.roomId = roomId;
+    this.localUserId = localUserId;
 
     // Create WebSocket client
     List<Transport> transports = new ArrayList<>();
@@ -117,16 +135,16 @@ public class StompWebSocketClient {
   /**
    * Subscribe to control messages (verse navigation, mute, etc.)
    */
-  public void subscribeToControl(Consumer<ControlMessage> controlHandler) {
+  public void subscribeToControl(Consumer<Message> controlHandler) {
     session.subscribe("/topic/room/" + roomId + "/control", new StompFrameHandler() {
       @Override
       public Type getPayloadType(StompHeaders headers) {
-        return ControlMessage.class;
+        return Message.class;
       }
 
       @Override
       public void handleFrame(StompHeaders headers, Object payload) {
-        Platform.runLater(() -> controlHandler.accept((ControlMessage) payload));
+        Platform.runLater(() -> controlHandler.accept((Message) payload));
       }
     });
   }
@@ -135,6 +153,13 @@ public class StompWebSocketClient {
    * Subscribe to SDP offers (WebRTC signaling)
    */
   public void subscribeToOffers(Consumer<SdpMessage> offerHandler) {
+    subscribeToOffers(null, offerHandler);
+  }
+
+  /**
+   * Subscribe to SDP offers with additional peer-context filtering.
+   */
+  public void subscribeToOffers(Predicate<SdpMessage> filter, Consumer<SdpMessage> offerHandler) {
     session.subscribe("/topic/room/" + roomId + "/offer", new StompFrameHandler() {
       @Override
       public Type getPayloadType(StompHeaders headers) {
@@ -143,7 +168,11 @@ public class StompWebSocketClient {
 
       @Override
       public void handleFrame(StompHeaders headers, Object payload) {
-        Platform.runLater(() -> offerHandler.accept((SdpMessage) payload));
+        SdpMessage message = (SdpMessage) payload;
+        if (!shouldProcessInboundSignal(message.getSenderId(), filter, message)) {
+          return;
+        }
+        Platform.runLater(() -> offerHandler.accept(message));
       }
     });
   }
@@ -152,6 +181,13 @@ public class StompWebSocketClient {
    * Subscribe to SDP answers (WebRTC signaling)
    */
   public void subscribeToAnswers(Consumer<SdpMessage> answerHandler) {
+    subscribeToAnswers(null, answerHandler);
+  }
+
+  /**
+   * Subscribe to SDP answers with additional peer-context filtering.
+   */
+  public void subscribeToAnswers(Predicate<SdpMessage> filter, Consumer<SdpMessage> answerHandler) {
     session.subscribe("/topic/room/" + roomId + "/answer", new StompFrameHandler() {
       @Override
       public Type getPayloadType(StompHeaders headers) {
@@ -160,7 +196,11 @@ public class StompWebSocketClient {
 
       @Override
       public void handleFrame(StompHeaders headers, Object payload) {
-        Platform.runLater(() -> answerHandler.accept((SdpMessage) payload));
+        SdpMessage message = (SdpMessage) payload;
+        if (!shouldProcessInboundSignal(message.getSenderId(), filter, message)) {
+          return;
+        }
+        Platform.runLater(() -> answerHandler.accept(message));
       }
     });
   }
@@ -168,16 +208,27 @@ public class StompWebSocketClient {
   /**
    * Subscribe to ICE candidates (WebRTC signaling)
    */
-  public void subscribeToCandidates(Consumer<IceCandidate> candidateHandler) {
+  public void subscribeToCandidates(Consumer<Candidate> candidateHandler) {
+    subscribeToCandidates(null, candidateHandler);
+  }
+
+  /**
+   * Subscribe to ICE candidates with additional peer-context filtering.
+   */
+  public void subscribeToCandidates(Predicate<Candidate> filter, Consumer<Candidate> candidateHandler) {
     session.subscribe("/topic/room/" + roomId + "/candidate", new StompFrameHandler() {
       @Override
       public Type getPayloadType(StompHeaders headers) {
-        return IceCandidate.class;
+        return Candidate.class;
       }
 
       @Override
       public void handleFrame(StompHeaders headers, Object payload) {
-        Platform.runLater(() -> candidateHandler.accept((IceCandidate) payload));
+        Candidate message = (Candidate) payload;
+        if (!shouldProcessInboundSignal(message.getSenderId(), filter, message)) {
+          return;
+        }
+        Platform.runLater(() -> candidateHandler.accept(message));
       }
     });
   }
@@ -216,7 +267,7 @@ public class StompWebSocketClient {
   /**
    * Send presence (join/leave)
    */
-  public void sendPresence(String senderId, String displayName, PresenceType type) {
+  public void sendPresence(String senderId, String displayName, Presence.PresenceType type) {
     Presence presence = new Presence(roomId, senderId, type, displayName);
     session.send("/app/room/" + roomId + "/presence", presence);
   }
@@ -224,8 +275,8 @@ public class StompWebSocketClient {
   /**
    * Send control message
    */
-  public void sendControlMessage(String senderId, ControlMessageType type, String content) {
-    ControlMessage message = new ControlMessage(
+  public void sendControlMessage(String senderId, Message.MessageType type, String content) {
+    Message message = new Message(
         type,
         roomId,
         senderId,
@@ -238,24 +289,28 @@ public class StompWebSocketClient {
   /**
    * Send SDP offer (leader only)
    */
-  public void sendOffer(String senderId, String sdp) {
-    SdpMessage offer = new SdpMessage(SdpType.OFFER, senderId, roomId, sdp);
+  public void sendOffer(String senderId, String sdp, String targetUserId, String sessionId) {
+    SdpMessage offer = new SdpMessage(SdpMessage.SdpType.OFFER, senderId, roomId, sdp, targetUserId,
+        sessionId);
     session.send("/app/room/" + roomId + "/offer", offer);
   }
 
   /**
    * Send SDP answer
    */
-  public void sendAnswer(String senderId, String sdp) {
-    SdpMessage answer = new SdpMessage(SdpType.ANSWER, senderId, roomId, sdp);
+  public void sendAnswer(String senderId, String sdp, String targetUserId, String sessionId) {
+    SdpMessage answer = new SdpMessage(SdpMessage.SdpType.ANSWER, senderId, roomId, sdp, targetUserId,
+        sessionId);
     session.send("/app/room/" + roomId + "/answer", answer);
   }
 
   /**
    * Send ICE candidate
    */
-  public void sendIceCandidate(String senderId, String candidate, String sdpMid, int sdpMLineIndex) {
-    IceCandidate ice = new IceCandidate(senderId, roomId, candidate, sdpMid, sdpMLineIndex);
+  public void sendIceCandidate(String senderId, String candidate, String sdpMid, int sdpMLineIndex,
+      String targetUserId, String sessionId) {
+    Candidate ice = new Candidate(senderId, roomId, candidate, sdpMid, sdpMLineIndex, targetUserId,
+        sessionId);
     session.send("/app/room/" + roomId + "/candidate", ice);
   }
 
@@ -276,58 +331,18 @@ public class StompWebSocketClient {
     return session != null && session.isConnected();
   }
 
-  // ════════════════════════════════════════════════════════════
-  // MESSAGE DTOs
-  // ════════════════════════════════════════════════════════════
+  private <T> boolean shouldProcessInboundSignal(String senderId, Predicate<T> filter, T payload) {
+    if (senderId != null && localUserId != null && localUserId.equals(senderId)) {
+      logger.debug("Ignoring self-originated signaling frame for user {}", localUserId);
+      return false;
+    }
 
-  public record ChatMessage(
-      String roomId,
-      String senderId,
-      String displayName,
-      String content,
-      String timestamp) {
-  }
+    if (filter != null && !filter.test(payload)) {
+      logger.debug("Ignoring signaling frame rejected by peer-context filter");
+      return false;
+    }
 
-  public record Presence(
-      String roomId,
-      String senderId,
-      PresenceType type,
-      String displayName) {
-  }
-
-  public enum PresenceType {
-    JOIN, LEAVE
-  }
-
-  public record ControlMessage(
-      ControlMessageType type,
-      String roomId,
-      String senderId,
-      String content,
-      String timestamp) {
-  }
-
-  public enum ControlMessageType {
-    MUTE, UNMUTE, VERSE_NAVIGATION, KICK, ROOM_CLOSED
-  }
-
-  public record SdpMessage(
-      SdpType type,
-      String senderId,
-      String roomId,
-      String sdp) {
-  }
-
-  public enum SdpType {
-    OFFER, ANSWER
-  }
-
-  public record IceCandidate(
-      String senderId,
-      String roomId,
-      String candidate,
-      String sdpMid,
-      Integer sdpMLineIndex) {
+    return true;
   }
 
   public record ErrorMessage(String type, String message) {

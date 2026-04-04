@@ -130,4 +130,21 @@ public class RoomService {
   public boolean isUserInRoom(String code, String userId) {
     return storage.findActiveByCode(code).map(room -> room.isParticipant(userId)).orElse(false);
   }
+
+  /**
+   * Update participant mute state in an active room.
+   */
+  public void setParticipantMuted(String code, String userId, boolean muted) {
+    Room room = storage.findActiveByCode(code)
+        .orElseThrow(() -> new IllegalArgumentException("Room not found or inactive"));
+
+    Participant participant = room.getParticipants().get(userId);
+    if (participant == null) {
+      throw new IllegalArgumentException("User not found in room");
+    }
+
+    participant.setMuted(muted);
+    storage.save(room);
+    logger.info("Participant {} mute state in room {} set to {}", userId, code, muted);
+  }
 }

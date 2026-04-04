@@ -31,6 +31,7 @@ public class RemoteHalaqahQueryService {
   }
 
   public CompletableFuture<RoomResponse> getRoom(String code) {
+    // TODO: Add room chat history endpoint + client fetch so late joiners can hydrate past messages before live STOMP updates.
     return apiClient.get(ApiRoute.HALAQAH_ROOM, RoomResponse.class, code);
   }
 }

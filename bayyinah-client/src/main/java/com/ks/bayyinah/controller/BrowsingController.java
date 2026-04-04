@@ -5,7 +5,6 @@ import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.core.dto.ChapterView;
 import java.io.IOException;
 
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -16,7 +15,6 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 import lombok.*;
 
 @Data
@@ -192,7 +190,29 @@ public class BrowsingController {
   }
 
   private void showMeeting() {
-    loadSimpleView("fxml/MeetingView.fxml", true);
+    applySidebarVisibility(true);
+
+    if (sidebarController != null) {
+      sidebarController.clearSelection();
+    }
+
+    try {
+      FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/MeetingView.fxml"));
+      Node view = loader.load();
+
+      Object controller = loader.getController();
+      if (controller instanceof MeetingViewController meetingViewController) {
+        meetingViewController.setAppContext(appContext);
+        meetingViewController.initializeMeeting();
+      }
+
+      contentArea.getChildren().setAll(view);
+      contentArea.getChildren().add(loadingOverlay);
+      currentShownChapterId = -1;
+      partialChapterView = true;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   private void loadSimpleView(String fxmlPath, boolean showSidebar) {

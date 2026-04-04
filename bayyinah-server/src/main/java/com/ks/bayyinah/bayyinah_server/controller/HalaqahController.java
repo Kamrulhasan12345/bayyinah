@@ -63,8 +63,11 @@ public class HalaqahController {
   public SdpMessage handleOffer(@DestinationVariable String roomId, SdpMessage offer,
       @AuthenticationPrincipal UserDetailsImpl user) {
     validateMessage(roomId, offer.getRoomId(), offer.getSenderId(), user, true);
+    validateSignalingRoute(roomId, offer.getTargetUserId(), offer.getSessionId());
 
     offer.setSdp(HtmlUtils.htmlEscape(offer.getSdp()));
+    offer.setTargetUserId(HtmlUtils.htmlEscape(offer.getTargetUserId()));
+    offer.setSessionId(HtmlUtils.htmlEscape(offer.getSessionId()));
 
     logger.info("SDP offer in room {} from {}", roomId, offer.getSenderId());
 
@@ -77,7 +80,11 @@ public class HalaqahController {
   public SdpMessage handleAnswer(@DestinationVariable String roomId, SdpMessage answer,
       @AuthenticationPrincipal UserDetailsImpl user) {
     validateMessage(roomId, answer.getRoomId(), answer.getSenderId(), user, true);
+    validateSignalingRoute(roomId, answer.getTargetUserId(), answer.getSessionId());
+
     answer.setSdp(HtmlUtils.htmlEscape(answer.getSdp()));
+    answer.setTargetUserId(HtmlUtils.htmlEscape(answer.getTargetUserId()));
+    answer.setSessionId(HtmlUtils.htmlEscape(answer.getSessionId()));
 
     logger.info("SDP answer in room {} from {}", roomId, answer.getSenderId());
 
@@ -90,9 +97,12 @@ public class HalaqahController {
   public Candidate handleCandidate(@DestinationVariable String roomId, Candidate candidate,
       @AuthenticationPrincipal UserDetailsImpl user) {
     validateMessage(roomId, candidate.getRoomId(), candidate.getSenderId(), user, true);
+    validateSignalingRoute(roomId, candidate.getTargetUserId(), candidate.getSessionId());
 
     candidate.setCandidate(HtmlUtils.htmlEscape(candidate.getCandidate()));
     candidate.setSdpMid(HtmlUtils.htmlEscape(candidate.getSdpMid()));
+    candidate.setTargetUserId(HtmlUtils.htmlEscape(candidate.getTargetUserId()));
+    candidate.setSessionId(HtmlUtils.htmlEscape(candidate.getSessionId()));
 
     return candidate;
   }
@@ -103,6 +113,11 @@ public class HalaqahController {
   public Message handleControlMessage(@DestinationVariable String roomId, Message message,
       @AuthenticationPrincipal UserDetailsImpl user) {
     validateMessage(roomId, message.getRoomId(), message.getSenderId(), user, true);
+
+    if (message.getType() == Message.MessageType.MUTE || message.getType() == Message.MessageType.UNMUTE) {
+      roomService.setParticipantMuted(roomId, message.getSenderId(), message.getType() == Message.MessageType.MUTE);
+    }
+
     if (message.getType() == Message.MessageType.VERSE_NAVIGATION) {
       if (!roomService.getRoom(roomId).map(r -> r.isLeader(message.getSenderId())).orElse(false)) {
         throw new SecurityException("Only leader can navigate verses");
@@ -154,6 +169,20 @@ public class HalaqahController {
 
     if (requireInRoom && !roomService.isUserInRoom(roomId, senderId)) {
       throw new SecurityException("User not in room");
+    }
+  }
+
+  private void validateSignalingRoute(String roomId, String targetUserId, String sessionId) {
+    if (targetUserId == null || targetUserId.isBlank()) {
+      throw new IllegalArgumentException("targetUserId is required for signaling messages");
+    }
+
+    if (sessionId == null || sessionId.isBlank()) {
+      throw new IllegalArgumentException("sessionId is required for signaling messages");
+    }
+
+    if (!roomService.isUserInRoom(roomId, targetUserId)) {
+      throw new SecurityException("Target user not in room");
     }
   }
 

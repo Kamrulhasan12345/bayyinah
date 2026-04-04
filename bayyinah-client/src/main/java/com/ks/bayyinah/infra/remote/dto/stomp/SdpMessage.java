@@ -10,6 +10,8 @@ public class SdpMessage {
   private String senderId;
   private String roomId;
   private String sdp; // SDP content
+  private String targetUserId; // Canonical intended recipient
+  private String sessionId; // Optional correlation across offer/answer/candidate
 
   public enum SdpType {
     OFFER, ANSWER
