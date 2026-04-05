@@ -1,7 +1,11 @@
 package com.ks.bayyinah.controller;
 
 import com.ks.bayyinah.context.AppContext;
+import com.ks.bayyinah.core.dto.ChapterView;
+import com.ks.bayyinah.core.dto.VerseView;
 import com.ks.bayyinah.infra.hybrid.model.User;
+import com.ks.bayyinah.infra.local.database.DbAsync;
+import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
 import com.ks.bayyinah.infra.remote.dto.stomp.Candidate;
 import com.ks.bayyinah.infra.remote.dto.stomp.ChatMessage;
 import com.ks.bayyinah.infra.remote.dto.stomp.Message;
@@ -26,7 +30,6 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
@@ -54,7 +57,7 @@ public class MeetingViewController {
   private VBox entryPane;
 
   @FXML
-  private BorderPane roomPane;
+  private VBox roomPane;
 
   @FXML
   private Label statusLabel;
@@ -81,7 +84,7 @@ public class MeetingViewController {
   private Label currentVerseLabel;
 
   @FXML
-  private ListView<String> chapterPreviewListView;
+  private ChaptersController chaptersViewController;
 
   @FXML
   private VBox leaderControlsPane;
@@ -117,7 +120,25 @@ public class MeetingViewController {
   private Label connectionHintLabel;
 
   @FXML
-  private HeaderController meetingHeaderController;
+  private Label roomCodeMetaLabel;
+
+  @FXML
+  private Label roleMetaLabel;
+
+  @FXML
+  private Label leaderMetaLabel;
+
+  @FXML
+  private Label participantCountMetaLabel;
+
+  @FXML
+  private Label meetingStateMetaLabel;
+
+  @FXML
+  private Label connectionStateMetaLabel;
+
+  @FXML
+  private Label timerMetaLabel;
 
   private AppContext appContext;
   private HalaqahSignalingOrchestrator signalingOrchestrator;
@@ -130,6 +151,10 @@ public class MeetingViewController {
   private final Map<String, String> sessionByPeerId = new HashMap<>();
   private final Map<String, List<Candidate>> pendingCandidatesBySessionId = new HashMap<>();
   private final Set<String> sessionsStartingOffer = new HashSet<>();
+  private final Map<Integer, ChapterView> chapterLookupBySurah = new HashMap<>();
+
+  private int loadedChapterSurahId = -1;
+  private int pendingAyahFocus = -1;
 
   private String localUserId;
   private String localDisplayName;
@@ -160,20 +185,36 @@ public class MeetingViewController {
     maxParticipantsSpinner.setValueFactory(
         new javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory(2, 50, 8));
 
-    chapterPreviewListView.setItems(FXCollections.observableArrayList(
-        "Al-Fatihah", "Al-Baqarah", "Aal-E-Imran", "An-Nisa", "Al-Ma'idah", "Al-An'am", "Al-A'raf"));
+    if (appContext != null && chaptersViewController != null) {
+      chaptersViewController.setAppContext(appContext);
+    }
 
     setState(MeetingState.ENTRY);
   }
 
   public void setAppContext(AppContext appContext) {
     this.appContext = appContext;
+    if (chaptersViewController != null) {
+      chaptersViewController.setAppContext(appContext);
+    }
+    preloadChapterLookup();
   }
 
   public void initializeMeeting() {
+    if (chaptersViewController != null && appContext != null) {
+      chaptersViewController.setAppContext(appContext);
+    }
+    preloadChapterLookup();
+
     if (appContext == null) {
       return;
     }
+
+    // Always start Meeting tab with Surah 1 / Ayah 1 in the left reader pane.
+    currentSurah = 1;
+    currentAyah = 1;
+    updateVerseFocusLabels();
+    syncChapterForCurrentFocus(true);
 
     if (appContext.getRemoteHalaqahQueryService() == null) {
       setErrorStatus("Meeting service is unavailable. Please restart the app.");
@@ -294,16 +335,6 @@ public class MeetingViewController {
 
   @FXML
   private void onBroadcastVerse() {
-    if (!isConnected() || stompWebSocketClient == null) {
-      setWarningStatus("Join a room before syncing verse focus.");
-      return;
-    }
-
-    if (!isLeader) {
-      setWarningStatus("Only leader can sync verse focus.");
-      return;
-    }
-
     Integer surah = parsePositiveInt(surahField.getText());
     Integer ayah = parsePositiveInt(ayahField.getText());
 
@@ -312,11 +343,7 @@ public class MeetingViewController {
       return;
     }
 
-    currentSurah = surah;
-    currentAyah = ayah;
-    updateVerseFocusLabels();
-    stompWebSocketClient.sendControlMessage(localUserId, Message.MessageType.VERSE_NAVIGATION,
-        surah + ":" + ayah);
+    syncVerseFocusAsLeader(surah, ayah);
   }
 
   @FXML
@@ -346,13 +373,66 @@ public class MeetingViewController {
 
     updateVerseFocusLabels();
     updateHeader(room.getLeaderName());
+    syncChapterForCurrentFocus(false);
 
     connectToRoom();
+  }
+
+  public void onSidebarChapterSelected(ChapterView chapter) {
+    if (chapter == null || chapter.getChapter() == null) {
+      return;
+    }
+
+    int selectedSurah = chapter.getChapter().getId();
+    chapterLookupBySurah.put(selectedSurah, chapter);
+
+    currentSurah = selectedSurah;
+    currentAyah = 1;
+    updateVerseFocusLabels();
+    syncChapterForCurrentFocus(true);
+
+    if (isConnected() && isLeader && stompWebSocketClient != null) {
+      stompWebSocketClient.sendControlMessage(localUserId, Message.MessageType.VERSE_NAVIGATION,
+          currentSurah + ":" + currentAyah);
+    }
+  }
+
+  private void onMeetingVerseSyncRequested(VerseView verseView) {
+    if (verseView == null || verseView.getVerse() == null) {
+      return;
+    }
+
+    syncVerseFocusAsLeader(verseView.getVerse().getSurahId(), verseView.getVerse().getVerseNumber());
+  }
+
+  private void syncVerseFocusAsLeader(int surah, int ayah) {
+    if (!isConnected() || stompWebSocketClient == null) {
+      setWarningStatus("Join a room before syncing verse focus.");
+      return;
+    }
+
+    if (!isLeader) {
+      setWarningStatus("Only leader can sync verse focus.");
+      return;
+    }
+
+    if (surah <= 0 || ayah <= 0) {
+      setWarningStatus("Enter valid Surah and Ayah numbers.");
+      return;
+    }
+
+    currentSurah = surah;
+    currentAyah = ayah;
+    updateVerseFocusLabels();
+    syncChapterForCurrentFocus(false);
+    stompWebSocketClient.sendControlMessage(localUserId, Message.MessageType.VERSE_NAVIGATION,
+        surah + ":" + ayah);
   }
 
   private void connectToRoom() {
     setState(MeetingState.CONNECTING);
     setStatus("Connecting to realtime channel...");
+    setConnectionStateLabel("Connecting");
     cleanupAllRtcSessions();
 
     CompletableFuture<String> tokenFuture = appContext.getTokenManager().getAccessToken();
@@ -377,9 +457,7 @@ public class MeetingViewController {
       setState(MeetingState.IN_ROOM);
       setStatus("Connected to room " + currentRoomCode + ".");
       setConnectionHint("Connected");
-      if (meetingHeaderController != null) {
-        meetingHeaderController.setConnectionState("Connected");
-      }
+      setConnectionStateLabel("Connected");
       startPeerNegotiationBootstrap();
       startTimer();
     })).exceptionally(error -> {
@@ -387,9 +465,7 @@ public class MeetingViewController {
         setState(MeetingState.ENTRY);
         setErrorStatus("Realtime connection failed: " + simplifyError(error));
         setConnectionHint("Disconnected");
-        if (meetingHeaderController != null) {
-          meetingHeaderController.setConnectionState("Disconnected");
-        }
+        setConnectionStateLabel("Disconnected");
       });
       return null;
     });
@@ -461,6 +537,7 @@ public class MeetingViewController {
         currentSurah = parsed[0];
         currentAyah = parsed[1];
         updateVerseFocusLabels();
+        syncChapterForCurrentFocus(false);
       }
       return;
     }
@@ -490,31 +567,105 @@ public class MeetingViewController {
       participantItems.add(line.toString());
     }
 
-    if (meetingHeaderController != null) {
-      meetingHeaderController.setParticipantCount(participantItems.size());
-    }
+    updateHeader(null);
   }
 
   private void updateHeader(String leaderName) {
-    if (meetingHeaderController == null) {
-      return;
+    String resolvedLeader = leaderName;
+    if ((resolvedLeader == null || resolvedLeader.isBlank())
+        && leaderId != null && participantsById.get(leaderId) != null) {
+      resolvedLeader = normalizeDisplayName(participantsById.get(leaderId).getDisplayName());
+    }
+    if (resolvedLeader == null || resolvedLeader.isBlank()) {
+      resolvedLeader = "-";
     }
 
-    meetingHeaderController.setRoomCode(currentRoomCode);
-    meetingHeaderController.setRole(isLeader);
-    meetingHeaderController.setLeader(leaderName);
-    meetingHeaderController.setParticipantCount(participantItems.size());
-    meetingHeaderController.setConnectionState(meetingState == MeetingState.IN_ROOM ? "Connected" : "Offline");
-    meetingHeaderController.setVerseFocus(currentSurah, currentAyah);
+    if (roomCodeMetaLabel != null) {
+      roomCodeMetaLabel.setText("Room: " + (currentRoomCode == null || currentRoomCode.isBlank() ? "-" : currentRoomCode));
+    }
+    if (roleMetaLabel != null) {
+      roleMetaLabel.setText("Role: " + (isLeader ? "Leader" : "Participant"));
+    }
+    if (leaderMetaLabel != null) {
+      leaderMetaLabel.setText("Leader: " + resolvedLeader);
+    }
+    if (participantCountMetaLabel != null) {
+      participantCountMetaLabel.setText("Participants: " + participantItems.size());
+    }
+    updateMeetingStateLabel();
   }
 
   private void updateVerseFocusLabels() {
     currentVerseLabel.setText("Current focus: Surah " + currentSurah + ", Ayah " + currentAyah);
     surahField.setText(String.valueOf(currentSurah));
     ayahField.setText(String.valueOf(currentAyah));
-    if (meetingHeaderController != null) {
-      meetingHeaderController.setVerseFocus(currentSurah, currentAyah);
+  }
+
+  private void preloadChapterLookup() {
+    if (appContext == null || !chapterLookupBySurah.isEmpty()) {
+      return;
     }
+
+    LocalQuranQueryService quranQueryService = LocalQuranQueryService.getInstance();
+    DbAsync.runWithUi(() -> quranQueryService.getAllChapters("en"), chapters -> {
+      if (chapters == null) {
+        return;
+      }
+      for (ChapterView chapter : chapters) {
+        if (chapter != null && chapter.getChapter() != null) {
+          chapterLookupBySurah.put(chapter.getChapter().getId(), chapter);
+        }
+      }
+    }, error -> {
+      // Best effort cache warmup.
+    });
+  }
+
+  private void syncChapterForCurrentFocus(boolean forceReload) {
+    if (chaptersViewController == null) {
+      return;
+    }
+
+    pendingAyahFocus = currentAyah;
+
+    if (!forceReload && loadedChapterSurahId == currentSurah) {
+      chaptersViewController.focusAyah(currentAyah);
+      return;
+    }
+
+    ChapterView chapter = chapterLookupBySurah.get(currentSurah);
+    if (chapter != null) {
+      applyChapterToMeeting(chapter);
+      return;
+    }
+
+    LocalQuranQueryService quranQueryService = LocalQuranQueryService.getInstance();
+    DbAsync.runWithUi(() -> quranQueryService.getChapter(currentSurah, "en"), chapterOptional -> {
+      if (chapterOptional == null || chapterOptional.isEmpty()) {
+        setWarningStatus("Unable to load Surah " + currentSurah + " in meeting reader.");
+        return;
+      }
+
+      ChapterView resolvedChapter = chapterOptional.get();
+      if (resolvedChapter.getChapter() != null) {
+        chapterLookupBySurah.put(resolvedChapter.getChapter().getId(), resolvedChapter);
+      }
+      applyChapterToMeeting(resolvedChapter);
+    }, error -> setWarningStatus("Unable to load Surah " + currentSurah + " in meeting reader."));
+  }
+
+  private void applyChapterToMeeting(ChapterView chapter) {
+    if (chapter == null || chapter.getChapter() == null || chaptersViewController == null) {
+      return;
+    }
+
+    if (appContext != null) {
+      chaptersViewController.setAppContext(appContext);
+    }
+
+    loadedChapterSurahId = chapter.getChapter().getId();
+    chaptersViewController.setChapter(chapter, null, null, null);
+    chaptersViewController.focusAyah(pendingAyahFocus > 0 ? pendingAyahFocus : currentAyah);
   }
 
   private void setState(MeetingState state) {
@@ -537,6 +688,17 @@ public class MeetingViewController {
     muteToggleButton.setDisable(!inRoom);
     leaveRoomButton.setDisable(!inRoom);
     chatInputField.setDisable(!inRoom);
+    updateMeetingStateLabel();
+    refreshVerseSyncAvailability();
+  }
+
+  private void refreshVerseSyncAvailability() {
+    if (chaptersViewController == null) {
+      return;
+    }
+
+    boolean allowVerseSync = meetingState == MeetingState.IN_ROOM && isLeader;
+    chaptersViewController.setOnVerseSyncRequested(allowVerseSync ? this::onMeetingVerseSyncRequested : null);
   }
 
   private void disableEntryActions(boolean disable) {
@@ -556,9 +718,7 @@ public class MeetingViewController {
       long minutes = elapsed / 60;
       long seconds = elapsed % 60;
       String value = String.format("%02d:%02d", minutes, seconds);
-      if (meetingHeaderController != null) {
-        meetingHeaderController.setTimer(value);
-      }
+      setTimerLabel(value);
     }));
     timerTimeline.setCycleCount(Timeline.INDEFINITE);
     timerTimeline.play();
@@ -570,9 +730,7 @@ public class MeetingViewController {
       timerTimeline = null;
     }
 
-    if (meetingHeaderController != null) {
-      meetingHeaderController.setTimer("00:00");
-    }
+    setTimerLabel("00:00");
   }
 
   private void leaveRoom(boolean requestLeaveApi) {
@@ -595,6 +753,8 @@ public class MeetingViewController {
     }
 
     currentRoomCode = null;
+    loadedChapterSurahId = -1;
+    pendingAyahFocus = -1;
     participantsById.clear();
     participantItems.clear();
     chatItems.clear();
@@ -603,13 +763,10 @@ public class MeetingViewController {
     muteToggleButton.setText("Mute");
 
     setConnectionHint("Disconnected");
-    if (meetingHeaderController != null) {
-      meetingHeaderController.setConnectionState("Offline");
-      meetingHeaderController.setRoomCode("-");
-      meetingHeaderController.setParticipantCount(0);
-    }
+    setConnectionStateLabel("Offline");
 
     isLeader = false;
+    updateHeader("-");
     setState(MeetingState.ENTRY);
     setStatus("You left the room.");
   }
@@ -960,6 +1117,24 @@ public class MeetingViewController {
     connectionHintLabel.setText(value);
   }
 
+  private void updateMeetingStateLabel() {
+    if (meetingStateMetaLabel != null) {
+      meetingStateMetaLabel.setText("State: " + meetingState.name());
+    }
+  }
+
+  private void setConnectionStateLabel(String value) {
+    if (connectionStateMetaLabel != null) {
+      connectionStateMetaLabel.setText("Connection: " + value);
+    }
+  }
+
+  private void setTimerLabel(String value) {
+    if (timerMetaLabel != null) {
+      timerMetaLabel.setText("Timer: " + value);
+    }
+  }
+
   private class MeetingSessionHandler extends StompSessionHandlerAdapter {
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
@@ -977,9 +1152,7 @@ public class MeetingViewController {
       Platform.runLater(() -> {
         setErrorStatus("Transport error: " + simplifyError(exception));
         setConnectionHint("Connection interrupted");
-        if (meetingHeaderController != null) {
-          meetingHeaderController.setConnectionState("Interrupted");
-        }
+        setConnectionStateLabel("Interrupted");
       });
     }
   }

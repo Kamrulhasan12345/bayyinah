@@ -7,46 +7,67 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox spacing="16.0" styleClass="reader-page" stylesheets="@../css/chapters-reader.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.ChaptersController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="16.0"
+   styleClass="reader-page" stylesheets="@../css/chapters-reader.css"
+   xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="com.ks.bayyinah.controller.ChaptersController">
    <children>
       <HBox fx:id="header" disable="true" fillHeight="false" managed="false" visible="false" />
-      <VBox alignment="CENTER" spacing="6.0" styleClass="reader-hero">
+      <HBox alignment="CENTER" styleClass="reader-hero">
          <children>
-            <Label fx:id="nameSimple" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="chapter-name-simple" text="Al-Fatihah" textAlignment="CENTER">
+            <VBox prefHeight="62.0" prefWidth="94.0">
+               <children>
+                  <Label fx:id="nameSimple" maxWidth="1.7976931348623157E308"
+                     styleClass="chapter-name-simple" text="Al Fatihah">
+                     <!-- <font>
+                        <Font size="24.0" />
+                     </font> -->
+                  </Label>
+                  <Label fx:id="translatedName" maxWidth="1.7976931348623157E308"
+                     styleClass="chapter-name-translated" text="The Opener">
+                     <!-- <font>
+                        <Font size="24.0" />
+                     </font> -->
+                  </Label>
+                  <Label fx:id="chapterMeta" maxWidth="1.7976931348623157E308"
+                     styleClass="chapter-meta" text="7 ayah - makkah">
+                     <!-- <font>
+                        <Font size="24.0" />
+                     </font> -->
+                  </Label>
+               </children>
+            </VBox>
+            <Region prefHeight="62.0" prefWidth="38.0" />
+            <Label fx:id="nameArabic" maxWidth="1.7976931348623157E308"
+               nodeOrientation="RIGHT_TO_LEFT" prefHeight="23.0" prefWidth="334.0"
+               styleClass="chapter-name-arabic" text="الفاتحة" textAlignment="RIGHT">
                <font>
-                  <Font size="24.0" />
+                  <Font name="Al Qalam Quran Majeed 2" size="29.0" />
                </font>
             </Label>
-            <Label fx:id="translatedName" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="chapter-name-translated" text="The Beginning" textAlignment="CENTER">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Label>
-            <Label fx:id="nameArabic" alignment="CENTER" maxWidth="1.7976931348623157E308" nodeOrientation="RIGHT_TO_LEFT" styleClass="chapter-name-arabic" text="الفاتحة" textAlignment="CENTER">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Label>
-            <Label fx:id="chapterMeta" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="chapter-meta" text="7 ayahs • Meccan" textAlignment="CENTER" />
          </children>
-      </VBox>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </HBox>
       <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="reader-toolbar">
          <children>
             <Label styleClass="toolbar-label" text="Translation" />
             <ComboBox fx:id="translationSelector" prefWidth="220.0" HBox.hgrow="ALWAYS" />
             <Separator orientation="VERTICAL" prefHeight="22.0" />
-            <Button fx:id="tafsirToggleBtn" onAction="#onToggleTafsir" styleClass="reader-secondary-btn" text="Tafsir">
+            <Button fx:id="tafsirToggleBtn" onAction="#onToggleTafsir"
+               styleClass="reader-secondary-btn" text="Tafsir">
                <graphic>
                   <FontIcon iconLiteral="mdi2b-book-open-page-variant-outline" iconSize="16" />
                </graphic>
             </Button>
-            <Button fx:id="audioToggleBtn" onAction="#onToggleAudio" styleClass="reader-secondary-btn" text="Audio">
+            <Button fx:id="audioToggleBtn" onAction="#onToggleAudio"
+               styleClass="reader-secondary-btn" text="Audio">
                <graphic>
                   <FontIcon iconLiteral="mdi2v-volume-high" iconSize="16" />
                </graphic>

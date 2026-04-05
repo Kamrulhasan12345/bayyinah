@@ -20,6 +20,12 @@ import lombok.*;
 @Data
 public class BrowsingController {
 
+  private enum ContentMode {
+    READER,
+    MEETING,
+    AUXILIARY
+  }
+
   @FXML
   private SplitPane splitPane;
 
@@ -43,6 +49,8 @@ public class BrowsingController {
   private AppContext appContext;
 
   private VBox loadingOverlay;
+  private ContentMode contentMode = ContentMode.READER;
+  private MeetingViewController activeMeetingController;
 
   public void setRootController(RootController rootController) {
     this.rootController = rootController;
@@ -50,6 +58,7 @@ public class BrowsingController {
 
   public void initializeBrowsingController() {
     setupSidebar();
+    setContentMode(ContentMode.READER);
 
     createLoadingOverlay();
 
@@ -104,7 +113,7 @@ public class BrowsingController {
 
     sidebarController.setOnHomeBtnClick(this::handleHomeClicked);
     sidebarController.setOnSettingsClicked(this::showSettings);
-    sidebarController.setOnChapterSelected(this::showChapter);
+    sidebarController.setOnChapterSelected(this::handleSidebarChapterSelection);
     sidebarController.setOnLoginClicked(() -> {
       if (rootController != null) {
         rootController.showLoginOverlay();
@@ -131,6 +140,31 @@ public class BrowsingController {
     }
   }
 
+  private void setContentMode(ContentMode mode) {
+    contentMode = mode;
+    if (sidebarController != null) {
+      sidebarController.setMeetingMode(mode == ContentMode.MEETING);
+    }
+    if (mode != ContentMode.MEETING) {
+      activeMeetingController = null;
+    }
+  }
+
+  private void handleSidebarChapterSelection(ChapterView chapter) {
+    if (chapter == null) {
+      return;
+    }
+
+    if (contentMode == ContentMode.MEETING) {
+      if (activeMeetingController != null) {
+        activeMeetingController.onSidebarChapterSelected(chapter);
+      }
+      return;
+    }
+
+    showChapter(chapter);
+  }
+
   public void refreshAuthUi() {
     if (sidebarController != null) {
       sidebarController.refreshAuthState();
@@ -141,6 +175,7 @@ public class BrowsingController {
   }
 
   private void showHome() {
+    setContentMode(ContentMode.READER);
     applySidebarVisibility(true);
     try {
       FXMLLoader loader = new FXMLLoader(
@@ -160,6 +195,7 @@ public class BrowsingController {
   }
 
   private void showSettings() {
+    setContentMode(ContentMode.AUXILIARY);
     applySidebarVisibility(false);
     if (sidebarController != null) {
       sidebarController.clearSelection();
@@ -190,6 +226,7 @@ public class BrowsingController {
   }
 
   private void showMeeting() {
+    setContentMode(ContentMode.MEETING);
     applySidebarVisibility(true);
 
     if (sidebarController != null) {
@@ -204,6 +241,7 @@ public class BrowsingController {
       if (controller instanceof MeetingViewController meetingViewController) {
         meetingViewController.setAppContext(appContext);
         meetingViewController.initializeMeeting();
+        activeMeetingController = meetingViewController;
       }
 
       contentArea.getChildren().setAll(view);
@@ -212,10 +250,12 @@ public class BrowsingController {
       partialChapterView = true;
     } catch (IOException e) {
       e.printStackTrace();
+      setContentMode(ContentMode.READER);
     }
   }
 
   private void loadSimpleView(String fxmlPath, boolean showSidebar) {
+    setContentMode(ContentMode.AUXILIARY);
     applySidebarVisibility(showSidebar);
 
     if (sidebarController != null) {
@@ -240,6 +280,7 @@ public class BrowsingController {
   }
 
   public void showChapter(ChapterView chapter, Integer startVerse, Integer endVerse, Integer translationId) {
+    setContentMode(ContentMode.READER);
     if (currentShownChapterId == chapter.getChapter().getId()
         && Boolean.FALSE.equals(partialChapterView)) {
       System.out.println(

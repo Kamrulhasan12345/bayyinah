@@ -11,12 +11,14 @@ import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.infra.local.repository.quran.LocalTranslationRepository;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -41,9 +43,16 @@ public class VerseController {
   @FXML
   private FontIcon bookmarkBtn;
 
+  @FXML
+  private Button syncVerseBtn;
+
   private VerseView verse;
 
   public void bind(VerseView verse) {
+    bind(verse, null);
+  }
+
+  public void bind(VerseView verse, Consumer<VerseView> onVerseSyncRequested) {
     this.verse = verse;
 
     Verse verseData = verse.getVerse();
@@ -56,9 +65,6 @@ public class VerseController {
       : "");
     translationMetadata.setText(buildTranslationMetadata(translationText));
     requestTranslationMetadataAsync(translationText, verseData.getVerseKey());
-
-    // TODO: maybe some other buttons .setOnAction(e -> { ... }) for bookmarking,
-    // etc.
 
     AppContext appContext = AppContext.getInstance();
     BookmarkService bookmarkService = appContext.getBookmarkService();
@@ -99,6 +105,30 @@ public class VerseController {
                   ignored -> bookmarkBtn.setIconLiteral("mdi2b-bookmark"));
             }
           });
+    });
+
+    configureVerseSyncButton(onVerseSyncRequested);
+  }
+
+  private void configureVerseSyncButton(Consumer<VerseView> onVerseSyncRequested) {
+    if (syncVerseBtn == null) {
+      return;
+    }
+
+    boolean enabled = onVerseSyncRequested != null;
+    syncVerseBtn.setVisible(enabled);
+    syncVerseBtn.setManaged(enabled);
+    syncVerseBtn.setDisable(!enabled);
+
+    if (!enabled) {
+      syncVerseBtn.setOnAction(null);
+      return;
+    }
+
+    syncVerseBtn.setOnAction(event -> {
+      if (verse != null && verse.getVerse() != null) {
+        onVerseSyncRequested.accept(verse);
+      }
     });
   }
 

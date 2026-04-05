@@ -1,3 +1,52 @@
+/* @font-face {
+	font-family: "Inter";
+	src: url("classpath:fonts/Inter.ttf");
+	font-weight: normal; 
+    font-style: normal;
+}
+
+@font-face {
+	font-family: "Al Qalam Quran Majeed";
+	src: url("classpath:fonts/Al Qalam Quran Majeed.ttf");
+		font-weight: normal; 
+    font-style: normal;
+}
+
+@font-face {
+	font-family: "Al Qalam Quran Majeed 1";
+	src: url("classpath:fonts/Al Qalam Quran Majeed 1.ttf");
+		font-weight: normal; 
+    font-style: normal;
+}
+
+@font-face {
+	font-family: "Al Qalam Quran Majeed 2";
+	src: url("classpath:fonts/Al Qalam Quran Majeed 2.ttf");
+	font-weight: normal; 
+  font-style: normal;
+} */
+
+/* Manual Inter mapping per FXML/reader classes (Arabic classes excluded). */
+.reader-page,
+.reader-hero,
+.chapter-name-simple,
+.chapter-name-translated,
+.chapter-meta,
+.reader-toolbar,
+.toolbar-label,
+.combo-box,
+.reader-secondary-btn,
+.verse-list,
+.ayah-card,
+.ayah-index-col,
+.ayah-number,
+.ayah-bookmark,
+.ayah-sync-btn,
+.ayah-translation-text,
+.ayah-translation-meta {
+	-fx-font-family: "Inter";
+}
+
 .reader-page {
 	-fx-background-color: linear-gradient(to bottom, #f7f8fb, #eff1f5);
 }
@@ -14,21 +63,29 @@
 	-fx-font-size: 16px;
 	-fx-font-weight: bold;
 	-fx-text-fill: #576174;
+	-fx-font-family: "Inter Bold";
 }
 
 .chapter-name-translated {
 	-fx-font-size: 13px;
+	-fx-font-weight: normal;
 	-fx-text-fill: #6b7485;
+	-fx-font-family: "Inter";
 }
 
 .chapter-name-arabic {
 	-fx-font-size: 34px;
-	-fx-font-family: "Traditional Arabic", "Arabic Typesetting";
+	-fx-font-weight: normal;
+	-fx-font-family:
+		"Al Qalam Quran Majeed", "Al Qalam Quran Majeed 1",
+		"Al Qalam Quran Majeed 2", "Traditional Arabic", "Arabic Typesetting";
 	-fx-text-fill: #172033;
 }
 
 .chapter-meta {
 	-fx-font-size: 12px;
+	-fx-font-weight: normal;
+	-fx-font-family: "Inter";
 	-fx-text-fill: #7a8293;
 }
 
@@ -42,6 +99,7 @@
 
 .toolbar-label {
 	-fx-font-size: 12px;
+	-fx-font-family: "Inter Bold";
 	-fx-font-weight: bold;
 	-fx-text-fill: #4a5468;
 }
@@ -56,6 +114,7 @@
 	-fx-border-radius: 8;
 	-fx-background-radius: 8;
 	-fx-text-fill: #344055;
+	-fx-font-weight: 600;
 	-fx-cursor: hand;
 }
 
@@ -102,6 +161,7 @@
 .ayah-number {
 	-fx-font-size: 16px;
 	-fx-font-weight: bold;
+	-fx-font-family: "Inter Bold";
 	-fx-text-fill: #2f3a4d;
 }
 
@@ -110,20 +170,42 @@
 	-fx-cursor: hand;
 }
 
+.ayah-sync-btn {
+	-fx-font-size: 10px;
+	-fx-font-weight: 700;
+	-fx-text-fill: #075985;
+	-fx-background-color: #e0f2fe;
+	-fx-border-color: #bae6fd;
+	-fx-background-radius: 999;
+	-fx-border-radius: 999;
+	-fx-padding: 2 8;
+	-fx-cursor: hand;
+}
+
+.ayah-sync-btn:hover {
+	-fx-background-color: #bae6fd;
+}
+
 .ayah-arabic-text {
 	-fx-font-size: 28px;
-	-fx-font-family: "Traditional Arabic", "Arabic Typesetting";
+	-fx-font-family:
+		"Al Qalam Quran Majeed", "Al Qalam Quran Majeed 1",
+		"Al Qalam Quran Majeed 2", "Traditional Arabic", "Arabic Typesetting";
 	-fx-text-fill: #111827;
 	-fx-line-spacing: 8px;
 }
 
 .ayah-translation-text {
 	-fx-font-size: 15px;
+	-fx-font-weight: normal;
 	-fx-text-fill: #3f4a5f;
 	-fx-line-spacing: 6px;
+	-fx-font-family: "Inter";
 }
 
 .ayah-translation-meta {
 	-fx-font-size: 12px;
+	-fx-font-weight: normal;
 	-fx-text-fill: #6b7280;
+	-fx-font-family: "Inter";
 }

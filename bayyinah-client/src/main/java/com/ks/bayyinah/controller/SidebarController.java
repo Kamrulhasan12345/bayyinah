@@ -19,11 +19,17 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import lombok.Setter;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 public class SidebarController {
+
+  public enum SidebarMode {
+    READER,
+    MEETING
+  }
 
   @FXML
   private ListView<ChapterView> chaptersListView;
@@ -35,7 +41,13 @@ public class SidebarController {
   private FontIcon homeBtn;
 
   @FXML
+  private HBox sidebarHeader;
+
+  @FXML
   private FontIcon settingsBtn;
+
+  @FXML
+  private HBox sidebarFooter;
 
   @FXML
   private FontIcon toggleAuthBtn;
@@ -59,6 +71,7 @@ public class SidebarController {
   private PauseTransition searchDebounce;
   private final ObservableList<ChapterView> displayedChapters = FXCollections.observableArrayList();
   private int lastEmittedChapterId = -1;
+  private SidebarMode sidebarMode = SidebarMode.READER;
 
   @Setter
   private AppContext appContext;
@@ -110,6 +123,30 @@ public class SidebarController {
     /*
      * Settings Button Logic
      */
+    updateSidebarModeUi();
+  }
+
+  public void setMeetingMode(boolean meetingMode) {
+    setSidebarMode(meetingMode ? SidebarMode.MEETING : SidebarMode.READER);
+  }
+
+  public void setSidebarMode(SidebarMode sidebarMode) {
+    this.sidebarMode = sidebarMode == null ? SidebarMode.READER : sidebarMode;
+    updateSidebarModeUi();
+  }
+
+  private void updateSidebarModeUi() {
+    boolean meetingMode = sidebarMode == SidebarMode.MEETING;
+
+    if (homeBtn != null) {
+      homeBtn.setVisible(!meetingMode);
+      homeBtn.setManaged(!meetingMode);
+    }
+
+    if (sidebarFooter != null) {
+      sidebarFooter.setVisible(!meetingMode);
+      sidebarFooter.setManaged(!meetingMode);
+    }
   }
 
   private void filterChapters(String keyword) {
@@ -156,6 +193,9 @@ public class SidebarController {
   private void setupHomeButton() {
     if (homeBtn != null) {
       homeBtn.setOnMouseClicked(e -> {
+        if (sidebarMode == SidebarMode.MEETING) {
+          return;
+        }
         clearSelection();
         if (onHomeBtnClick != null) {
           onHomeBtnClick.run();
@@ -167,6 +207,9 @@ public class SidebarController {
   private void setupSettingsButton() {
     if (settingsBtn != null) {
       settingsBtn.setOnMouseClicked(e -> {
+        if (sidebarMode == SidebarMode.MEETING) {
+          return;
+        }
         if (onSettingsClicked != null) {
           onSettingsClicked.run();
         }
