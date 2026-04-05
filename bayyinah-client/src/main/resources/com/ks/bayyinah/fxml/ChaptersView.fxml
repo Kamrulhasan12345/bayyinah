@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="16.0" styleClass="reader-page" stylesheets="@../css/chapters-reader.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.ChaptersController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="598.0" prefWidth="686.0" spacing="16.0" styleClass="reader-page" stylesheets="@../css/chapters-reader.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.ChaptersController">
    <children>
       <HBox fx:id="header" disable="true" fillHeight="false" managed="false" visible="false" />
       <HBox alignment="CENTER" styleClass="reader-hero">
@@ -50,11 +50,11 @@
             <Label styleClass="toolbar-label" text="Translation" />
             <ComboBox fx:id="translationSelector" prefWidth="220.0" HBox.hgrow="ALWAYS" />
             <Separator orientation="VERTICAL" prefHeight="22.0" />
-            <Button fx:id="tafsirToggleBtn" onAction="#onToggleTafsir" styleClass="reader-secondary-btn" text="Tafsir">
-               <graphic>
-                  <FontIcon iconLiteral="mdi2b-book-open-page-variant-outline" iconSize="16" />
-               </graphic>
-            </Button>
+            <!-- <Button fx:id="tafsirToggleBtn" onAction="#onToggleTafsir" styleClass="reader-secondary-btn" text="Tafsir"> -->
+            <!--    <graphic> -->
+            <!--       <FontIcon iconLiteral="mdi2b-book-open-page-variant-outline" iconSize="16" /> -->
+            <!--    </graphic> -->
+            <!-- </Button> -->
             <Button fx:id="audioToggleBtn" onAction="#onToggleAudio" styleClass="reader-secondary-btn" text="Audio">
                <graphic>
                   <FontIcon iconLiteral="mdi2v-volume-high" iconSize="16" />

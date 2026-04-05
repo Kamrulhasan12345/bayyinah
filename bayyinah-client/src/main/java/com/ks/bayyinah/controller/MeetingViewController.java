@@ -737,9 +737,12 @@ public class MeetingViewController {
     stopTimer();
     cleanupAllRtcSessions();
 
+    boolean leaveSentViaRealtime = false;
+
     if (stompWebSocketClient != null && stompWebSocketClient.isConnected()) {
       try {
         stompWebSocketClient.sendPresence(localUserId, localDisplayName, Presence.PresenceType.LEAVE);
+        leaveSentViaRealtime = true;
       } catch (Exception ignored) {
         // Best effort leave signal.
       }
@@ -747,7 +750,7 @@ public class MeetingViewController {
     }
 
     if (requestLeaveApi && appContext != null && appContext.getRemoteHalaqahQueryService() != null
-        && currentRoomCode != null && !currentRoomCode.isBlank()) {
+        && currentRoomCode != null && !currentRoomCode.isBlank() && !leaveSentViaRealtime) {
       appContext.getRemoteHalaqahQueryService().leaveRoom(currentRoomCode)
           .exceptionally(error -> null);
     }

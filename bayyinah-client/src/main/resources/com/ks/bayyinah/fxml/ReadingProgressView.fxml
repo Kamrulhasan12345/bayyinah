@@ -2,14 +2,19 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="8.0" styleClass="placeholder-view" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<VBox spacing="12.0" styleClass="reading-progress-root" stylesheets="@../css/stylesheet.css"
+   xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="com.ks.bayyinah.controller.ReadingProgressController">
    <children>
-      <Label styleClass="placeholder-title" text="Reading Progress" />
-      <Label styleClass="placeholder-subtitle" text="Progress tracking dashboard will be added in a later phase." />
+      <Label styleClass="reading-progress-title" text="Reading Progress" />
+      <Label fx:id="summaryLabel" styleClass="reading-progress-summary"
+         text="Loading reading progress..." wrapText="true" />
+      <ListView fx:id="progressListView" styleClass="reading-progress-list" VBox.vgrow="ALWAYS" />
    </children>
    <padding>
-      <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+      <Insets bottom="20.0" left="24.0" right="24.0" top="20.0" />
    </padding>
 </VBox>

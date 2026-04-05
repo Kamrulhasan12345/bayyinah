@@ -65,6 +65,25 @@
 .settings-warning-text,
 .settings-save-btn,
 .settings-saved-hint,
+.bookmarks-root,
+.bookmarks-title,
+.bookmarks-summary,
+.bookmarks-list,
+.bookmarks-empty,
+.bookmark-row,
+.bookmark-row-top,
+.bookmark-surah,
+.bookmark-key,
+.reading-progress-root,
+.reading-progress-title,
+.reading-progress-summary,
+.reading-progress-list,
+.reading-progress-empty,
+.progress-row,
+.progress-row-header,
+.progress-surah,
+.progress-percent,
+.progress-meta,
 .placeholder-view,
 .placeholder-title,
 .placeholder-subtitle,
@@ -455,6 +474,116 @@
 
 .settings-download-btn:hover {
 	-fx-background-color: #eff6ff;
+}
+
+.bookmarks-root,
+.reading-progress-root {
+	-fx-background-color: #f8fafc;
+}
+
+.bookmarks-title,
+.reading-progress-title {
+	-fx-text-fill: #0f172a;
+	-fx-font-size: 24px;
+	-fx-font-family: "Inter Bold";
+}
+
+.bookmarks-summary,
+.reading-progress-summary {
+	-fx-text-fill: #475569;
+	-fx-font-size: 12px;
+	-fx-font-weight: normal;
+}
+
+.bookmarks-list,
+.reading-progress-list {
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+}
+
+.bookmarks-list .list-cell,
+.reading-progress-list .list-cell {
+	-fx-background-color: transparent;
+	-fx-padding: 4 0;
+}
+
+.bookmarks-list .list-cell:filled:hover,
+.reading-progress-list .list-cell:filled:hover {
+	-fx-background-color: transparent;
+}
+
+.bookmarks-list .list-cell:filled:selected,
+.bookmarks-list .list-cell:filled:selected:focused,
+.reading-progress-list .list-cell:filled:selected,
+.reading-progress-list .list-cell:filled:selected:focused {
+	-fx-background-color: transparent;
+}
+
+.bookmark-row,
+.progress-row {
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 12;
+	-fx-border-color: #dbe3ef;
+	-fx-border-radius: 12;
+	-fx-border-width: 1;
+	-fx-padding: 10 12;
+	-fx-cursor: hand;
+}
+
+.bookmarks-list .list-cell:filled:hover .bookmark-row,
+.reading-progress-list .list-cell:filled:hover .progress-row {
+	-fx-border-color: #8eb4ff;
+	-fx-effect: dropshadow(gaussian, rgba(56, 118, 255, 0.16), 10, 0.24, 0, 2);
+}
+
+.bookmark-surah,
+.progress-surah {
+	-fx-text-fill: #0f172a;
+	-fx-font-size: 13px;
+	-fx-font-family: "Inter Bold";
+}
+
+.bookmark-key,
+.progress-percent {
+	-fx-text-fill: #1e40af;
+	-fx-font-size: 12px;
+	-fx-font-family: "Inter Bold";
+}
+
+.bookmark-arabic,
+.progress-arabic {
+	-fx-text-fill: #1e293b;
+	-fx-font-size: 18px;
+	-fx-font-family:
+		"Al Qalam Quran Majeed", "Al Qalam Quran Majeed 1",
+		"Al Qalam Quran Majeed 2", "Traditional Arabic", "Arabic Typesetting";
+}
+
+.progress-meta {
+	-fx-text-fill: #475569;
+	-fx-font-size: 12px;
+	-fx-font-weight: normal;
+}
+
+.progress-row-bar {
+	-fx-pref-height: 10;
+}
+
+.progress-row-bar > .track {
+	-fx-background-color: #e2e8f0;
+	-fx-background-radius: 999;
+}
+
+.progress-row-bar > .bar {
+	-fx-background-color: linear-gradient(to right, #2563eb, #0ea5e9);
+	-fx-background-radius: 999;
+}
+
+.bookmarks-empty,
+.reading-progress-empty {
+	-fx-text-fill: #64748b;
+	-fx-font-size: 12px;
+	-fx-padding: 18;
 }
 
 .placeholder-view {

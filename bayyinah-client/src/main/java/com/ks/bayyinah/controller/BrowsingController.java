@@ -51,6 +51,8 @@ public class BrowsingController {
   private VBox loadingOverlay;
   private ContentMode contentMode = ContentMode.READER;
   private MeetingViewController activeMeetingController;
+  private ChaptersController activeChaptersController;
+  private Node cachedMeetingView;
 
   public void setRootController(RootController rootController) {
     this.rootController = rootController;
@@ -145,8 +147,8 @@ public class BrowsingController {
     if (sidebarController != null) {
       sidebarController.setMeetingMode(mode == ContentMode.MEETING);
     }
-    if (mode != ContentMode.MEETING) {
-      activeMeetingController = null;
+    if (mode != ContentMode.READER) {
+      activeChaptersController = null;
     }
   }
 
@@ -218,11 +220,59 @@ public class BrowsingController {
   }
 
   private void showBookmarks() {
-    loadSimpleView("fxml/BookmarksView.fxml", false);
+    setContentMode(ContentMode.AUXILIARY);
+    applySidebarVisibility(false);
+
+    if (sidebarController != null) {
+      sidebarController.clearSelection();
+    }
+
+    try {
+      FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/BookmarksView.fxml"));
+      Node view = loader.load();
+
+      Object controller = loader.getController();
+      if (controller instanceof BookmarksController bookmarksController) {
+        bookmarksController.setAppContext(appContext);
+        bookmarksController.setBrowsingController(this);
+        bookmarksController.initializeBookmarks();
+      }
+
+      contentArea.getChildren().setAll(view);
+      contentArea.getChildren().add(loadingOverlay);
+      currentShownChapterId = -1;
+      partialChapterView = true;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   private void showReadingProgress() {
-    loadSimpleView("fxml/ReadingProgressView.fxml", false);
+    setContentMode(ContentMode.AUXILIARY);
+    applySidebarVisibility(false);
+
+    if (sidebarController != null) {
+      sidebarController.clearSelection();
+    }
+
+    try {
+      FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/ReadingProgressView.fxml"));
+      Node view = loader.load();
+
+      Object controller = loader.getController();
+      if (controller instanceof ReadingProgressController readingProgressController) {
+        readingProgressController.setAppContext(appContext);
+        readingProgressController.setBrowsingController(this);
+        readingProgressController.initializeReadingProgress();
+      }
+
+      contentArea.getChildren().setAll(view);
+      contentArea.getChildren().add(loadingOverlay);
+      currentShownChapterId = -1;
+      partialChapterView = true;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   private void showMeeting() {
@@ -234,22 +284,28 @@ public class BrowsingController {
     }
 
     try {
-      FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/MeetingView.fxml"));
-      Node view = loader.load();
+      if (cachedMeetingView == null || activeMeetingController == null) {
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/MeetingView.fxml"));
+        cachedMeetingView = loader.load();
 
-      Object controller = loader.getController();
-      if (controller instanceof MeetingViewController meetingViewController) {
-        meetingViewController.setAppContext(appContext);
-        meetingViewController.initializeMeeting();
-        activeMeetingController = meetingViewController;
+        Object controller = loader.getController();
+        if (controller instanceof MeetingViewController meetingViewController) {
+          meetingViewController.setAppContext(appContext);
+          meetingViewController.initializeMeeting();
+          activeMeetingController = meetingViewController;
+        }
+      } else {
+        activeMeetingController.setAppContext(appContext);
       }
 
-      contentArea.getChildren().setAll(view);
+      contentArea.getChildren().setAll(cachedMeetingView);
       contentArea.getChildren().add(loadingOverlay);
       currentShownChapterId = -1;
       partialChapterView = true;
     } catch (IOException e) {
       e.printStackTrace();
+      cachedMeetingView = null;
+      activeMeetingController = null;
       setContentMode(ContentMode.READER);
     }
   }
@@ -279,10 +335,41 @@ public class BrowsingController {
     showChapter(chapter, null, null, null);
   }
 
+  public void showChapterAndFocusAyah(ChapterView chapter, Integer focusAyah) {
+    showChapter(chapter, null, null, null, focusAyah);
+  }
+
   public void showChapter(ChapterView chapter, Integer startVerse, Integer endVerse, Integer translationId) {
+    showChapter(chapter, startVerse, endVerse, translationId, null);
+  }
+
+  private void showChapter(ChapterView chapter, Integer startVerse, Integer endVerse, Integer translationId,
+      Integer focusAyah) {
+    if (chapter == null || chapter.getChapter() == null) {
+      return;
+    }
+
     setContentMode(ContentMode.READER);
+
+    boolean fullChapterRequest = startVerse == null && endVerse == null;
+
+    if (contentMode == ContentMode.READER && currentShownChapterId == chapter.getChapter().getId()
+        && Boolean.FALSE.equals(partialChapterView) && fullChapterRequest && translationId == null
+        && focusAyah != null && focusAyah > 0 && activeChaptersController != null) {
+      activeChaptersController.focusAyah(focusAyah);
+      if (railNavigationController != null) {
+        railNavigationController.activateReaderTab();
+      }
+      return;
+    }
+
     if (currentShownChapterId == chapter.getChapter().getId()
-        && Boolean.FALSE.equals(partialChapterView)) {
+        && Boolean.FALSE.equals(partialChapterView)
+        && contentMode == ContentMode.READER
+      && activeChaptersController != null
+        && fullChapterRequest
+        && focusAyah == null
+        && translationId == null) {
       System.out.println(
           "Chapter " +
               chapter.getChapter().getId() +
@@ -306,6 +393,10 @@ public class BrowsingController {
       chaptersController.setOnLoadComplete(() -> hideLoading());
       chaptersController.setAppContext(appContext);
       chaptersController.setChapter(chapter, startVerse, endVerse, translationId);
+      if (focusAyah != null && focusAyah > 0) {
+        chaptersController.focusAyah(focusAyah);
+      }
+      activeChaptersController = chaptersController;
 
       currentShownChapterId = chapter.getChapter().getId();
 
@@ -345,6 +436,6 @@ public class BrowsingController {
     sidebarContainer.setMinWidth(0);
     sidebarContainer.setPrefWidth(0);
     sidebarContainer.setMaxWidth(0);
-    splitPane.setDividerPosition(0, 0.001);
+    splitPane.setDividerPosition(0, 0);
   }
 }
