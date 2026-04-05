@@ -83,7 +83,7 @@ public class BrowsingController {
     spinner.setMaxSize(50, 50);
 
     Label loadingLabel = new Label("Loading...");
-    loadingLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #666;");
+    loadingLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #666; -fx-font-family: \"Inter\"");
 
     loadingOverlay = new VBox(15);
     loadingOverlay.setAlignment(Pos.CENTER);
@@ -335,9 +335,9 @@ public class BrowsingController {
     sidebarContainer.setManaged(showSidebar);
 
     if (showSidebar) {
-      sidebarContainer.setMinWidth(220);
+      sidebarContainer.setMinWidth(0);
       sidebarContainer.setPrefWidth(260);
-      sidebarContainer.setMaxWidth(Double.MAX_VALUE);
+      sidebarContainer.setMaxWidth(220);
       splitPane.setDividerPosition(0, 0.22);
       return;
     }

@@ -228,7 +228,8 @@ public class ChaptersController {
     }
   }
 
-  private void loadChapterWithTranslation(Chapter chapterData, Integer startVerse, Integer endVerse, Integer translationId) {
+  private void loadChapterWithTranslation(Chapter chapterData, Integer startVerse, Integer endVerse,
+      Integer translationId) {
     int resolvedTranslationId = translationId != null ? translationId : selectedTranslationId;
     selectedTranslationId = resolvedTranslationId;
     loadTranslationOptions(resolvedTranslationId);
@@ -302,7 +303,8 @@ public class ChaptersController {
 
             selectedTranslationId = selected.id();
             UserPreferenceService userPreferenceService = appContext.getUserPreferenceService();
-            DbAsync.run(() -> userPreferenceService.setPreference("default_translation", String.valueOf(selectedTranslationId)));
+            DbAsync.run(() -> userPreferenceService.setPreference("default_translation",
+                String.valueOf(selectedTranslationId)));
             reloadCurrentChapter();
           });
         },
@@ -358,7 +360,8 @@ public class ChaptersController {
     }
     progressTrackingInitialized = true;
 
-    progressCaptureTimeline = new Timeline(new KeyFrame(PROGRESS_CAPTURE_INTERVAL, event -> persistVisibleProgressIfNeeded()));
+    progressCaptureTimeline = new Timeline(
+        new KeyFrame(PROGRESS_CAPTURE_INTERVAL, event -> persistVisibleProgressIfNeeded()));
     progressCaptureTimeline.setCycleCount(Timeline.INDEFINITE);
     progressCaptureTimeline.play();
 

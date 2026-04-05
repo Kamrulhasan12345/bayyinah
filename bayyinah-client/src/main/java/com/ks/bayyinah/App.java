@@ -76,7 +76,7 @@ public class App extends Application {
     ToastManager.getInstance().initialize(stage);
 
     stage.show();
-    CSSFX.start();
+    // CSSFX.start();
 
     if (ENABLE_STARTUP_SAMPLE_TOASTS) {
       ToastManager.getInstance().showInfo("Welcome", "Welcome to Bayyinah!");

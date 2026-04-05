@@ -28,14 +28,9 @@
 
 /* Manual Inter mapping per FXML/reader classes (Arabic classes excluded). */
 .reader-page,
-.reader-hero,
-.chapter-name-simple,
-.chapter-name-translated,
-.chapter-meta,
 .reader-toolbar,
 .toolbar-label,
 .combo-box,
-.reader-secondary-btn,
 .verse-list,
 .ayah-card,
 .ayah-index-col,
