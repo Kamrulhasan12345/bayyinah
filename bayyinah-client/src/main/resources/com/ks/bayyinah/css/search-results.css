@@ -70,7 +70,7 @@
 
 .search-button {
 	-fx-font-size: 14px;
-	-fx-font-weight: 600;
+		-fx-font-family: "Inter Bold";
 	-fx-padding: 12px 30px;
 	-fx-background-color: #4285f4;
 	-fx-text-fill: white;
@@ -111,7 +111,6 @@
 
 .verse-reference {
 	-fx-font-size: 13px;
-	-fx-font-weight: bold;
 	-fx-font-family: "Inter Bold";
 	-fx-text-fill: #4285f4;
 }
@@ -145,7 +144,6 @@
 
 .chapter-name {
 	-fx-font-size: 20px;
-	-fx-font-weight: bold;
 	-fx-font-family: "Inter Bold";
 	-fx-text-fill: #1a1a1a;
 }
@@ -178,7 +176,6 @@
 
 .no-results-title {
 	-fx-font-size: 20px;
-	-fx-font-weight: bold;
 	-fx-font-family: "Inter Bold";
 	-fx-text-fill: #666;
 }
@@ -197,7 +194,7 @@
 
 .pagination-button {
 	-fx-font-size: 13px;
-	-fx-font-weight: 600;
+	-fx-font-family: "Inter Bold";
 	-fx-padding: 8px 16px;
 	-fx-background-color: white;
 	-fx-border-color: #ddd;

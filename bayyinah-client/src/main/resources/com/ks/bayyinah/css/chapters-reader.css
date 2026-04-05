@@ -61,7 +61,6 @@
 
 .chapter-name-simple {
 	-fx-font-size: 16px;
-	-fx-font-weight: bold;
 	-fx-text-fill: #576174;
 	-fx-font-family: "Inter Bold";
 }
@@ -100,7 +99,6 @@
 .toolbar-label {
 	-fx-font-size: 12px;
 	-fx-font-family: "Inter Bold";
-	-fx-font-weight: bold;
 	-fx-text-fill: #4a5468;
 }
 
@@ -114,7 +112,7 @@
 	-fx-border-radius: 8;
 	-fx-background-radius: 8;
 	-fx-text-fill: #344055;
-	-fx-font-weight: 600;
+	-fx-font-family: "Inter Bold";
 	-fx-cursor: hand;
 }
 
@@ -160,7 +158,6 @@
 
 .ayah-number {
 	-fx-font-size: 16px;
-	-fx-font-weight: bold;
 	-fx-font-family: "Inter Bold";
 	-fx-text-fill: #2f3a4d;
 }
@@ -172,8 +169,8 @@
 
 .ayah-sync-btn {
 	-fx-font-size: 10px;
-	-fx-font-weight: 700;
 	-fx-text-fill: #075985;
+	-fx-font-family: "Inter Bold";
 	-fx-background-color: #e0f2fe;
 	-fx-border-color: #bae6fd;
 	-fx-background-radius: 999;

@@ -233,7 +233,7 @@
 
 .sidebar-title {
 	-fx-font-size: 15px;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 	-fx-text-fill: #1f2937;
 }
 
@@ -348,7 +348,7 @@
 
 .chapter-id {
 	-fx-text-fill: #ffffff;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 	-fx-font-size: 10px;
 }
 
@@ -392,8 +392,7 @@
 
 .settings-title {
 	-fx-text-fill: #0f172a;
-	-fx-font-weight: 800;
-	-fx-font-family: "Inter";
+	-fx-font-family: "Inter Bold";
 }
 
 .settings-subtitle {
@@ -415,7 +414,7 @@
 .settings-section-title {
 	-fx-text-fill: #0f172a;
 	-fx-font-size: 14px;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 }
 
 .settings-label {
@@ -429,7 +428,7 @@
 	-fx-text-fill: #ffffff;
 	-fx-background-radius: 8;
 	-fx-padding: 8 18;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 	-fx-cursor: hand;
 }
 
@@ -450,7 +449,7 @@
 	-fx-border-radius: 8;
 	-fx-background-radius: 8;
 	-fx-padding: 7 14;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 	-fx-cursor: hand;
 }
 
@@ -465,7 +464,7 @@
 .placeholder-title {
 	-fx-text-fill: #0f172a;
 	-fx-font-size: 26px;
-	-fx-font-weight: 800;
+	-fx-font-family: "Inter Bold";
 }
 
 .placeholder-subtitle {
@@ -514,8 +513,8 @@
 
 .meeting-title {
 	-fx-font-size: 28px;
-	-fx-font-weight: 800;
 	-fx-text-fill: #0f172a;
+	-fx-font-family: "Inter Bold";
 }
 
 .meeting-subtitle {
@@ -538,7 +537,7 @@
 
 .meeting-card-title {
 	-fx-font-size: 16px;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 	-fx-text-fill: #0f172a;
 }
 
@@ -553,7 +552,7 @@
 	-fx-text-fill: #ffffff;
 	-fx-background-radius: 8;
 	-fx-padding: 8 14;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 	-fx-cursor: hand;
 }
 
@@ -568,7 +567,7 @@
 	-fx-border-color: #bfdbfe;
 	-fx-border-radius: 8;
 	-fx-padding: 7 12;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 	-fx-cursor: hand;
 }
 
@@ -583,7 +582,7 @@
 	-fx-border-color: #fecaca;
 	-fx-border-radius: 8;
 	-fx-padding: 7 12;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 	-fx-cursor: hand;
 }
 
@@ -627,7 +626,7 @@
 	-fx-padding: 5 10;
 	-fx-text-fill: #1e293b;
 	-fx-font-size: 11px;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 }
 
 .meeting-header-meta {
@@ -652,14 +651,14 @@
 
 .meeting-section-title {
 	-fx-font-size: 13px;
-	-fx-font-weight: 800;
 	-fx-text-fill: #0f172a;
+	-fx-font-family: "Inter Bold";
 }
 
 .meeting-verse-focus {
 	-fx-text-fill: #1d4ed8;
 	-fx-font-size: 13px;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 }
 
 .meeting-leader-panel {
