@@ -22,6 +22,9 @@ public class RoomResponse {
   private Integer currentAyah;
 
   public static RoomResponse from(Room room) {
+    Map<String, Participant> participantSnapshot =
+        room.getParticipants() == null ? Map.of() : Map.copyOf(room.getParticipants());
+
     return RoomResponse.builder()
         .code(room.getCode())
         .leaderId(room.getLeaderId())
@@ -29,10 +32,11 @@ public class RoomResponse {
         .status(room.getStatus().name())
         .createdAt(room.getCreatedAt())
         .maxParticipants(room.getMaxParticipants())
-        .participantCount(room.getParticipants().size())
-        .participants(room.getParticipants())
+        .participantCount(participantSnapshot.size())
+        .participants(participantSnapshot)
         .currentSurah(room.getCurrentSurah())
         .currentAyah(room.getCurrentAyah())
         .build();
+  }
   }
 }
