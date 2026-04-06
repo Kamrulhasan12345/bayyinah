@@ -428,7 +428,7 @@ public class BrowsingController {
     if (showSidebar) {
       sidebarContainer.setMinWidth(0);
       sidebarContainer.setPrefWidth(260);
-      sidebarContainer.setMaxWidth(220);
+      sidebarContainer.setMaxWidth(260);
       splitPane.setDividerPosition(0, 0.22);
       return;
     }
