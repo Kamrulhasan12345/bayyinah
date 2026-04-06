@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+
+<HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="meeting-header"
+  stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/25"
+  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.HeaderController">
+  <children>
+    <Label fx:id="roomCodeLabel" styleClass="meeting-header-pill" text="Room: -" />
+    <Label fx:id="roleLabel" styleClass="meeting-header-pill" text="Role: Participant" />
+    <Label fx:id="leaderLabel" styleClass="meeting-header-pill" text="Leader: -" />
+    <Label fx:id="participantsLabel" styleClass="meeting-header-pill" text="Participants: 0" />
+    <Region HBox.hgrow="ALWAYS" />
+    <Label fx:id="verseFocusLabel" styleClass="meeting-header-meta" text="Focus: Surah 1, Ayah 1" />
+    <Label fx:id="timerLabel" styleClass="meeting-header-meta" text="00:00" />
+    <Label fx:id="connectionStateLabel" styleClass="meeting-header-pill" text="Offline" />
+  </children>
+  <padding>
+    <Insets bottom="10.0" left="0.0" right="0.0" top="0.0" />
+  </padding>
+</HBox>

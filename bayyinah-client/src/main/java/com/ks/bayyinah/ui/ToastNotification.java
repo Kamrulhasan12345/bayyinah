@@ -48,7 +48,7 @@ public class ToastNotification extends VBox {
     String textBackgroundStyle = !this.showBackgroundColor ? "-fx-text-fill: #000000; " : "-fx-text-fill: #FFFFFF; ";
     titleLabel = new Label(title);
     titleLabel.setStyle(
-        "-fx-font-weight: bold; " +
+        "-fx-font-family: 'Inter Bold'; " +
             "-fx-font-size: 14px; " + textBackgroundStyle);
 
     HBox.setHgrow(titleLabel, Priority.ALWAYS);
@@ -59,7 +59,8 @@ public class ToastNotification extends VBox {
     messageLabel.setStyle(
         "-fx-font-size: 12px; " +
             textBackgroundStyle +
-            "-fx-opacity: 0.9;");
+            "-fx-opacity: 0.9;" +
+            "-fx-font-family: 'Inter'");
 
     // Icon (optional)
     FontIcon icon = new FontIcon(iconLiteral != null ? iconLiteral : getIconForSeverity(severity));

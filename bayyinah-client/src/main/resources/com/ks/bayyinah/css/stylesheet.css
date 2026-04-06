@@ -1,3 +1,119 @@
+/* @font-face {
+	font-family: "Inter";
+	src: url("classpath:fonts/Inter.ttf");
+	font-weight: normal; 
+    font-style: normal;
+}
+
+@font-face {
+	font-family: "Al Qalam Quran Majeed";
+	src: url("classpath:fonts/Al Qalam Quran Majeed.ttf");
+		font-weight: normal; 
+    font-style: normal;
+}
+
+@font-face {
+	font-family: "Al Qalam Quran Majeed 1";
+	src: url("classpath:fonts/Al Qalam Quran Majeed 1.ttf");
+		font-weight: normal; 
+    font-style: normal;
+}
+
+@font-face {
+	font-family: "Al Qalam Quran Majeed 2";
+	src: url("classpath:fonts/Al Qalam Quran Majeed 2.ttf");
+	font-weight: normal; 
+  font-style: normal;
+} */
+/* Manual Inter mapping per FXML class (non-Arabic classes only). */
+.overlay,
+.auth-modal-root,
+.auth-modal-card,
+.browsing-split-pane,
+.rail-host,
+.rail-root,
+.rail-section,
+.rail-section-bottom,
+.rail-button,
+.rail-icon,
+.rail-logo-icon,
+.sidebar-root,
+.sidebar-header,
+.sidebar-search-row,
+.sidebar-title,
+.sidebar-search-field,
+.sidebar-search-icon,
+.chapters-list,
+.sidebar-footer,
+.sidebar-username,
+.sidebar-icon,
+.chapter-sidebar-row,
+.chapter-badge-wrap,
+.chapter-badge,
+.chapter-id,
+.chapter-name-simple,
+.chapter-name-translated,
+.chapter-meta,
+.settings-root,
+.settings-title,
+.settings-subtitle,
+.settings-mode,
+.settings-section-title,
+.settings-label,
+.settings-download-btn,
+.settings-warning-box,
+.settings-warning-text,
+.settings-save-btn,
+.settings-saved-hint,
+.bookmarks-root,
+.bookmarks-title,
+.bookmarks-summary,
+.bookmarks-list,
+.bookmarks-empty,
+.bookmark-row,
+.bookmark-row-top,
+.bookmark-surah,
+.bookmark-key,
+.reading-progress-root,
+.reading-progress-title,
+.reading-progress-summary,
+.reading-progress-list,
+.reading-progress-empty,
+.progress-row,
+.progress-row-header,
+.progress-surah,
+.progress-percent,
+.progress-meta,
+.placeholder-view,
+.placeholder-title,
+.placeholder-subtitle,
+.meeting-root,
+.meeting-right-scroll,
+.meeting-right-content,
+.meeting-status-pill,
+.meeting-entry-root,
+.meeting-title,
+.meeting-subtitle,
+.meeting-card,
+.meeting-card-title,
+.meeting-card-subtitle,
+.meeting-primary-btn,
+.meeting-secondary-btn,
+.meeting-danger-btn,
+.meeting-room-content,
+.meeting-header,
+.meeting-header-pill,
+.meeting-header-meta,
+.meeting-meta-panel,
+.meeting-meta-line,
+.meeting-section-title,
+.meeting-verse-focus,
+.meeting-leader-panel,
+.meeting-right-controls,
+.meeting-subtle-text {
+	-fx-font-family: "Inter";
+}
+
 .overlay {
 	-fx-background-color: rgba(0, 0, 0, 0.5);
 }
@@ -36,7 +152,73 @@
 
 /* Modern splitbar styling scoped to the browsing layout */
 .browsing-split-pane {
-	-fx-background-color: #f5f7fb;
+	-fx-background-color: #f1f3f7;
+}
+
+.rail-host {
+	-fx-background-color: #ffffff;
+	/* -fx-padding: 5 5 5 5; */
+}
+
+/* .rail-root {
+	-fx-background-color: #f9fbff;
+	-fx-background-radius: 10;
+	-fx-border-color: #d6ddea;
+	-fx-border-radius: 10;
+	-fx-border-width: 1;
+	-fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.08), 14, 0.26, 0, 4);
+} */
+
+.rail-section {
+	-fx-alignment: top-center;
+}
+
+.rail-section-bottom {
+	-fx-alignment: bottom-center;
+}
+
+.rail-button {
+	-fx-min-width: 35;
+	-fx-min-height: 35;
+	-fx-max-width: 35;
+	-fx-max-height: 35;
+	-fx-background-color: transparent;
+	-fx-background-radius: 5;
+	-fx-cursor: hand;
+}
+
+.rail-button:hover {
+	-fx-background-color: #f4f6f8;
+}
+
+.rail-button:focused {
+	-fx-background-color: #e5e6e7;
+	-fx-border-radius: 5;
+}
+
+.rail-button-active {
+	-fx-background-color: #eeeff1;
+	-fx-border-radius: 5;
+	/* -fx-effect: dropshadow(gaussian, rgba(51, 65, 85, 0.12), 6, 0.2, 0, 1); */
+}
+
+.rail-icon {
+	-fx-icon-color: #667084;
+}
+
+.rail-button-active .rail-icon {
+	-fx-icon-color: #1f2937;
+}
+
+.rail-logo-icon {
+	-fx-icon-color: #1f2937;
+}
+
+.rail-tooltip {
+	-fx-background-color: #0f172a;
+	-fx-text-fill: #ffffff;
+	-fx-background-radius: 8;
+	-fx-padding: 6 10;
 }
 
 .browsing-split-pane > .split-pane-divider {
@@ -63,14 +245,14 @@
 }
 
 .sidebar-root {
-	-fx-background-color: #f7f8fc;
-	-fx-border-color: #e5e9f2;
+	-fx-background-color: #f5f6f8;
+	-fx-border-color: #dde3ec;
 	-fx-border-width: 0 1 0 0;
 }
 
 .sidebar-title {
 	-fx-font-size: 15px;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 	-fx-text-fill: #1f2937;
 }
 
@@ -104,6 +286,7 @@
 .sidebar-username {
 	-fx-text-fill: #334155;
 	-fx-font-size: 12px;
+	-fx-font-weight: normal;
 }
 
 .chapters-list {
@@ -184,7 +367,7 @@
 
 .chapter-id {
 	-fx-text-fill: #ffffff;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 	-fx-font-size: 10px;
 }
 
@@ -192,22 +375,30 @@
 	-fx-text-fill: #1f2937;
 	-fx-font-size: 12px;
 	-fx-font-weight: 600;
+	-fx-font-family: "Inter";
 }
 
 .chapter-name-arabic {
 	-fx-text-fill: #334155;
 	-fx-font-size: 13px;
-	-fx-font-weight: 600;
+	/* -fx-font-weight: 600; */
+	-fx-font-family:
+		"Al Qalam Quran Majeed", "Al Qalam Quran Majeed 1",
+		"Al Qalam Quran Majeed 2", "Traditional Arabic", "Arabic Typesetting";
 }
 
 .chapter-name-translated {
 	-fx-text-fill: #4b5563;
 	-fx-font-size: 11px;
+	-fx-font-weight: normal;
+	-fx-font-family: "Inter";
 }
 
 .chapter-meta {
 	-fx-text-fill: #64748b;
 	-fx-font-size: 10px;
+	-fx-font-weight: normal;
+	-fx-font-family: "Inter";
 }
 
 .settings-root {
@@ -220,12 +411,14 @@
 
 .settings-title {
 	-fx-text-fill: #0f172a;
-	-fx-font-weight: 800;
+	-fx-font-family: "Inter Bold";
 }
 
 .settings-subtitle {
 	-fx-text-fill: #475569;
 	-fx-font-size: 12px;
+	-fx-font-weight: normal;
+	-fx-font-family: "Inter";
 }
 
 .settings-mode {
@@ -234,12 +427,13 @@
 	-fx-text-fill: #1e3a8a;
 	-fx-padding: 8 10;
 	-fx-font-size: 12px;
+	-fx-font-weight: 600;
 }
 
 .settings-section-title {
 	-fx-text-fill: #0f172a;
 	-fx-font-size: 14px;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 }
 
 .settings-label {
@@ -253,7 +447,7 @@
 	-fx-text-fill: #ffffff;
 	-fx-background-radius: 8;
 	-fx-padding: 8 18;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 	-fx-cursor: hand;
 }
 
@@ -264,6 +458,7 @@
 .settings-saved-hint {
 	-fx-text-fill: #475569;
 	-fx-font-size: 12px;
+	-fx-font-weight: normal;
 }
 
 .settings-download-btn {
@@ -273,12 +468,138 @@
 	-fx-border-radius: 8;
 	-fx-background-radius: 8;
 	-fx-padding: 7 14;
-	-fx-font-weight: 700;
+	-fx-font-family: "Inter Bold";
 	-fx-cursor: hand;
 }
 
 .settings-download-btn:hover {
 	-fx-background-color: #eff6ff;
+}
+
+.bookmarks-root,
+.reading-progress-root {
+	-fx-background-color: #f8fafc;
+}
+
+.bookmarks-title,
+.reading-progress-title {
+	-fx-text-fill: #0f172a;
+	-fx-font-size: 24px;
+	-fx-font-family: "Inter Bold";
+}
+
+.bookmarks-summary,
+.reading-progress-summary {
+	-fx-text-fill: #475569;
+	-fx-font-size: 12px;
+	-fx-font-weight: normal;
+}
+
+.bookmarks-list,
+.reading-progress-list {
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+}
+
+.bookmarks-list .list-cell,
+.reading-progress-list .list-cell {
+	-fx-background-color: transparent;
+	-fx-padding: 4 0;
+}
+
+.bookmarks-list .list-cell:filled:hover,
+.reading-progress-list .list-cell:filled:hover {
+	-fx-background-color: transparent;
+}
+
+.bookmarks-list .list-cell:filled:selected,
+.bookmarks-list .list-cell:filled:selected:focused,
+.reading-progress-list .list-cell:filled:selected,
+.reading-progress-list .list-cell:filled:selected:focused {
+	-fx-background-color: transparent;
+}
+
+.bookmark-row,
+.progress-row {
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 12;
+	-fx-border-color: #dbe3ef;
+	-fx-border-radius: 12;
+	-fx-border-width: 1;
+	-fx-padding: 10 12;
+	-fx-cursor: hand;
+}
+
+.bookmarks-list .list-cell:filled:hover .bookmark-row,
+.reading-progress-list .list-cell:filled:hover .progress-row {
+	-fx-border-color: #8eb4ff;
+	-fx-effect: dropshadow(gaussian, rgba(56, 118, 255, 0.16), 10, 0.24, 0, 2);
+}
+
+.bookmark-surah,
+.progress-surah {
+	-fx-text-fill: #0f172a;
+	-fx-font-size: 13px;
+	-fx-font-family: "Inter Bold";
+}
+
+.bookmark-key,
+.progress-percent {
+	-fx-text-fill: #1e40af;
+	-fx-font-size: 12px;
+	-fx-font-family: "Inter Bold";
+}
+
+.bookmark-arabic,
+.progress-arabic {
+	-fx-text-fill: #1e293b;
+	-fx-font-size: 18px;
+	-fx-font-family:
+		"Al Qalam Quran Majeed", "Al Qalam Quran Majeed 1",
+		"Al Qalam Quran Majeed 2", "Traditional Arabic", "Arabic Typesetting";
+}
+
+.progress-meta {
+	-fx-text-fill: #475569;
+	-fx-font-size: 12px;
+	-fx-font-weight: normal;
+}
+
+.progress-row-bar {
+	-fx-pref-height: 10;
+}
+
+.progress-row-bar > .track {
+	-fx-background-color: #e2e8f0;
+	-fx-background-radius: 999;
+}
+
+.progress-row-bar > .bar {
+	-fx-background-color: linear-gradient(to right, #2563eb, #0ea5e9);
+	-fx-background-radius: 999;
+}
+
+.bookmarks-empty,
+.reading-progress-empty {
+	-fx-text-fill: #64748b;
+	-fx-font-size: 12px;
+	-fx-padding: 18;
+}
+
+.placeholder-view {
+	-fx-background-color: #f8fafc;
+}
+
+.placeholder-title {
+	-fx-text-fill: #0f172a;
+	-fx-font-size: 26px;
+	-fx-font-family: "Inter Bold";
+}
+
+.placeholder-subtitle {
+	-fx-text-fill: #475569;
+	-fx-font-size: 13px;
+	-fx-font-weight: normal;
 }
 
 .settings-warning-box {
@@ -293,4 +614,200 @@
 	-fx-text-fill: #9a3412;
 	-fx-font-size: 12px;
 	-fx-font-weight: 600;
+}
+
+.meeting-root {
+	-fx-background-color: #dbe3ef;
+}
+
+.meeting-root > .split-pane-divider {
+	-fx-background-color: #dbe3ef;
+	-fx-padding: 0 1 0 1;
+}
+
+.meeting-status-pill {
+	-fx-background-color: #e2e8f0;
+	-fx-text-fill: #0f172a;
+	-fx-background-radius: 999;
+	-fx-padding: 6 12;
+	-fx-font-size: 12px;
+	-fx-font-weight: 600;
+}
+
+.meeting-entry-root {
+	-fx-background-color: rgba(255, 255, 255, 0.7);
+	-fx-background-radius: 16;
+	-fx-padding: 18;
+}
+
+.meeting-title {
+	-fx-font-size: 28px;
+	-fx-text-fill: #0f172a;
+	-fx-font-family: "Inter Bold";
+}
+
+.meeting-subtitle {
+	-fx-font-size: 13px;
+	-fx-text-fill: #475569;
+	-fx-font-weight: normal;
+}
+
+.meeting-card {
+	-fx-min-width: 310;
+	-fx-max-width: 360;
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 14;
+	-fx-border-color: #dbe3ef;
+	-fx-border-radius: 14;
+	-fx-border-width: 1;
+	-fx-padding: 14;
+	-fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.08), 10, 0.2, 0, 3);
+}
+
+.meeting-card-title {
+	-fx-font-size: 16px;
+	-fx-font-family: "Inter Bold";
+	-fx-text-fill: #0f172a;
+}
+
+.meeting-card-subtitle {
+	-fx-font-size: 12px;
+	-fx-text-fill: #64748b;
+	-fx-font-weight: normal;
+}
+
+.meeting-primary-btn {
+	-fx-background-color: linear-gradient(to right, #0ea5e9, #2563eb);
+	-fx-text-fill: #ffffff;
+	-fx-background-radius: 8;
+	-fx-padding: 8 14;
+	-fx-font-family: "Inter Bold";
+	-fx-cursor: hand;
+}
+
+.meeting-primary-btn:hover {
+	-fx-background-color: linear-gradient(to right, #0284c7, #1d4ed8);
+}
+
+.meeting-secondary-btn {
+	-fx-background-color: #ffffff;
+	-fx-text-fill: #1e3a8a;
+	-fx-background-radius: 8;
+	-fx-border-color: #bfdbfe;
+	-fx-border-radius: 8;
+	-fx-padding: 7 12;
+	-fx-font-family: "Inter Bold";
+	-fx-cursor: hand;
+}
+
+.meeting-secondary-btn:hover {
+	-fx-background-color: #eff6ff;
+}
+
+.meeting-danger-btn {
+	-fx-background-color: #fee2e2;
+	-fx-text-fill: #991b1b;
+	-fx-background-radius: 8;
+	-fx-border-color: #fecaca;
+	-fx-border-radius: 8;
+	-fx-padding: 7 12;
+	-fx-font-family: "Inter Bold";
+	-fx-cursor: hand;
+}
+
+.meeting-right-scroll {
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+}
+
+.meeting-right-scroll > .viewport {
+	-fx-background-color: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+}
+
+.meeting-right-scroll .corner {
+	-fx-background-color: transparent;
+}
+
+.meeting-right-content {
+	-fx-min-width: 360;
+	-fx-fill-width: true;
+}
+
+.meeting-room-content {
+	-fx-background-color: #f8fafc;
+	-fx-background-radius: 10;
+	-fx-padding: 12;
+	-fx-border-color: #e2e8f0;
+	-fx-border-radius: 10;
+}
+
+.meeting-header {
+	-fx-background-color: #f8fafc;
+	-fx-background-radius: 10;
+	-fx-padding: 10;
+	-fx-border-color: #dbe3ef;
+	-fx-border-radius: 10;
+}
+
+.meeting-header-pill {
+	-fx-background-color: #e2e8f0;
+	-fx-background-radius: 999;
+	-fx-padding: 5 10;
+	-fx-text-fill: #1e293b;
+	-fx-font-size: 11px;
+	-fx-font-family: "Inter Bold";
+}
+
+.meeting-header-meta {
+	-fx-text-fill: #334155;
+	-fx-font-size: 12px;
+	-fx-font-weight: 600;
+}
+
+.meeting-meta-panel {
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 8;
+	-fx-border-color: #dbe3ef;
+	-fx-border-radius: 8;
+	-fx-padding: 10;
+}
+
+.meeting-meta-line {
+	-fx-text-fill: #334155;
+	-fx-font-size: 12px;
+	-fx-font-weight: 600;
+}
+
+.meeting-section-title {
+	-fx-font-size: 13px;
+	-fx-text-fill: #0f172a;
+	-fx-font-family: "Inter Bold";
+}
+
+.meeting-verse-focus {
+	-fx-text-fill: #1d4ed8;
+	-fx-font-size: 13px;
+	-fx-font-family: "Inter Bold";
+}
+
+.meeting-leader-panel {
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 8;
+	-fx-border-color: #dbe3ef;
+	-fx-border-radius: 8;
+	-fx-padding: 10;
+}
+
+.meeting-right-controls {
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 8;
+	-fx-border-color: #dbe3ef;
+	-fx-border-radius: 8;
+	-fx-padding: 10;
+}
+
+.meeting-subtle-text {
+	-fx-text-fill: #64748b;
+	-fx-font-size: 12px;
+	-fx-font-weight: normal;
 }

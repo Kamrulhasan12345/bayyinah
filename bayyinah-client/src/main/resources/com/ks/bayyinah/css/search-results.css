@@ -1,4 +1,49 @@
 /* search-results.css */
+/* 
+@font-face {
+	font-family: "Inter";
+	src: url("classpath:fonts/Inter.ttf");
+}
+
+@font-face {
+	font-family: "Al Qalam Quran Majeed";
+	src: url("classpath:fonts/Al Qalam Quran Majeed.ttf");
+}
+
+@font-face {
+	font-family: "Al Qalam Quran Majeed 1";
+	src: url("classpath:fonts/Al Qalam Quran Majeed 1.ttf");
+}
+
+@font-face {
+	font-family: "Al Qalam Quran Majeed 2";
+	src: url("classpath:fonts/Al Qalam Quran Majeed 2.ttf");
+} */
+
+/* Manual Inter mapping per FXML/search classes (Arabic classes excluded). */
+.search-results-page,
+.search-header,
+.search-field,
+.search-button,
+.result-count,
+.results-scroll,
+.results-container,
+.search-result-card,
+.verse-reference,
+.translation-text,
+.match-indicator,
+.highlighted-context,
+.chapter-name,
+.chapter-info,
+.chapter-translated-name,
+.no-results-box,
+.no-results-title,
+.no-results-subtitle,
+.pagination-box,
+.pagination-button,
+.page-info {
+	-fx-font-family: "Inter";
+}
 
 .search-results-page {
 	-fx-background-color: #fafafa;
@@ -25,6 +70,7 @@
 
 .search-button {
 	-fx-font-size: 14px;
+		-fx-font-family: "Inter Bold";
 	-fx-padding: 12px 30px;
 	-fx-background-color: #4285f4;
 	-fx-text-fill: white;
@@ -38,6 +84,7 @@
 
 .result-count {
 	-fx-font-size: 14px;
+	-fx-font-weight: normal;
 	-fx-text-fill: #666;
 }
 
@@ -64,25 +111,29 @@
 
 .verse-reference {
 	-fx-font-size: 13px;
-	-fx-font-weight: bold;
+	-fx-font-family: "Inter Bold";
 	-fx-text-fill: #4285f4;
 }
 
 .arabic-text {
 	-fx-font-size: 24px;
-	-fx-font-family: "Traditional Arabic", "Arabic Typesetting";
+	-fx-font-family:
+		"Al Qalam Quran Majeed", "Al Qalam Quran Majeed 1",
+		"Al Qalam Quran Majeed 2", "Traditional Arabic", "Arabic Typesetting";
 	-fx-fill: #1a1a1a;
 	-fx-line-spacing: 8px;
 }
 
 .translation-text {
 	-fx-font-size: 15px;
+	-fx-font-weight: normal;
 	-fx-text-fill: #444;
 	-fx-line-spacing: 6px;
 }
 
 .match-indicator {
 	-fx-font-size: 12px;
+	-fx-font-weight: normal;
 	-fx-text-fill: #888;
 	-fx-padding: 5px 0 0 0;
 }
@@ -93,23 +144,27 @@
 
 .chapter-name {
 	-fx-font-size: 20px;
-	-fx-font-weight: bold;
+	-fx-font-family: "Inter Bold";
 	-fx-text-fill: #1a1a1a;
 }
 
 .chapter-name-arabic {
 	-fx-font-size: 22px;
-	-fx-font-family: "Traditional Arabic";
+	-fx-font-family:
+		"Al Qalam Quran Majeed", "Al Qalam Quran Majeed 1",
+		"Al Qalam Quran Majeed 2", "Traditional Arabic", "Arabic Typesetting";
 	-fx-text-fill: #444;
 }
 
 .chapter-info {
 	-fx-font-size: 13px;
+	-fx-font-weight: normal;
 	-fx-text-fill: #888;
 }
 
 .chapter-translated-name {
 	-fx-font-size: 14px;
+	-fx-font-weight: normal;
 	-fx-text-fill: #666;
 	-fx-font-style: italic;
 }
@@ -121,12 +176,13 @@
 
 .no-results-title {
 	-fx-font-size: 20px;
-	-fx-font-weight: bold;
+	-fx-font-family: "Inter Bold";
 	-fx-text-fill: #666;
 }
 
 .no-results-subtitle {
 	-fx-font-size: 14px;
+	-fx-font-weight: normal;
 	-fx-text-fill: #999;
 }
 
@@ -138,6 +194,7 @@
 
 .pagination-button {
 	-fx-font-size: 13px;
+	-fx-font-family: "Inter Bold";
 	-fx-padding: 8px 16px;
 	-fx-background-color: white;
 	-fx-border-color: #ddd;
@@ -158,6 +215,7 @@
 
 .page-info {
 	-fx-font-size: 14px;
+	-fx-font-weight: normal;
 	-fx-text-fill: #666;
 	-fx-padding: 0 12px;
 }

@@ -1,0 +1,1483 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Bayyinah WebRTC Harness</title>
+		<style>
+			:root {
+				--bg-0: #0b1020;
+				--bg-1: #141b34;
+				--panel: #18223f;
+				--panel-2: #1d2a4b;
+				--line: #2a3b69;
+				--text: #e8eefc;
+				--muted: #9db0de;
+				--good: #21c07a;
+				--warn: #f7b955;
+				--bad: #ff6b6b;
+				--accent: #47a3ff;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				margin: 0;
+				color: var(--text);
+				background:
+					radial-gradient(
+						1200px 500px at 15% -20%,
+						#1a3f88 0%,
+						transparent 55%
+					),
+					radial-gradient(
+						900px 420px at 100% -20%,
+						#0f6f6f 0%,
+						transparent 60%
+					),
+					linear-gradient(180deg, var(--bg-0), var(--bg-1));
+				font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+				min-height: 100vh;
+			}
+
+			.shell {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 20px;
+				display: grid;
+				gap: 14px;
+			}
+
+			.headline {
+				display: flex;
+				align-items: baseline;
+				gap: 12px;
+				flex-wrap: wrap;
+			}
+
+			.headline h1 {
+				margin: 0;
+				font-size: 30px;
+				letter-spacing: 0.4px;
+			}
+
+			.headline span {
+				color: var(--muted);
+				font-size: 14px;
+			}
+
+			.grid {
+				display: grid;
+				grid-template-columns: 1.2fr 1fr;
+				gap: 14px;
+			}
+
+			.card {
+				background: linear-gradient(180deg, var(--panel), var(--panel-2));
+				border: 1px solid var(--line);
+				border-radius: 14px;
+				padding: 14px;
+				box-shadow: 0 12px 30px rgba(5, 9, 20, 0.45);
+			}
+
+			.card h2 {
+				margin: 0 0 10px;
+				font-size: 16px;
+				font-weight: 700;
+				letter-spacing: 0.3px;
+			}
+
+			.row {
+				display: grid;
+				grid-template-columns: repeat(12, 1fr);
+				gap: 8px;
+				margin-bottom: 8px;
+			}
+
+			.field {
+				display: flex;
+				flex-direction: column;
+				gap: 4px;
+			}
+
+			.field label {
+				font-size: 12px;
+				color: var(--muted);
+			}
+
+			.span-12 {
+				grid-column: span 12;
+			}
+
+			.span-8 {
+				grid-column: span 8;
+			}
+
+			.span-6 {
+				grid-column: span 6;
+			}
+
+			.span-4 {
+				grid-column: span 4;
+			}
+
+			.span-3 {
+				grid-column: span 3;
+			}
+
+			input,
+			button,
+			textarea {
+				width: 100%;
+				border-radius: 10px;
+				border: 1px solid #344b84;
+				background: #0f1730;
+				color: var(--text);
+				padding: 10px 11px;
+				font-size: 14px;
+			}
+
+			textarea {
+				min-height: 82px;
+				resize: vertical;
+			}
+
+			button {
+				cursor: pointer;
+				border: 1px solid #3d5ea8;
+				background: linear-gradient(180deg, #2d4e96, #213d7a);
+				font-weight: 600;
+			}
+
+			button.secondary {
+				background: linear-gradient(180deg, #2a3760, #1f2a48);
+				border-color: #435c9f;
+			}
+
+			button.warn {
+				background: linear-gradient(180deg, #8d5f21, #6f4a1b);
+				border-color: #ba8b3a;
+			}
+
+			button.danger {
+				background: linear-gradient(180deg, #9a3341, #7e2735);
+				border-color: #d25d71;
+			}
+
+			button:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+
+			.status-bar {
+				display: flex;
+				gap: 8px;
+				flex-wrap: wrap;
+				margin-bottom: 8px;
+			}
+
+			.pill {
+				border-radius: 999px;
+				padding: 6px 11px;
+				background: #0d1430;
+				border: 1px solid #37519a;
+				font-size: 12px;
+				color: #c8d8ff;
+			}
+
+			.pill.good {
+				border-color: #2f7f5d;
+				color: #9bf2cb;
+			}
+
+			.pill.warn {
+				border-color: #a2762a;
+				color: #ffd89a;
+			}
+
+			.pill.bad {
+				border-color: #9f4455;
+				color: #ffb7c2;
+			}
+
+			.list {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				display: grid;
+				gap: 6px;
+				max-height: 210px;
+				overflow: auto;
+			}
+
+			.list li {
+				font-size: 13px;
+				background: #0f1730;
+				border: 1px solid #2f4174;
+				border-radius: 8px;
+				padding: 8px;
+			}
+
+			.logs {
+				min-height: 220px;
+				max-height: 280px;
+				overflow: auto;
+				background: #0b1125;
+				border: 1px solid #304a88;
+				border-radius: 10px;
+				padding: 10px;
+				font-family: Consolas, "Courier New", monospace;
+				font-size: 12px;
+				white-space: pre-wrap;
+				line-height: 1.45;
+			}
+
+			.log-info {
+				color: #b7caf7;
+			}
+
+			.log-good {
+				color: #97f0c5;
+			}
+
+			.log-warn {
+				color: #ffd591;
+			}
+
+			.log-bad {
+				color: #ffb2b2;
+			}
+
+			.audio-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+				gap: 8px;
+			}
+
+			.audio-card {
+				border: 1px solid #2f4174;
+				border-radius: 8px;
+				background: #0f1730;
+				padding: 8px;
+				font-size: 13px;
+				display: grid;
+				gap: 6px;
+			}
+
+			.audio-card audio {
+				width: 100%;
+			}
+
+			@media (max-width: 980px) {
+				.grid {
+					grid-template-columns: 1fr;
+				}
+
+				.span-8,
+				.span-6,
+				.span-4,
+				.span-3 {
+					grid-column: span 12;
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="shell">
+			<div class="headline">
+				<h1>Bayyinah STOMP + WebRTC Harness</h1>
+				<span
+					>JWT + displayName test page for create, join, realtime, and audio
+					chat</span
+				>
+			</div>
+
+			<div class="grid">
+				<div class="card">
+					<h2>Connection + Room</h2>
+
+					<div class="status-bar">
+						<div id="statusConnection" class="pill bad">
+							Socket: Disconnected
+						</div>
+						<div id="statusRoom" class="pill">Room: -</div>
+						<div id="statusRole" class="pill">Role: -</div>
+						<div id="statusMic" class="pill warn">Mic: Off</div>
+						<div id="statusPeers" class="pill">Peers: 0</div>
+					</div>
+
+					<div class="row">
+						<div class="field span-12">
+							<label>Base URL</label>
+							<input
+								id="baseUrl"
+								type="text"
+								placeholder="http://localhost:8080"
+							/>
+						</div>
+						<div class="field span-12">
+							<label>JWT Token</label>
+							<textarea
+								id="jwtToken"
+								placeholder="Paste access token"
+							></textarea>
+						</div>
+						<div class="field span-6">
+							<label>Display Name</label>
+							<input id="displayName" type="text" placeholder="Ahlam" />
+						</div>
+						<div class="field span-3">
+							<label>Max Participants</label>
+							<input
+								id="maxParticipants"
+								type="number"
+								min="2"
+								max="50"
+								value="8"
+							/>
+						</div>
+						<div class="field span-3">
+							<label>Room Code</label>
+							<input id="roomCode" type="text" placeholder="AB12CD" />
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="span-4">
+							<button id="createRoomBtn">Create Room (Leader)</button>
+						</div>
+						<div class="span-4">
+							<button id="joinRoomBtn" class="secondary">Join Room</button>
+						</div>
+						<div class="span-4">
+							<button id="connectMicBtn" class="secondary">Connect Mic</button>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="span-3">
+							<button id="muteBtn" class="warn" disabled>Mute</button>
+						</div>
+						<div class="span-3">
+							<button id="sendJoinPresenceBtn" class="secondary" disabled>
+								Re-send JOIN
+							</button>
+						</div>
+						<div class="span-3">
+							<button id="closeRoomBtn" class="danger" disabled>
+								Close Room
+							</button>
+						</div>
+						<div class="span-3">
+							<button id="leaveRoomBtn" class="danger" disabled>Leave</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="card">
+					<h2>Participants</h2>
+					<ul id="participantsList" class="list"></ul>
+				</div>
+			</div>
+
+			<div class="grid">
+				<div class="card">
+					<h2>Chat + Verse Sync</h2>
+					<div class="row">
+						<div class="field span-8">
+							<label>Chat Message</label>
+							<input
+								id="chatInput"
+								type="text"
+								placeholder="Assalamu alaykum"
+							/>
+						</div>
+						<div class="span-4" style="display: flex; align-items: end">
+							<button id="sendChatBtn" class="secondary" disabled>
+								Send Chat
+							</button>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="field span-4">
+							<label>Surah</label>
+							<input id="surahInput" type="number" min="1" value="1" />
+						</div>
+						<div class="field span-4">
+							<label>Ayah</label>
+							<input id="ayahInput" type="number" min="1" value="1" />
+						</div>
+						<div class="span-4" style="display: flex; align-items: end">
+							<button id="syncVerseBtn" class="secondary" disabled>
+								Sync Verse
+							</button>
+						</div>
+					</div>
+
+					<div class="logs" id="logs"></div>
+				</div>
+
+				<div class="card">
+					<h2>Remote Audio Streams</h2>
+					<div id="audioGrid" class="audio-grid"></div>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.2.1/bundles/stomp.umd.min.js"></script>
+		<script>
+			const ui = {
+				baseUrl: document.getElementById("baseUrl"),
+				jwtToken: document.getElementById("jwtToken"),
+				displayName: document.getElementById("displayName"),
+				maxParticipants: document.getElementById("maxParticipants"),
+				roomCode: document.getElementById("roomCode"),
+				createRoomBtn: document.getElementById("createRoomBtn"),
+				joinRoomBtn: document.getElementById("joinRoomBtn"),
+				connectMicBtn: document.getElementById("connectMicBtn"),
+				muteBtn: document.getElementById("muteBtn"),
+				sendJoinPresenceBtn: document.getElementById("sendJoinPresenceBtn"),
+				closeRoomBtn: document.getElementById("closeRoomBtn"),
+				leaveRoomBtn: document.getElementById("leaveRoomBtn"),
+				chatInput: document.getElementById("chatInput"),
+				sendChatBtn: document.getElementById("sendChatBtn"),
+				surahInput: document.getElementById("surahInput"),
+				ayahInput: document.getElementById("ayahInput"),
+				syncVerseBtn: document.getElementById("syncVerseBtn"),
+				participantsList: document.getElementById("participantsList"),
+				logs: document.getElementById("logs"),
+				audioGrid: document.getElementById("audioGrid"),
+				statusConnection: document.getElementById("statusConnection"),
+				statusRoom: document.getElementById("statusRoom"),
+				statusRole: document.getElementById("statusRole"),
+				statusMic: document.getElementById("statusMic"),
+				statusPeers: document.getElementById("statusPeers"),
+			};
+
+			const state = {
+				token: "",
+				baseUrl: window.location.origin,
+				displayName: "",
+				roomCode: "",
+				localUserId: null,
+				isLeader: false,
+				participants: new Map(),
+				stompClient: null,
+				connected: false,
+				mediaStream: null,
+				muted: false,
+				peersBySession: new Map(),
+				sessionByPeer: new Map(),
+				pendingCandidatesBySession: new Map(),
+				sessionsStartingOffer: new Set(),
+			};
+
+			function setStatus(el, text, kind) {
+				el.textContent = text;
+				el.className = "pill" + (kind ? " " + kind : "");
+			}
+
+			function log(message, kind = "info") {
+				const line = document.createElement("div");
+				line.className = "log-" + kind;
+				line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+				ui.logs.appendChild(line);
+				ui.logs.scrollTop = ui.logs.scrollHeight;
+			}
+
+			function normalizeBaseUrl(raw) {
+				const value = (raw || "").trim();
+				if (!value) {
+					return window.location.origin;
+				}
+				return value.replace(/\/+$/, "");
+			}
+
+			function readFormState() {
+				state.baseUrl = normalizeBaseUrl(ui.baseUrl.value);
+				state.token = ui.jwtToken.value.trim();
+				state.displayName = ui.displayName.value.trim() || "Harness User";
+				state.roomCode = ui.roomCode.value.trim().toUpperCase();
+				ui.roomCode.value = state.roomCode;
+			}
+
+			function ensureTokenAndName() {
+				readFormState();
+				if (!state.token) {
+					throw new Error("JWT token is required");
+				}
+				if (!state.displayName) {
+					throw new Error("Display name is required");
+				}
+			}
+
+			function authHeaders() {
+				return {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${state.token}`,
+				};
+			}
+
+			async function callApi(path, payload) {
+				const response = await fetch(`${state.baseUrl}${path}`, {
+					method: "POST",
+					headers: authHeaders(),
+					body: JSON.stringify(payload),
+				});
+
+				if (!response.ok) {
+					let details = "";
+					try {
+						const asJson = await response.json();
+						details = asJson.detail || asJson.message || JSON.stringify(asJson);
+					} catch (_) {
+						details = await response.text();
+					}
+					throw new Error(
+						`${response.status} ${response.statusText}${details ? ` - ${details}` : ""}`,
+					);
+				}
+
+				if (response.status === 204) {
+					return null;
+				}
+
+				return response.json();
+			}
+
+			function inferLocalUserIdFromRoom(roomData) {
+				if (!roomData || !roomData.participants) {
+					return null;
+				}
+
+				const entries = Object.entries(roomData.participants);
+				if (entries.length === 0) {
+					return null;
+				}
+
+				const byDisplay = entries.filter(
+					([_, p]) => p && p.displayName === state.displayName,
+				);
+				if (byDisplay.length === 1) {
+					return byDisplay[0][0];
+				}
+
+				if (byDisplay.length > 1) {
+					byDisplay.sort((a, b) => {
+						const aTime = Date.parse(a[1].connectedAt || "") || 0;
+						const bTime = Date.parse(b[1].connectedAt || "") || 0;
+						return bTime - aTime;
+					});
+					return byDisplay[0][0];
+				}
+
+				return null;
+			}
+
+			function setRoomSnapshot(roomData, role) {
+				state.roomCode = roomData.code;
+				state.isLeader = role === "leader";
+				ui.roomCode.value = state.roomCode;
+
+				if (role === "leader") {
+					state.localUserId = roomData.leaderId;
+				} else {
+					state.localUserId =
+						inferLocalUserIdFromRoom(roomData) || state.localUserId;
+				}
+
+				state.participants.clear();
+				if (roomData.participants) {
+					for (const [id, p] of Object.entries(roomData.participants)) {
+						state.participants.set(id, p);
+					}
+				}
+
+				setStatus(ui.statusRoom, `Room: ${state.roomCode || "-"}`);
+				setStatus(
+					ui.statusRole,
+					`Role: ${state.isLeader ? "Leader" : "Participant"}`,
+				);
+				renderParticipants();
+				updateButtons();
+			}
+
+			function renderParticipants() {
+				ui.participantsList.innerHTML = "";
+				const list = Array.from(state.participants.entries())
+					.map(([id, p]) => ({ id, p }))
+					.sort((a, b) =>
+						(a.p.displayName || "").localeCompare(b.p.displayName || ""),
+					);
+
+				for (const entry of list) {
+					const li = document.createElement("li");
+					const flags = [];
+					if (entry.p.isLeader) flags.push("leader");
+					if (entry.p.isMuted) flags.push("muted");
+					if (state.localUserId && entry.id === state.localUserId)
+						flags.push("you");
+					const badge = flags.length ? ` (${flags.join(", ")})` : "";
+					li.textContent = `${entry.p.displayName || "Participant"}${badge}`;
+					ui.participantsList.appendChild(li);
+				}
+
+				setStatus(ui.statusPeers, `Peers: ${state.participants.size}`);
+			}
+
+			function updateButtons() {
+				const inRoom = state.connected && !!state.roomCode;
+				ui.leaveRoomBtn.disabled = !inRoom;
+				ui.sendJoinPresenceBtn.disabled = !inRoom;
+				ui.sendChatBtn.disabled = !inRoom;
+				ui.syncVerseBtn.disabled = !inRoom;
+				ui.closeRoomBtn.disabled = !(inRoom && state.isLeader);
+				ui.muteBtn.disabled = !state.mediaStream;
+			}
+
+			function updateMicStatus() {
+				if (!state.mediaStream) {
+					setStatus(ui.statusMic, "Mic: Off", "warn");
+					ui.muteBtn.textContent = "Mute";
+					return;
+				}
+
+				if (state.muted) {
+					setStatus(ui.statusMic, "Mic: Muted", "warn");
+					ui.muteBtn.textContent = "Unmute";
+				} else {
+					setStatus(ui.statusMic, "Mic: Live", "good");
+					ui.muteBtn.textContent = "Mute";
+				}
+			}
+
+			async function ensureMic() {
+				if (state.mediaStream) {
+					return state.mediaStream;
+				}
+
+				state.mediaStream = await navigator.mediaDevices.getUserMedia({
+					audio: true,
+					video: false,
+				});
+				for (const ctx of state.peersBySession.values()) {
+					for (const track of state.mediaStream.getTracks()) {
+						ctx.pc.addTrack(track, state.mediaStream);
+					}
+				}
+
+				state.muted = false;
+				updateMicStatus();
+				updateButtons();
+				log("Microphone connected", "good");
+				return state.mediaStream;
+			}
+
+			function applyMuteState() {
+				if (!state.mediaStream) {
+					return;
+				}
+
+				for (const track of state.mediaStream.getAudioTracks()) {
+					track.enabled = !state.muted;
+				}
+
+				if (state.connected) {
+					sendControl(
+						state.muted ? "MUTE" : "UNMUTE",
+						state.muted ? "self-muted" : "self-unmuted",
+					);
+				}
+
+				updateMicStatus();
+			}
+
+			function newSessionId() {
+				if (window.crypto && crypto.randomUUID) {
+					return crypto.randomUUID();
+				}
+				return `${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
+			}
+
+			function tryParseBigIntId(value) {
+				const text = String(value ?? "").trim();
+				if (!/^[-]?\d+$/.test(text)) {
+					return null;
+				}
+				try {
+					return BigInt(text);
+				} catch (_) {
+					return null;
+				}
+			}
+
+			function shouldInitiateOfferToPeer(peerId) {
+				if (!peerId || !state.localUserId || peerId === state.localUserId) {
+					return false;
+				}
+
+				const localAsNumber = tryParseBigIntId(state.localUserId);
+				const peerAsNumber = tryParseBigIntId(peerId);
+				if (localAsNumber !== null && peerAsNumber !== null) {
+					return localAsNumber < peerAsNumber;
+				}
+
+				return String(state.localUserId).localeCompare(String(peerId)) < 0;
+			}
+
+			function isTargetedToMe(targetUserId) {
+				if (!targetUserId) {
+					return true;
+				}
+				if (!state.localUserId) {
+					return false;
+				}
+				return targetUserId === state.localUserId;
+			}
+
+			function createPeerContext(peerId, sessionId) {
+				const pc = new RTCPeerConnection({
+					iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+				});
+
+				const audioCard = document.createElement("div");
+				audioCard.className = "audio-card";
+
+				const title = document.createElement("div");
+				title.textContent = `Peer ${peerId}`;
+
+				const audioEl = document.createElement("audio");
+				audioEl.autoplay = true;
+				audioEl.controls = true;
+
+				audioCard.appendChild(title);
+				audioCard.appendChild(audioEl);
+				ui.audioGrid.appendChild(audioCard);
+
+				const ctx = {
+					peerId,
+					sessionId,
+					pc,
+					audioEl,
+					audioCard,
+					remoteDescriptionSet: false,
+					pendingLocalCandidates: [],
+				};
+
+				pc.onicecandidate = (event) => {
+					if (!event.candidate) {
+						return;
+					}
+					sendCandidate(peerId, sessionId, event.candidate);
+				};
+
+				pc.ontrack = (event) => {
+					const [stream] = event.streams;
+					if (stream) {
+						ctx.audioEl.srcObject = stream;
+					}
+				};
+
+				pc.onconnectionstatechange = () => {
+					const stateText = pc.connectionState;
+					title.textContent = `Peer ${peerId} • ${stateText}`;
+					if (["closed", "failed", "disconnected"].includes(stateText)) {
+						log(
+							`Peer ${peerId} state: ${stateText}`,
+							stateText === "failed" ? "bad" : "warn",
+						);
+					}
+				};
+
+				if (state.mediaStream) {
+					for (const track of state.mediaStream.getTracks()) {
+						pc.addTrack(track, state.mediaStream);
+					}
+				}
+
+				state.peersBySession.set(sessionId, ctx);
+				state.sessionByPeer.set(peerId, sessionId);
+
+				const pendingSignals = state.pendingCandidatesBySession.get(sessionId);
+				if (pendingSignals && pendingSignals.length) {
+					pendingSignals.forEach((candidate) =>
+						addCandidateToContext(ctx, candidate),
+					);
+					state.pendingCandidatesBySession.delete(sessionId);
+				}
+
+				return ctx;
+			}
+
+			function destroyPeerSession(sessionId) {
+				const ctx = state.peersBySession.get(sessionId);
+				if (!ctx) {
+					return;
+				}
+
+				state.peersBySession.delete(sessionId);
+				state.pendingCandidatesBySession.delete(sessionId);
+				if (ctx.peerId) {
+					state.sessionByPeer.delete(ctx.peerId);
+					state.sessionsStartingOffer.delete(ctx.peerId);
+				}
+
+				try {
+					ctx.pc.close();
+				} catch (_) {}
+
+				if (ctx.audioCard && ctx.audioCard.parentNode) {
+					ctx.audioCard.parentNode.removeChild(ctx.audioCard);
+				}
+			}
+
+			function destroyPeerById(peerId) {
+				const sessionId = state.sessionByPeer.get(peerId);
+				if (sessionId) {
+					destroyPeerSession(sessionId);
+				}
+				state.sessionsStartingOffer.delete(peerId);
+			}
+
+			function destroyAllPeers() {
+				Array.from(state.peersBySession.keys()).forEach(destroyPeerSession);
+				state.sessionByPeer.clear();
+				state.sessionsStartingOffer.clear();
+				ui.audioGrid.innerHTML = "";
+			}
+
+			function sendStomp(destination, payload) {
+				if (!state.stompClient || !state.connected) {
+					throw new Error("STOMP is not connected");
+				}
+				state.stompClient.publish({
+					destination,
+					body: JSON.stringify(payload),
+				});
+			}
+
+			function nowTs() {
+				return String(Date.now());
+			}
+
+			function sendPresence(type) {
+				sendStomp(`/app/room/${state.roomCode}/presence`, {
+					roomId: state.roomCode,
+					senderId: state.localUserId || "",
+					type,
+					displayName: state.displayName,
+				});
+			}
+
+			function sendControl(type, content) {
+				sendStomp(`/app/room/${state.roomCode}/control`, {
+					type,
+					roomId: state.roomCode,
+					senderId: state.localUserId || "",
+					content,
+					timestamp: nowTs(),
+				});
+			}
+
+			function sendOffer(targetUserId, sessionId, sdp) {
+				sendStomp(`/app/room/${state.roomCode}/offer`, {
+					type: "OFFER",
+					roomId: state.roomCode,
+					senderId: state.localUserId || "",
+					sdp,
+					targetUserId,
+					sessionId,
+				});
+			}
+
+			function sendAnswer(targetUserId, sessionId, sdp) {
+				sendStomp(`/app/room/${state.roomCode}/answer`, {
+					type: "ANSWER",
+					roomId: state.roomCode,
+					senderId: state.localUserId || "",
+					sdp,
+					targetUserId,
+					sessionId,
+				});
+			}
+
+			function sendCandidate(targetUserId, sessionId, candidate) {
+				sendStomp(`/app/room/${state.roomCode}/candidate`, {
+					roomId: state.roomCode,
+					senderId: state.localUserId || "",
+					candidate: candidate.candidate,
+					sdpMid: candidate.sdpMid,
+					sdpMLineIndex: candidate.sdpMLineIndex,
+					targetUserId,
+					sessionId,
+				});
+			}
+
+			function addCandidateToContext(ctx, candidatePayload) {
+				const candidate = new RTCIceCandidate({
+					candidate: candidatePayload.candidate,
+					sdpMid: candidatePayload.sdpMid,
+					sdpMLineIndex: candidatePayload.sdpMLineIndex,
+				});
+
+				if (!ctx.remoteDescriptionSet) {
+					ctx.pendingLocalCandidates.push(candidate);
+					return;
+				}
+
+				ctx.pc.addIceCandidate(candidate).catch((error) => {
+					log(
+						`Failed to add ICE candidate for ${ctx.peerId}: ${error.message}`,
+						"bad",
+					);
+				});
+			}
+
+			function flushCandidates(ctx) {
+				if (!ctx.remoteDescriptionSet || !ctx.pendingLocalCandidates.length) {
+					return;
+				}
+
+				const pending = [...ctx.pendingLocalCandidates];
+				ctx.pendingLocalCandidates = [];
+				pending.forEach((candidate) => {
+					ctx.pc.addIceCandidate(candidate).catch((error) => {
+						log(
+							`Pending ICE apply failed for ${ctx.peerId}: ${error.message}`,
+							"bad",
+						);
+					});
+				});
+			}
+
+			async function initiateOffer(peerId) {
+				if (!state.connected || !shouldInitiateOfferToPeer(peerId)) {
+					return;
+				}
+
+				if (state.sessionsStartingOffer.has(peerId)) {
+					return;
+				}
+
+				const existingSession = state.sessionByPeer.get(peerId);
+				if (existingSession && state.peersBySession.has(existingSession)) {
+					return;
+				}
+
+				state.sessionsStartingOffer.add(peerId);
+
+				try {
+					await ensureMic();
+
+					const sessionId = newSessionId();
+					const ctx = createPeerContext(peerId, sessionId);
+
+					const offer = await ctx.pc.createOffer();
+					await ctx.pc.setLocalDescription(offer);
+					sendOffer(peerId, sessionId, offer.sdp);
+
+					log(`Offer sent to ${peerId} (session ${sessionId})`, "good");
+				} catch (error) {
+					log(`Offer flow failed for ${peerId}: ${error.message}`, "bad");
+					const sessionId = state.sessionByPeer.get(peerId);
+					if (sessionId) {
+						destroyPeerSession(sessionId);
+					}
+				} finally {
+					state.sessionsStartingOffer.delete(peerId);
+				}
+			}
+
+			async function handleOffer(payload) {
+				if (
+					!payload ||
+					!payload.sessionId ||
+					!payload.senderId ||
+					!payload.sdp
+				) {
+					return;
+				}
+
+				if (!isTargetedToMe(payload.targetUserId)) {
+					return;
+				}
+
+				if (state.localUserId && payload.senderId === state.localUserId) {
+					return;
+				}
+
+				await ensureMic();
+
+				const existingSessionForPeer = state.sessionByPeer.get(
+					payload.senderId,
+				);
+				if (
+					existingSessionForPeer &&
+					existingSessionForPeer !== payload.sessionId
+				) {
+					destroyPeerSession(existingSessionForPeer);
+				}
+
+				let ctx = state.peersBySession.get(payload.sessionId);
+				if (!ctx) {
+					ctx = createPeerContext(payload.senderId, payload.sessionId);
+				}
+
+				await ctx.pc.setRemoteDescription({ type: "offer", sdp: payload.sdp });
+				ctx.remoteDescriptionSet = true;
+				flushCandidates(ctx);
+
+				const answer = await ctx.pc.createAnswer();
+				await ctx.pc.setLocalDescription(answer);
+				sendAnswer(payload.senderId, payload.sessionId, answer.sdp);
+
+				log(
+					`Answer sent to ${payload.senderId} (session ${payload.sessionId})`,
+					"good",
+				);
+			}
+
+			async function handleAnswer(payload) {
+				if (!payload || !payload.sessionId || !payload.sdp) {
+					return;
+				}
+
+				if (!isTargetedToMe(payload.targetUserId)) {
+					return;
+				}
+
+				const ctx = state.peersBySession.get(payload.sessionId);
+				if (!ctx) {
+					log(
+						`Answer ignored for unknown session ${payload.sessionId}`,
+						"warn",
+					);
+					return;
+				}
+
+				await ctx.pc.setRemoteDescription({ type: "answer", sdp: payload.sdp });
+				ctx.remoteDescriptionSet = true;
+				flushCandidates(ctx);
+				log(`Answer applied for session ${payload.sessionId}`, "good");
+			}
+
+			function handleCandidate(payload) {
+				if (!payload || !payload.sessionId || !payload.candidate) {
+					return;
+				}
+
+				if (!isTargetedToMe(payload.targetUserId)) {
+					return;
+				}
+
+				if (state.localUserId && payload.senderId === state.localUserId) {
+					return;
+				}
+
+				const ctx = state.peersBySession.get(payload.sessionId);
+				if (!ctx) {
+					const list =
+						state.pendingCandidatesBySession.get(payload.sessionId) || [];
+					list.push(payload);
+					state.pendingCandidatesBySession.set(payload.sessionId, list);
+					return;
+				}
+
+				addCandidateToContext(ctx, payload);
+			}
+
+			function handlePresence(payload) {
+				if (!payload || !payload.type || !payload.senderId) {
+					return;
+				}
+
+				if (payload.type === "JOIN") {
+					state.participants.set(payload.senderId, {
+						id: payload.senderId,
+						displayName: payload.displayName || "Participant",
+						isLeader:
+							payload.senderId === state.localUserId ? state.isLeader : false,
+						isMuted: false,
+					});
+
+					if (!state.localUserId && payload.displayName === state.displayName) {
+						state.localUserId = payload.senderId;
+						log(
+							`Derived local user id from presence: ${state.localUserId}`,
+							"info",
+						);
+					}
+
+					if (shouldInitiateOfferToPeer(payload.senderId)) {
+						initiateOffer(payload.senderId);
+					}
+				}
+
+				if (payload.type === "LEAVE") {
+					state.participants.delete(payload.senderId);
+					destroyPeerById(payload.senderId);
+				}
+
+				renderParticipants();
+			}
+
+			function handleChat(payload) {
+				if (!payload) {
+					return;
+				}
+				const who = payload.displayName || payload.senderId || "Unknown";
+				const what = payload.content || "";
+				log(`CHAT ${who}: ${what}`, "info");
+			}
+
+			function handleControl(payload) {
+				if (!payload || !payload.type) {
+					return;
+				}
+
+				if (payload.type === "ROOM_CLOSED") {
+					log("Room closed by leader", "warn");
+					leaveRoom(false);
+					return;
+				}
+
+				if (payload.type === "MUTE" || payload.type === "UNMUTE") {
+					const participant = state.participants.get(payload.senderId);
+					if (participant) {
+						participant.isMuted = payload.type === "MUTE";
+						state.participants.set(payload.senderId, participant);
+						renderParticipants();
+					}
+				}
+
+				if (payload.type === "VERSE_NAVIGATION") {
+					log(
+						`VERSE from ${payload.senderId}: ${payload.content || "-"}`,
+						"info",
+					);
+				}
+			}
+
+			function subscribeRoomTopics() {
+				const roomCode = state.roomCode;
+				state.stompClient.subscribe(
+					`/topic/room/${roomCode}/presence`,
+					(frame) => {
+						try {
+							handlePresence(JSON.parse(frame.body));
+						} catch (error) {
+							log(`Presence parse error: ${error.message}`, "bad");
+						}
+					},
+				);
+
+				state.stompClient.subscribe(`/topic/room/${roomCode}/chat`, (frame) => {
+					try {
+						handleChat(JSON.parse(frame.body));
+					} catch (error) {
+						log(`Chat parse error: ${error.message}`, "bad");
+					}
+				});
+
+				state.stompClient.subscribe(
+					`/topic/room/${roomCode}/control`,
+					(frame) => {
+						try {
+							handleControl(JSON.parse(frame.body));
+						} catch (error) {
+							log(`Control parse error: ${error.message}`, "bad");
+						}
+					},
+				);
+
+				state.stompClient.subscribe(
+					`/topic/room/${roomCode}/offer`,
+					async (frame) => {
+						try {
+							await handleOffer(JSON.parse(frame.body));
+						} catch (error) {
+							log(`Offer handling failed: ${error.message}`, "bad");
+						}
+					},
+				);
+
+				state.stompClient.subscribe(
+					`/topic/room/${roomCode}/answer`,
+					async (frame) => {
+						try {
+							await handleAnswer(JSON.parse(frame.body));
+						} catch (error) {
+							log(`Answer handling failed: ${error.message}`, "bad");
+						}
+					},
+				);
+
+				state.stompClient.subscribe(
+					`/topic/room/${roomCode}/candidate`,
+					(frame) => {
+						try {
+							handleCandidate(JSON.parse(frame.body));
+						} catch (error) {
+							log(`Candidate parse failed: ${error.message}`, "bad");
+						}
+					},
+				);
+
+				state.stompClient.subscribe("/user/queue/errors", (frame) => {
+					try {
+						const err = JSON.parse(frame.body);
+						log(
+							`Server error ${err.type || "UNKNOWN"}: ${err.message || frame.body}`,
+							"bad",
+						);
+					} catch (_) {
+						log(`Server error: ${frame.body}`, "bad");
+					}
+				});
+			}
+
+			async function connectSocket() {
+				if (state.stompClient) {
+					try {
+						await state.stompClient.deactivate();
+					} catch (_) {}
+				}
+
+				state.connected = false;
+				setStatus(ui.statusConnection, "Socket: Connecting", "warn");
+				updateButtons();
+
+				const client = new StompJs.Client({
+					webSocketFactory: () => new SockJS(`${state.baseUrl}/ws`),
+					connectHeaders: {
+						Authorization: `Bearer ${state.token}`,
+					},
+					reconnectDelay: 0,
+					heartbeatIncoming: 10000,
+					heartbeatOutgoing: 10000,
+					debug: () => {},
+				});
+
+				client.onConnect = () => {
+					state.stompClient = client;
+					state.connected = true;
+					setStatus(ui.statusConnection, "Socket: Connected", "good");
+					subscribeRoomTopics();
+					sendPresence("JOIN");
+					updateButtons();
+					log(`STOMP connected to room ${state.roomCode}`, "good");
+
+					for (const [peerId] of state.participants.entries()) {
+						if (shouldInitiateOfferToPeer(peerId)) {
+							initiateOffer(peerId);
+						}
+					}
+				};
+
+				client.onStompError = (frame) => {
+					log(`Broker error: ${frame.headers.message || "unknown"}`, "bad");
+				};
+
+				client.onWebSocketError = (event) => {
+					log(`WebSocket error: ${event.type || "unknown"}`, "bad");
+				};
+
+				client.onWebSocketClose = () => {
+					state.connected = false;
+					setStatus(ui.statusConnection, "Socket: Disconnected", "bad");
+					updateButtons();
+				};
+
+				state.stompClient = client;
+				client.activate();
+			}
+
+			async function createRoom() {
+				ensureTokenAndName();
+
+				const maxParticipants = Number(ui.maxParticipants.value || 8);
+				const room = await callApi("/api/halaqah/create", {
+					displayName: state.displayName,
+					maxParticipants,
+				});
+
+				setRoomSnapshot(room, "leader");
+				await connectSocket();
+			}
+
+			async function joinRoom() {
+				ensureTokenAndName();
+				if (!state.roomCode) {
+					throw new Error("Room code is required to join");
+				}
+
+				const room = await callApi("/api/halaqah/join", {
+					code: state.roomCode,
+					displayName: state.displayName,
+				});
+
+				setRoomSnapshot(room, "participant");
+				await connectSocket();
+			}
+
+			async function leaveRoom(callApiLeave = true) {
+				if (!state.roomCode) {
+					return;
+				}
+
+				if (state.connected) {
+					try {
+						sendPresence("LEAVE");
+					} catch (_) {}
+				}
+
+				if (callApiLeave && state.token) {
+					try {
+						await callApi("/api/halaqah/leave", { code: state.roomCode });
+					} catch (error) {
+						log(`Leave API warning: ${error.message}`, "warn");
+					}
+				}
+
+				if (state.stompClient) {
+					try {
+						await state.stompClient.deactivate();
+					} catch (_) {}
+				}
+
+				state.connected = false;
+				state.stompClient = null;
+				state.participants.clear();
+				destroyAllPeers();
+
+				state.roomCode = "";
+				state.localUserId = null;
+				state.isLeader = false;
+
+				setStatus(ui.statusConnection, "Socket: Disconnected", "bad");
+				setStatus(ui.statusRoom, "Room: -");
+				setStatus(ui.statusRole, "Role: -");
+				renderParticipants();
+				updateButtons();
+				log("Left room and cleaned up peer connections", "warn");
+			}
+
+			function wireActions() {
+				ui.baseUrl.value = state.baseUrl;
+
+				ui.createRoomBtn.addEventListener("click", async () => {
+					try {
+						await createRoom();
+						log("Room created and connected", "good");
+					} catch (error) {
+						log(`Create room failed: ${error.message}`, "bad");
+					}
+				});
+
+				ui.joinRoomBtn.addEventListener("click", async () => {
+					try {
+						await joinRoom();
+						log("Joined room and connected", "good");
+					} catch (error) {
+						log(`Join room failed: ${error.message}`, "bad");
+					}
+				});
+
+				ui.connectMicBtn.addEventListener("click", async () => {
+					try {
+						await ensureMic();
+					} catch (error) {
+						log(`Mic connection failed: ${error.message}`, "bad");
+					}
+				});
+
+				ui.muteBtn.addEventListener("click", () => {
+					state.muted = !state.muted;
+					applyMuteState();
+				});
+
+				ui.sendJoinPresenceBtn.addEventListener("click", () => {
+					try {
+						sendPresence("JOIN");
+						log("JOIN presence sent", "info");
+					} catch (error) {
+						log(`JOIN presence failed: ${error.message}`, "bad");
+					}
+				});
+
+				ui.closeRoomBtn.addEventListener("click", () => {
+					if (!state.isLeader) {
+						log("Only leader can close room", "warn");
+						return;
+					}
+					try {
+						sendControl("ROOM_CLOSED", "Room has been closed");
+						log("ROOM_CLOSED control sent", "warn");
+					} catch (error) {
+						log(`Close room failed: ${error.message}`, "bad");
+					}
+				});
+
+				ui.leaveRoomBtn.addEventListener("click", async () => {
+					await leaveRoom(true);
+				});
+
+				ui.sendChatBtn.addEventListener("click", () => {
+					const text = ui.chatInput.value.trim();
+					if (!text) {
+						return;
+					}
+
+					try {
+						sendStomp(`/app/room/${state.roomCode}/chat`, {
+							roomId: state.roomCode,
+							senderId: state.localUserId || "",
+							displayName: state.displayName,
+							content: text,
+							timestamp: nowTs(),
+						});
+						ui.chatInput.value = "";
+					} catch (error) {
+						log(`Chat send failed: ${error.message}`, "bad");
+					}
+				});
+
+				ui.chatInput.addEventListener("keydown", (event) => {
+					if (event.key === "Enter") {
+						event.preventDefault();
+						ui.sendChatBtn.click();
+					}
+				});
+
+				ui.syncVerseBtn.addEventListener("click", () => {
+					const surah = Number(ui.surahInput.value || 0);
+					const ayah = Number(ui.ayahInput.value || 0);
+					if (surah <= 0 || ayah <= 0) {
+						log("Verse sync requires valid surah and ayah", "warn");
+						return;
+					}
+
+					try {
+						sendControl("VERSE_NAVIGATION", `${surah}:${ayah}`);
+						log(`VERSE_NAVIGATION sent: ${surah}:${ayah}`, "info");
+					} catch (error) {
+						log(`Verse sync failed: ${error.message}`, "bad");
+					}
+				});
+			}
+
+			wireActions();
+			updateButtons();
+			updateMicStatus();
+			log(
+				"Harness ready. Paste JWT, set display name, then create or join.",
+				"info",
+			);
+		</script>
+	</body>
+</html>

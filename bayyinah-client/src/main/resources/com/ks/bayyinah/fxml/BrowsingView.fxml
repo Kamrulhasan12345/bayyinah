@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<SplitPane fx:id="splitPane" dividerPositions="0.2" styleClass="browsing-split-pane" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.BrowsingController">
-  <items>
-   <AnchorPane fx:id="sidebarContainer" minHeight="0.0" minWidth="0.0">
+<HBox stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.BrowsingController">
+   <children>
+      <AnchorPane fx:id="railContainer" maxWidth="55.0" minWidth="55.0" prefWidth="55.0" styleClass="rail-host">
          <children>
-            <fx:include fx:id="sidebar" source="Sidebar.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <fx:include fx:id="railNavigation" source="RailNavigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
          </children>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0">
-         <children>
-            <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <center>
-                  <StackPane fx:id="contentArea" BorderPane.alignment="CENTER" />
-               </center>
-            </BorderPane>
-         </children></AnchorPane>
-  </items>
-</SplitPane>
+      </AnchorPane>
+      <SplitPane fx:id="splitPane" dividerPositions="0.2" styleClass="browsing-split-pane" HBox.hgrow="ALWAYS">
+        <items>
+         <AnchorPane fx:id="sidebarContainer" minHeight="0.0" minWidth="0.0">
+               <children>
+                  <fx:include fx:id="sidebar" source="Sidebar.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets></AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0">
+               <children>
+                  <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <center>
+                        <StackPane fx:id="contentArea" BorderPane.alignment="CENTER" />
+                     </center>
+                  </BorderPane>
+               </children></AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</HBox>

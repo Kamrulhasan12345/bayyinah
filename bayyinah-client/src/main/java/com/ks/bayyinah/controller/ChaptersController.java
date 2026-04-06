@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.Optional;
+import java.util.function.Consumer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
@@ -77,6 +78,8 @@ public class ChaptersController {
   private Integer lastSavedSurah;
   private Integer lastSavedAyah;
   private long lastSaveEpochMillis;
+  private Integer pendingFocusAyah;
+  private Consumer<VerseView> onVerseSyncRequested;
 
   private static final Duration PROGRESS_CAPTURE_INTERVAL = Duration.seconds(3);
   private static final long PROGRESS_HEARTBEAT_MILLIS = 15000;
@@ -84,6 +87,7 @@ public class ChaptersController {
   @FXML
   private void initialize() {
     initializeProgressTracking();
+    applyVerseCellFactory();
   }
 
   public void setBrowsingController(BrowsingController browsingController) {
@@ -92,6 +96,14 @@ public class ChaptersController {
 
   public void setOnLoadComplete(Runnable callback) {
     this.onLoadComplete = callback;
+  }
+
+  public void setOnVerseSyncRequested(Consumer<VerseView> callback) {
+    this.onVerseSyncRequested = callback;
+    applyVerseCellFactory();
+    if (verseListView != null) {
+      verseListView.refresh();
+    }
   }
 
   public void showVerses(int chapterId) {
@@ -106,6 +118,7 @@ public class ChaptersController {
           System.out.println("Fetched " + verses.size() + " verses for chapter " + chapterId);
           verseListView.setItems(FXCollections.observableArrayList(verses));
           scrollToLastReadIfApplicable(chapterId);
+          applyPendingFocusAyah();
           System.out.println("Loaded " + verses.size() + " verses");
           if (onLoadComplete != null) {
             onLoadComplete.run();
@@ -117,7 +130,7 @@ public class ChaptersController {
           }
         });
 
-    verseListView.setCellFactory(listView -> new VerseCell());
+    applyVerseCellFactory();
   }
 
   public void showVerses(int chapterId, int startVerse, int endVerse) {
@@ -134,6 +147,7 @@ public class ChaptersController {
           System.out.println("Fetched " + verses.size() + " verses for chapter " + chapterId);
           verseListView.setItems(FXCollections.observableArrayList(verses));
           scrollToLastReadIfApplicable(chapterId);
+          applyPendingFocusAyah();
           System.out.println("Loaded " + verses.size() + " verses");
           if (onLoadComplete != null) {
             onLoadComplete.run();
@@ -145,7 +159,14 @@ public class ChaptersController {
           }
         });
 
-    verseListView.setCellFactory(listView -> new VerseCell());
+    applyVerseCellFactory();
+  }
+
+  private void applyVerseCellFactory() {
+    if (verseListView == null) {
+      return;
+    }
+    verseListView.setCellFactory(listView -> new VerseCell(onVerseSyncRequested));
   }
 
   public void setChapter(ChapterView chapter, Integer startVerse, Integer endVerse, Integer translationId) {
@@ -182,7 +203,33 @@ public class ChaptersController {
         });
   }
 
-  private void loadChapterWithTranslation(Chapter chapterData, Integer startVerse, Integer endVerse, Integer translationId) {
+  public void focusAyah(Integer ayah) {
+    if (ayah == null || ayah <= 0) {
+      return;
+    }
+    pendingFocusAyah = ayah;
+    applyPendingFocusAyah();
+  }
+
+  private void applyPendingFocusAyah() {
+    if (pendingFocusAyah == null || pendingFocusAyah <= 0 || verseListView == null
+        || verseListView.getItems() == null || verseListView.getItems().isEmpty()) {
+      return;
+    }
+
+    for (int i = 0; i < verseListView.getItems().size(); i++) {
+      VerseView verse = verseListView.getItems().get(i);
+      if (verse != null && verse.getVerse() != null && verse.getVerse().getVerseNumber() == pendingFocusAyah) {
+        verseListView.scrollTo(i);
+        verseListView.getSelectionModel().clearAndSelect(i);
+        verseListView.getSelectionModel().clearSelection();
+        return;
+      }
+    }
+  }
+
+  private void loadChapterWithTranslation(Chapter chapterData, Integer startVerse, Integer endVerse,
+      Integer translationId) {
     int resolvedTranslationId = translationId != null ? translationId : selectedTranslationId;
     selectedTranslationId = resolvedTranslationId;
     loadTranslationOptions(resolvedTranslationId);
@@ -256,7 +303,8 @@ public class ChaptersController {
 
             selectedTranslationId = selected.id();
             UserPreferenceService userPreferenceService = appContext.getUserPreferenceService();
-            DbAsync.run(() -> userPreferenceService.setPreference("default_translation", String.valueOf(selectedTranslationId)));
+            DbAsync.run(() -> userPreferenceService.setPreference("default_translation",
+                String.valueOf(selectedTranslationId)));
             reloadCurrentChapter();
           });
         },
@@ -312,7 +360,8 @@ public class ChaptersController {
     }
     progressTrackingInitialized = true;
 
-    progressCaptureTimeline = new Timeline(new KeyFrame(PROGRESS_CAPTURE_INTERVAL, event -> persistVisibleProgressIfNeeded()));
+    progressCaptureTimeline = new Timeline(
+        new KeyFrame(PROGRESS_CAPTURE_INTERVAL, event -> persistVisibleProgressIfNeeded()));
     progressCaptureTimeline.setCycleCount(Timeline.INDEFINITE);
     progressCaptureTimeline.play();
 

@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<HBox maxHeight="1.7976931348623157E308" spacing="20.0" styleClass="ayah-card" stylesheets="@../../css/chapters-reader.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.VerseController">
+<HBox maxHeight="1.7976931348623157E308" spacing="20.0" styleClass="ayah-card" stylesheets="@../../css/chapters-reader.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.VerseController">
    <children>
       <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" spacing="10.0" styleClass="ayah-index-col">
          <children>
             <Label fx:id="verseNumber" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="18.0" prefWidth="19.0" styleClass="ayah-number" text="220" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
-               </font></Label>
+               </font>
+            </Label>
             <FontIcon fx:id="bookmarkBtn" iconLiteral="mdi2b-bookmark-outline" iconSize="28" styleClass="ayah-bookmark" />
+            <Button fx:id="syncVerseBtn" managed="false" mnemonicParsing="false" styleClass="ayah-sync-btn" text="Sync" visible="false" />
          </children>
       </VBox>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" HBox.hgrow="ALWAYS">
          <children>
             <Label fx:id="arabicText" maxWidth="1.7976931348623157E308" nodeOrientation="RIGHT_TO_LEFT" styleClass="ayah-arabic-text" text="بِبِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ|بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِبِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ|بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِبِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ|بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِبِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ|بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ|بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِ" wrapText="true" VBox.vgrow="ALWAYS">
                <font>
-                  <Font size="27.0" />
-               </font></Label>
+                  <Font name="Al Qalam Quran Majeed" size="27.0" />
+               </font>
+            </Label>
             <Label fx:id="translatedText" maxWidth="1.7976931348623157E308" styleClass="ayah-translation-text" text="In the name of Allāh,&lt;sup foot_note=227140&gt;1&lt;/sup&gt; the Entirely Merciful, the Especially Merciful.&lt;sup foot_note=227141&gt;2&lt;/sup&gt;" wrapText="true" VBox.vgrow="ALWAYS">
                <font>
-                  <Font size="19.0" />
+                  <Font name="Inter Bold" size="19.0" />
                </font>
             </Label>
             <Label fx:id="translationMetadata" alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" styleClass="ayah-translation-meta" text="- Saheeh International" textAlignment="RIGHT" wrapText="true">
                <font>
-                  <Font size="14.0" />
+                  <Font name="Inter Regular" size="14.0" />
                </font>
             </Label>
          </children>

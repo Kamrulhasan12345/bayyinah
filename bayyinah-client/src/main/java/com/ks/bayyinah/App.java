@@ -11,18 +11,20 @@ import java.io.IOException;
 import com.ks.bayyinah.infra.local.database.*;
 import com.ks.bayyinah.infra.local.repository.user.*;
 import com.ks.bayyinah.infra.remote.client.ApiClient;
+import com.ks.bayyinah.infra.remote.query.RemoteHalaqahQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteSyncQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteUserQueryService;
 import com.ks.bayyinah.infra.hybrid.service.*;
 import com.ks.bayyinah.infra.hybrid.model.*;
 import com.ks.bayyinah.infra.hybrid.query.*;
-import com.ks.bayyinah.infra.hybrid.query.TokenManager;
 import com.ks.bayyinah.infra.json.JsonSupport;
 import com.ks.bayyinah.config.ConfigManager;
 import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.controller.RootController;
 import com.ks.bayyinah.error.GlobalExceptionHandler;
 import com.ks.bayyinah.ui.ToastManager;
+
+import fr.brouillard.oss.cssfx.CSSFX;
 import tools.jackson.databind.ObjectMapper;
 
 /**
@@ -74,6 +76,7 @@ public class App extends Application {
     ToastManager.getInstance().initialize(stage);
 
     stage.show();
+    // CSSFX.start();
 
     if (ENABLE_STARTUP_SAMPLE_TOASTS) {
       ToastManager.getInstance().showInfo("Welcome", "Welcome to Bayyinah!");
@@ -149,13 +152,15 @@ public class App extends Application {
     var tokenManager = new TokenManager(authTokensService);
     var apiClient = new ApiClient(mainConfig, tokenManager, objectMapper);
     var remoteSyncQueryService = new RemoteSyncQueryService(apiClient);
+    var remoteHalaqahQueryService = new RemoteHalaqahQueryService(apiClient);
     var syncOrchestratorService = new SyncOrchestratorService(syncQueueService, bookmarkService,
-      readingProgressService, userPreferenceService, userService, remoteSyncQueryService, objectMapper);
+        readingProgressService, userPreferenceService, userService, remoteSyncQueryService, objectMapper);
 
     appContext.setMainConfig(mainConfig);
     appContext.setTokenManager(tokenManager);
     appContext.setApiClient(apiClient);
     appContext.setRemoteSyncQueryService(remoteSyncQueryService);
+    appContext.setRemoteHalaqahQueryService(remoteHalaqahQueryService);
     appContext.setSyncOrchestratorService(syncOrchestratorService);
 
     var remoteUserQueryService = new RemoteUserQueryService(apiClient);

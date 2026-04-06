@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-    <artifactId>bayyinah-parent</artifactId>
-    <groupId>com.ks.bayyinah</groupId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
+        <artifactId>bayyinah-parent</artifactId>
+        <groupId>com.ks.bayyinah</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
     <groupId>com.ks.bayyinah</groupId>
     <artifactId>bayyinah-client</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -94,9 +96,50 @@
             <version>3.1.0</version>
         </dependency>
         <dependency>
-          <groupId>tools.jackson.dataformat</groupId>
-          <artifactId>jackson-dataformat-yaml</artifactId>
-          <version>3.1.0</version>
+            <groupId>tools.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>fr.brouillard.oss</groupId>
+            <artifactId>cssfx</artifactId>
+            <version>11.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.onvoid.webrtc</groupId>
+            <artifactId>webrtc-java</artifactId>
+            <version>0.14.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>7.0.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+            <version>7.0.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.websocket</groupId>
+            <artifactId>jakarta.websocket-client-api</artifactId>
+            <version>2.2.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-client</artifactId>
+            <version>2.2.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-container-jdk-client</artifactId>
+            <version>2.2.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     <build>
@@ -106,14 +149,14 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                  <release>21</release>
-                  <annotationProcessorPaths>
-                    <path>
-                        <groupId>org.projectlombok</groupId>
-                        <artifactId>lombok</artifactId>
-                        <version>1.18.42</version> 
-                    </path>
-                  </annotationProcessorPaths>
+                    <release>21</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.42</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>

@@ -5,6 +5,7 @@ import com.ks.bayyinah.controller.VerseController;
 import com.ks.bayyinah.core.dto.VerseView;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +16,15 @@ public class VerseCell extends ListCell<VerseView> {
 
   private Parent root;
   private VerseController controller;
+  private final Consumer<VerseView> onVerseSyncRequested;
+
+  public VerseCell() {
+    this(null);
+  }
+
+  public VerseCell(Consumer<VerseView> onVerseSyncRequested) {
+    this.onVerseSyncRequested = onVerseSyncRequested;
+  }
 
   @Override
   protected void updateItem(VerseView verse, boolean empty) {
@@ -39,7 +49,7 @@ public class VerseCell extends ListCell<VerseView> {
         }
       }
 
-      controller.bind(verse);
+      controller.bind(verse, onVerseSyncRequested);
       setGraphic(root);
     }
   }

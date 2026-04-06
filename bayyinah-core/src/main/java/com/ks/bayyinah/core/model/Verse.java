@@ -20,6 +20,6 @@ public class Verse {
   private String textIndopak;
 
   public String getText() {
-    return this.textUthmani != null ? this.textUthmani : this.textIndopak;
+    return this.textIndopak != null ? this.textIndopak : this.textUthmani;
   }
 };

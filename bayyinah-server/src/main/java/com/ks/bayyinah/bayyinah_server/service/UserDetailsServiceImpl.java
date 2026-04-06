@@ -19,7 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   private UserRepository userRepository;
 
   @Override
-  public UserDetails loadUserByUsername(String username) {
+  public UserDetailsImpl loadUserByUsername(String username) {
     Optional<User> user = userRepository.findByUsername(username);
     if (user.isPresent()) {
       return new UserDetailsImpl(user.get());
