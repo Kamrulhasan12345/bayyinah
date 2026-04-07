@@ -7,12 +7,20 @@ import lombok.*;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 public class VerseView {
   private Verse verse;
   private TranslationText translationText;
+  private Integer audioRecitationId;
+  private String audioSourceUrl;
+  private String audioLocalPath;
+  private String audioFormat;
+
+  public VerseView(Verse verse, TranslationText translationText) {
+    this.verse = verse;
+    this.translationText = translationText;
+  }
 
   public String getArabicText() {
     return verse != null ? verse.getText() : null;

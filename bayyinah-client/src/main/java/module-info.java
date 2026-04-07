@@ -1,6 +1,7 @@
 module com.ks.bayyinah {
   requires javafx.controls;
   requires javafx.fxml;
+  requires javafx.media;
   requires java.sql;
   requires java.net.http;
   requires com.zaxxer.hikari;

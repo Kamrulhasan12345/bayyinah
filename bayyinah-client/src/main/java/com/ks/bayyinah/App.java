@@ -19,6 +19,7 @@ import com.ks.bayyinah.infra.hybrid.service.*;
 import com.ks.bayyinah.infra.hybrid.model.*;
 import com.ks.bayyinah.infra.hybrid.query.*;
 import com.ks.bayyinah.infra.json.JsonSupport;
+import com.ks.bayyinah.infra.media.VerseAudioPlaybackManager;
 import com.ks.bayyinah.config.ConfigManager;
 import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.controller.RootController;
@@ -93,6 +94,9 @@ public class App extends Application {
 
   @Override
   public void stop() throws Exception {
+    if (appContext != null && appContext.getVerseAudioPlaybackManager() != null) {
+      appContext.getVerseAudioPlaybackManager().dispose();
+    }
     super.stop();
     DatabaseManager.closeAll();
   }
@@ -157,6 +161,7 @@ public class App extends Application {
     var remoteHalaqahQueryService = new RemoteHalaqahQueryService(apiClient);
     var syncOrchestratorService = new SyncOrchestratorService(syncQueueService, bookmarkService,
         readingProgressService, userPreferenceService, userService, remoteSyncQueryService, objectMapper);
+    var verseAudioPlaybackManager = new VerseAudioPlaybackManager();
 
     appContext.setMainConfig(mainConfig);
     appContext.setTokenManager(tokenManager);
@@ -165,6 +170,7 @@ public class App extends Application {
     appContext.setRemoteSyncQueryService(remoteSyncQueryService);
     appContext.setRemoteHalaqahQueryService(remoteHalaqahQueryService);
     appContext.setSyncOrchestratorService(syncOrchestratorService);
+    appContext.setVerseAudioPlaybackManager(verseAudioPlaybackManager);
 
     var remoteUserQueryService = new RemoteUserQueryService(apiClient);
     var authSessionQueryService = new AuthSessionQueryService(authTokensService, userService, remoteUserQueryService,

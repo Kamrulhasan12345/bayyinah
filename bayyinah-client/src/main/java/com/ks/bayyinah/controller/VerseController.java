@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -46,13 +47,21 @@ public class VerseController {
   @FXML
   private Button syncVerseBtn;
 
+  @FXML
+  private Button audioPlayBtn;
+
   private VerseView verse;
 
   public void bind(VerseView verse) {
-    bind(verse, null);
+    bind(verse, null, null, null);
   }
 
   public void bind(VerseView verse, Consumer<VerseView> onVerseSyncRequested) {
+    bind(verse, onVerseSyncRequested, null, null);
+  }
+
+  public void bind(VerseView verse, Consumer<VerseView> onVerseSyncRequested,
+      Consumer<VerseView> onVerseAudioRequested, Predicate<VerseView> isVerseAudioActive) {
     this.verse = verse;
 
     Verse verseData = verse.getVerse();
@@ -108,6 +117,7 @@ public class VerseController {
     });
 
     configureVerseSyncButton(onVerseSyncRequested);
+    configureAudioPlayButton(onVerseAudioRequested, isVerseAudioActive);
   }
 
   private void configureVerseSyncButton(Consumer<VerseView> onVerseSyncRequested) {
@@ -129,6 +139,48 @@ public class VerseController {
       if (verse != null && verse.getVerse() != null) {
         onVerseSyncRequested.accept(verse);
       }
+    });
+  }
+
+  private void configureAudioPlayButton(Consumer<VerseView> onVerseAudioRequested,
+      Predicate<VerseView> isVerseAudioActive) {
+    if (audioPlayBtn == null) {
+      return;
+    }
+
+    audioPlayBtn.getStyleClass().remove("active");
+
+    boolean hasAudio = verse != null && verse.getAudioLocalPath() != null && !verse.getAudioLocalPath().isBlank();
+    if (!hasAudio) {
+      audioPlayBtn.setDisable(true);
+      audioPlayBtn.setText("N/A");
+      audioPlayBtn.setOnAction(null);
+      return;
+    }
+
+    boolean active = isVerseAudioActive != null && isVerseAudioActive.test(verse);
+    if (active && !audioPlayBtn.getStyleClass().contains("active")) {
+      audioPlayBtn.getStyleClass().add("active");
+    }
+    audioPlayBtn.setText(active ? "Stop" : "Play");
+
+    boolean enabled = onVerseAudioRequested != null;
+    audioPlayBtn.setDisable(!enabled);
+    if (!enabled) {
+      audioPlayBtn.setOnAction(null);
+      return;
+    }
+
+    String boundVerseKey = verse != null && verse.getVerse() != null ? verse.getVerse().getVerseKey() : null;
+    audioPlayBtn.setOnAction(event -> {
+      if (this.verse == null || this.verse.getVerse() == null) {
+        return;
+      }
+      String currentVerseKey = this.verse.getVerse().getVerseKey();
+      if (boundVerseKey != null && !boundVerseKey.equals(currentVerseKey)) {
+        return;
+      }
+      onVerseAudioRequested.accept(this.verse);
     });
   }
 

@@ -1,5 +1,6 @@
 package com.ks.bayyinah.infra.local.repository.quran;
 
+import com.ks.bayyinah.config.ConfigManager;
 import com.ks.bayyinah.core.query.QuranReadRepository;
 import com.ks.bayyinah.core.dto.*;
 import com.ks.bayyinah.core.model.*;
@@ -10,18 +11,23 @@ import java.util.List;
 import java.util.Optional;
 
 public class LocalQuranReadRepository implements QuranReadRepository {
+  private static final int DEFAULT_AUDIO_RECITATION_ID = 2;
+
   @Override
   public Optional<VerseView> findVerseView(String verseKey, int translationId) {
+    int activeReciterId = resolveActiveReciterId();
     try {
       try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
-              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text "
+              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
                   +
                   "FROM verses v " +
+                  "LEFT JOIN verse_audio va ON v.id = va.verse_id AND va.recitation_id = ? " +
                   "LEFT JOIN translation_text t ON v.id = t.verse_id AND t.translation_id = ? " +
                   "WHERE v.verse_key = ?")) {
-        statement.setInt(1, translationId);
-        statement.setString(2, verseKey);
+        statement.setInt(1, activeReciterId);
+        statement.setInt(2, translationId);
+        statement.setString(3, verseKey);
         try (var resultSet = statement.executeQuery()) {
           if (resultSet.next()) {
             VerseView verseView = new VerseView();
@@ -38,6 +44,7 @@ public class LocalQuranReadRepository implements QuranReadRepository {
             translationText.setText(resultSet.getString("text"));
             verseView.setVerse(verse);
             verseView.setTranslationText(translationText);
+            mapAudioFields(resultSet, verseView);
             return Optional.of(verseView);
           }
         }
@@ -52,16 +59,19 @@ public class LocalQuranReadRepository implements QuranReadRepository {
 
   @Override
   public List<VerseView> findChapterView(int chapterId, int translationId) {
+    int activeReciterId = resolveActiveReciterId();
     try {
       try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
-              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text "
+              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
                   +
                   "FROM verses v " +
+                  "LEFT JOIN verse_audio va ON v.id = va.verse_id AND va.recitation_id = ? " +
                   "LEFT JOIN translation_text t ON v.id = t.verse_id AND t.translation_id = ? " +
                   "WHERE v.surah_id = ? ORDER BY v.verse_number")) {
-        statement.setInt(1, translationId);
-        statement.setInt(2, chapterId);
+        statement.setInt(1, activeReciterId);
+        statement.setInt(2, translationId);
+        statement.setInt(3, chapterId);
         try (var resultSet = statement.executeQuery()) {
           List<VerseView> verseViews = new java.util.ArrayList<>();
           while (resultSet.next()) {
@@ -79,6 +89,7 @@ public class LocalQuranReadRepository implements QuranReadRepository {
             translationText.setText(resultSet.getString("text"));
             verseView.setVerse(verse);
             verseView.setTranslationText(translationText);
+            mapAudioFields(resultSet, verseView);
             verseViews.add(verseView);
           }
           return verseViews;
@@ -93,18 +104,21 @@ public class LocalQuranReadRepository implements QuranReadRepository {
 
   @Override
   public Page<VerseView> findChapterView(int chapterId, int translationId, PageRequest pageRequest) {
+    int activeReciterId = resolveActiveReciterId();
     try {
       try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
-              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text "
+              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
                   +
                   "FROM verses v " +
+                  "LEFT JOIN verse_audio va ON v.id = va.verse_id AND va.recitation_id = ? " +
                   "LEFT JOIN translation_text t ON v.id = t.verse_id AND t.translation_id = ? " +
                   "WHERE v.surah_id = ? ORDER BY v.verse_number LIMIT ? OFFSET ?")) {
-        statement.setInt(1, translationId);
-        statement.setInt(2, chapterId);
-        statement.setInt(3, pageRequest.getPageSize());
-        statement.setInt(4, (pageRequest.getPage() - 1) * pageRequest.getPageSize());
+        statement.setInt(1, activeReciterId);
+        statement.setInt(2, translationId);
+        statement.setInt(3, chapterId);
+        statement.setInt(4, pageRequest.getPageSize());
+        statement.setInt(5, (pageRequest.getPage() - 1) * pageRequest.getPageSize());
         int totalElements = countVersesByChapter(chapterId);
         try (var resultSet = statement.executeQuery()) {
           List<VerseView> verseViews = new java.util.ArrayList<>();
@@ -123,6 +137,7 @@ public class LocalQuranReadRepository implements QuranReadRepository {
             translationText.setText(resultSet.getString("text"));
             verseView.setVerse(verse);
             verseView.setTranslationText(translationText);
+            mapAudioFields(resultSet, verseView);
             verseViews.add(verseView);
           }
           return new Page<>(verseViews, pageRequest.getPage(), pageRequest.getPageSize(), totalElements);
@@ -223,18 +238,21 @@ public class LocalQuranReadRepository implements QuranReadRepository {
 
   @Override
   public List<VerseView> findVersesByRange(int chapterId, int startVerse, int endVerse, int translationId) {
+    int activeReciterId = resolveActiveReciterId();
     try {
       try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
-              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text "
+              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
                   +
                   "FROM verses v " +
+                  "LEFT JOIN verse_audio va ON v.id = va.verse_id AND va.recitation_id = ? " +
                   "LEFT JOIN translation_text t ON v.id = t.verse_id AND t.translation_id = ? " +
                   "WHERE v.surah_id = ? AND v.verse_number BETWEEN ? AND ? ORDER BY v.verse_number")) {
-        statement.setInt(1, translationId);
-        statement.setInt(2, chapterId);
-        statement.setInt(3, startVerse);
-        statement.setInt(4, endVerse);
+        statement.setInt(1, activeReciterId);
+        statement.setInt(2, translationId);
+        statement.setInt(3, chapterId);
+        statement.setInt(4, startVerse);
+        statement.setInt(5, endVerse);
         try (var resultSet = statement.executeQuery()) {
           List<VerseView> verseViews = new java.util.ArrayList<>();
           while (resultSet.next()) {
@@ -252,6 +270,7 @@ public class LocalQuranReadRepository implements QuranReadRepository {
             translationText.setText(resultSet.getString("text"));
             verseView.setVerse(verse);
             verseView.setTranslationText(translationText);
+            mapAudioFields(resultSet, verseView);
             verseViews.add(verseView);
           }
           return verseViews;
@@ -269,20 +288,23 @@ public class LocalQuranReadRepository implements QuranReadRepository {
   @Override
   public Page<VerseView> findVersesByRange(int chapterId, int startVerse, int endVerse, int translationId,
       PageRequest pageRequest) {
+    int activeReciterId = resolveActiveReciterId();
     try {
       try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
-              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text "
+              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
                   +
                   "FROM verses v " +
+                  "LEFT JOIN verse_audio va ON v.id = va.verse_id AND va.recitation_id = ? " +
                   "LEFT JOIN translation_text t ON v.id = t.verse_id AND t.translation_id = ? " +
                   "WHERE v.surah_id = ? AND v.verse_number BETWEEN ? AND ? ORDER BY v.verse_number LIMIT ? OFFSET ?")) {
-        statement.setInt(1, translationId);
-        statement.setInt(2, chapterId);
-        statement.setInt(3, startVerse);
-        statement.setInt(4, endVerse);
-        statement.setInt(5, pageRequest.getPageSize());
-        statement.setInt(6, (pageRequest.getPage() - 1) * pageRequest.getPageSize());
+        statement.setInt(1, activeReciterId);
+        statement.setInt(2, translationId);
+        statement.setInt(3, chapterId);
+        statement.setInt(4, startVerse);
+        statement.setInt(5, endVerse);
+        statement.setInt(6, pageRequest.getPageSize());
+        statement.setInt(7, (pageRequest.getPage() - 1) * pageRequest.getPageSize());
         int totalElements = countVersesByChapterAndRange(chapterId, startVerse, endVerse);
         try (var resultSet = statement.executeQuery()) {
           List<VerseView> verseViews = new java.util.ArrayList<>();
@@ -301,6 +323,7 @@ public class LocalQuranReadRepository implements QuranReadRepository {
             translationText.setText(resultSet.getString("text"));
             verseView.setVerse(verse);
             verseView.setTranslationText(translationText);
+            mapAudioFields(resultSet, verseView);
             verseViews.add(verseView);
           }
           return new Page<>(verseViews, pageRequest.getPage(), pageRequest.getPageSize(), totalElements);
@@ -312,6 +335,30 @@ public class LocalQuranReadRepository implements QuranReadRepository {
               + ", end verse: " + endVerse + ", and translation ID: " + translationId,
           e);
     }
+  }
+
+  private void mapAudioFields(java.sql.ResultSet resultSet, VerseView verseView) throws java.sql.SQLException {
+    Object recitationId = resultSet.getObject("va_recitation_id");
+    if (recitationId instanceof Number number) {
+      verseView.setAudioRecitationId(number.intValue());
+    }
+    verseView.setAudioSourceUrl(resultSet.getString("va_source_url"));
+    verseView.setAudioLocalPath(resultSet.getString("va_local_path"));
+    verseView.setAudioFormat(resultSet.getString("va_format"));
+  }
+
+  private int resolveActiveReciterId() {
+    try {
+      var config = ConfigManager.getConfig();
+      if (config != null && config.getAudio() != null && config.getAudio().getActiveReciterId() != null
+          && config.getAudio().getActiveReciterId() > 0) {
+        return config.getAudio().getActiveReciterId();
+      }
+    } catch (Exception ignored) {
+      // Fall back to default reciter if config is unavailable.
+    }
+
+    return DEFAULT_AUDIO_RECITATION_ID;
   }
 
   private int countVersesByChapter(int chapterId) {

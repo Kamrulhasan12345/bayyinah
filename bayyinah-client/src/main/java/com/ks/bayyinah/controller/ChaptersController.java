@@ -12,6 +12,7 @@ import com.ks.bayyinah.infra.hybrid.service.ReadingProgressService;
 import com.ks.bayyinah.infra.hybrid.service.UserPreferenceService;
 import com.ks.bayyinah.infra.local.database.DbAsync;
 import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
+import com.ks.bayyinah.infra.media.VerseAudioPlaybackManager;
 import com.ks.bayyinah.ui.ToastManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
@@ -80,6 +83,7 @@ public class ChaptersController {
   private long lastSaveEpochMillis;
   private Integer pendingFocusAyah;
   private Consumer<VerseView> onVerseSyncRequested;
+  private String activeAudioVerseKey;
 
   private static final Duration PROGRESS_CAPTURE_INTERVAL = Duration.seconds(3);
   private static final long PROGRESS_HEARTBEAT_MILLIS = 15000;
@@ -87,6 +91,7 @@ public class ChaptersController {
   @FXML
   private void initialize() {
     initializeProgressTracking();
+    updateAudioToolbarState();
     applyVerseCellFactory();
   }
 
@@ -111,6 +116,7 @@ public class ChaptersController {
   }
 
   public void showVerses(int chapterId, int translationId) {
+    stopAudioPlayback(false);
     LocalQuranQueryService quranQueryService = LocalQuranQueryService.getInstance();
 
     DbAsync.runWithUi(
@@ -138,6 +144,7 @@ public class ChaptersController {
   }
 
   public void showVerses(int chapterId, int startVerse, int endVerse, int translationId) {
+    stopAudioPlayback(false);
     LocalQuranQueryService quranQueryService = LocalQuranQueryService.getInstance();
 
     DbAsync.runWithUi(
@@ -166,10 +173,12 @@ public class ChaptersController {
     if (verseListView == null) {
       return;
     }
-    verseListView.setCellFactory(listView -> new VerseCell(onVerseSyncRequested));
+    verseListView.setCellFactory(
+        listView -> new VerseCell(onVerseSyncRequested, this::handleVerseAudioRequest, this::isVerseAudioActive));
   }
 
   public void setChapter(ChapterView chapter, Integer startVerse, Integer endVerse, Integer translationId) {
+    stopAudioPlayback(false);
     this.currentChapter = chapter;
     this.currentStartVerse = startVerse;
     this.currentEndVerse = endVerse;
@@ -248,7 +257,13 @@ public class ChaptersController {
 
   @FXML
   private void onToggleAudio() {
-    ToastManager.getInstance().showInfo("Audio", "Audio controls will be added in the next step.");
+    if (activeAudioVerseKey == null) {
+      ToastManager.getInstance().showInfo("Audio", "No verse audio is currently playing.");
+      return;
+    }
+
+    stopAudioPlayback(true);
+    ToastManager.getInstance().showInfo("Audio", "Stopped verse audio playback.");
   }
 
   private void loadTranslationOptions(int activeTranslationId) {
@@ -335,6 +350,7 @@ public class ChaptersController {
     if (currentChapter == null) {
       return;
     }
+    stopAudioPlayback(false);
     persistVisibleProgressNow();
     Chapter chapterData = currentChapter.getChapter();
     if (currentStartVerse == null || currentEndVerse == null) {
@@ -342,6 +358,116 @@ public class ChaptersController {
     } else {
       showVerses(chapterData.getId(), currentStartVerse, currentEndVerse, selectedTranslationId);
     }
+  }
+
+  private void handleVerseAudioRequest(VerseView verseView) {
+    if (verseView == null || verseView.getVerse() == null) {
+      return;
+    }
+
+    VerseAudioPlaybackManager playbackManager = appContext != null ? appContext.getVerseAudioPlaybackManager() : null;
+    if (playbackManager == null) {
+      ToastManager.getInstance().showError("Audio", "Audio playback is not available.");
+      return;
+    }
+
+    String verseKey = verseView.getVerse().getVerseKey();
+    if (playbackManager.isPlayingVerse(verseKey)) {
+      stopAudioPlayback(true);
+      return;
+    }
+
+    Path resolvedPath = resolveAudioFilePath(verseView);
+    if (resolvedPath == null) {
+      ToastManager.getInstance().showWarning("Audio", "No local audio file is configured for this verse.");
+      return;
+    }
+
+    if (!Files.exists(resolvedPath)) {
+      ToastManager.getInstance().showWarning("Audio", "Audio file not found: " + resolvedPath.getFileName());
+      return;
+    }
+
+    playbackManager.play(
+        resolvedPath,
+        verseKey,
+        () -> {
+          activeAudioVerseKey = null;
+          updateAudioToolbarState();
+          if (verseListView != null) {
+            verseListView.refresh();
+          }
+        },
+        error -> {
+          activeAudioVerseKey = null;
+          updateAudioToolbarState();
+          if (verseListView != null) {
+            verseListView.refresh();
+          }
+          ToastManager.getInstance().showError("Audio", error);
+        });
+
+    activeAudioVerseKey = verseKey;
+    updateAudioToolbarState();
+    if (verseListView != null) {
+      verseListView.refresh();
+    }
+  }
+
+  private Path resolveAudioFilePath(VerseView verseView) {
+    if (verseView == null || verseView.getAudioLocalPath() == null || verseView.getAudioLocalPath().isBlank()) {
+      return null;
+    }
+
+    try {
+      Path localPath = Path.of(verseView.getAudioLocalPath());
+      if (localPath.isAbsolute()) {
+        return localPath.normalize();
+      }
+
+      String audioRootPath = resolveAudioRootPath();
+      if (audioRootPath == null || audioRootPath.isBlank()) {
+        return null;
+      }
+
+      return Path.of(audioRootPath).resolve(localPath).normalize();
+    } catch (Exception ignored) {
+      return null;
+    }
+  }
+
+  private String resolveAudioRootPath() {
+    if (appContext == null || appContext.getMainConfig() == null || appContext.getMainConfig().getAudio() == null) {
+      return null;
+    }
+    return appContext.getMainConfig().getAudio().getAudioRootPath();
+  }
+
+  private boolean isVerseAudioActive(VerseView verseView) {
+    if (verseView == null || verseView.getVerse() == null || activeAudioVerseKey == null) {
+      return false;
+    }
+    return activeAudioVerseKey.equals(verseView.getVerse().getVerseKey());
+  }
+
+  private void stopAudioPlayback(boolean refreshVerseList) {
+    if (appContext != null && appContext.getVerseAudioPlaybackManager() != null) {
+      appContext.getVerseAudioPlaybackManager().stop();
+    }
+
+    activeAudioVerseKey = null;
+    updateAudioToolbarState();
+
+    if (refreshVerseList && verseListView != null) {
+      verseListView.refresh();
+    }
+  }
+
+  private void updateAudioToolbarState() {
+    if (audioToggleBtn == null) {
+      return;
+    }
+    audioToggleBtn.setText(activeAudioVerseKey == null ? "Audio" : "Stop Audio");
   }
 
   private record TranslationOption(int id, String label) {
@@ -368,6 +494,7 @@ public class ChaptersController {
     verseListView.sceneProperty().addListener((obs, oldScene, newScene) -> {
       if (newScene == null && progressCaptureTimeline != null) {
         progressCaptureTimeline.stop();
+        stopAudioPlayback(false);
       } else if (newScene != null && progressCaptureTimeline != null) {
         progressCaptureTimeline.play();
       }

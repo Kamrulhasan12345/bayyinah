@@ -6,6 +6,7 @@ import com.ks.bayyinah.core.dto.VerseView;
 
 import java.io.IOException;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,13 +18,22 @@ public class VerseCell extends ListCell<VerseView> {
   private Parent root;
   private VerseController controller;
   private final Consumer<VerseView> onVerseSyncRequested;
+  private final Consumer<VerseView> onVerseAudioRequested;
+  private final Predicate<VerseView> isVerseAudioActive;
 
   public VerseCell() {
-    this(null);
+    this(null, null, null);
   }
 
   public VerseCell(Consumer<VerseView> onVerseSyncRequested) {
+    this(onVerseSyncRequested, null, null);
+  }
+
+  public VerseCell(Consumer<VerseView> onVerseSyncRequested, Consumer<VerseView> onVerseAudioRequested,
+      Predicate<VerseView> isVerseAudioActive) {
     this.onVerseSyncRequested = onVerseSyncRequested;
+    this.onVerseAudioRequested = onVerseAudioRequested;
+    this.isVerseAudioActive = isVerseAudioActive;
   }
 
   @Override
@@ -49,7 +59,7 @@ public class VerseCell extends ListCell<VerseView> {
         }
       }
 
-      controller.bind(verse, onVerseSyncRequested);
+      controller.bind(verse, onVerseSyncRequested, onVerseAudioRequested, isVerseAudioActive);
       setGraphic(root);
     }
   }
