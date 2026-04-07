@@ -38,5 +38,4 @@ public class RoomResponse {
         .currentAyah(room.getCurrentAyah())
         .build();
   }
-  }
 }

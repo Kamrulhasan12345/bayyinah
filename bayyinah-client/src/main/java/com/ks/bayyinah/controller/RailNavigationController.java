@@ -29,6 +29,9 @@ public class RailNavigationController {
   private StackPane meetingBtn;
 
   @FXML
+  private StackPane aiChatBtn;
+
+  @FXML
   private StackPane peopleBtn;
 
   @FXML
@@ -51,6 +54,9 @@ public class RailNavigationController {
 
   @Setter
   private Runnable onMeetingClicked;
+
+  @Setter
+  private Runnable onAiChatClicked;
 
   @Setter
   private Runnable onSettingsClicked;
@@ -103,6 +109,13 @@ public class RailNavigationController {
       }
     });
 
+    aiChatBtn.setOnMouseClicked(e -> {
+      setActiveButton(aiChatBtn);
+      if (onAiChatClicked != null) {
+        onAiChatClicked.run();
+      }
+    });
+
     settingsBtn.setOnMouseClicked(e -> {
       setActiveButton(settingsBtn);
       if (onSettingsClicked != null) {
@@ -141,7 +154,7 @@ public class RailNavigationController {
   }
 
   private void setActiveButton(StackPane activeButton) {
-    List<StackPane> mainNavButtons = List.of(readerBtn, bookmarksBtn, progressBtn, meetingBtn);
+    List<StackPane> mainNavButtons = List.of(readerBtn, bookmarksBtn, progressBtn, meetingBtn, aiChatBtn);
     for (StackPane button : mainNavButtons) {
       if (button == activeButton) {
         if (!button.getStyleClass().contains("rail-button-active")) {
@@ -155,6 +168,10 @@ public class RailNavigationController {
 
   public void activateReaderTab() {
     setActiveButton(readerBtn);
+  }
+
+  public void activateAiChatTab() {
+    setActiveButton(aiChatBtn);
   }
 
   public void refreshAuthState() {

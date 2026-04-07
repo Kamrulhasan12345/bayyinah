@@ -6,6 +6,7 @@ import com.ks.bayyinah.infra.hybrid.query.TokenManager;
 import com.ks.bayyinah.infra.hybrid.service.*;
 import com.ks.bayyinah.infra.remote.client.ApiClient;
 import com.ks.bayyinah.infra.remote.client.StompWebSocketClient;
+import com.ks.bayyinah.infra.remote.query.RemoteAIQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteHalaqahQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteSyncQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteUserQueryService;
@@ -27,6 +28,7 @@ public class AppContext {
   private MainConfig mainConfig;
   private TokenManager tokenManager;
   private ApiClient apiClient;
+  private RemoteAIQueryService remoteAIQueryService;
   private RemoteUserQueryService remoteUserQueryService;
   private RemoteSyncQueryService remoteSyncQueryService;
   private RemoteHalaqahQueryService remoteHalaqahQueryService;

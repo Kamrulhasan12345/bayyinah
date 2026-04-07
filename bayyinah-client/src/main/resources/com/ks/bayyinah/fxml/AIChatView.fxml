@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="12.0" styleClass="ai-chat-root" stylesheets="@../css/stylesheet.css"
+  xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="com.ks.bayyinah.controller.AIChatController">
+  <children>
+    <Label styleClass="ai-chat-title" text="AI Reflections" />
+    <Label styleClass="ai-chat-subtitle"
+      text="Share your thoughts and explore reflective verses. Use arrows to navigate recommended ayahs."
+      wrapText="true" />
+
+    <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="ai-chat-input-row">
+      <children>
+        <TextField fx:id="promptField" onAction="#onSendPrompt"
+          promptText="Ask for guidance, reflection, or emotional support from the Quran"
+          styleClass="ai-chat-input" HBox.hgrow="ALWAYS" />
+        <Button fx:id="sendButton" onAction="#onSendPrompt" styleClass="ai-chat-send-btn"
+          text="Send" />
+      </children>
+    </HBox>
+
+    <Label fx:id="statusLabel" styleClass="ai-chat-status"
+      text="Ask a question and Bayyinah AI will return reflective verses." wrapText="true" />
+
+    <ScrollPane fitToWidth="true" styleClass="ai-chat-scroll" VBox.vgrow="ALWAYS">
+      <content>
+        <VBox spacing="10.0" styleClass="ai-chat-card">
+          <children>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+              <children>
+                <Hyperlink fx:id="verseLink" onAction="#onOpenVerseInReader"
+                  styleClass="ai-chat-verse-link" text="No verse selected" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="indexLabel" styleClass="ai-chat-index" text="0 / 0" />
+              </children>
+            </HBox>
+
+            <Label fx:id="promptEchoLabel" styleClass="ai-chat-prompt" text="Prompt: -"
+              wrapText="true" />
+
+            <VBox spacing="6.0" styleClass="ai-chat-section ai-chat-section-arabic">
+              <children>
+                <Label styleClass="ai-chat-section-title" text="Arabic" />
+                <Label fx:id="arabicLabel" styleClass="ai-chat-arabic" text="-" wrapText="true" />
+              </children>
+            </VBox>
+
+            <VBox spacing="6.0" styleClass="ai-chat-section ai-chat-section-translation">
+              <children>
+                <Label styleClass="ai-chat-section-title" text="Translation" />
+                <Label fx:id="translationLabel" styleClass="ai-chat-translation" text="-"
+                  wrapText="true" />
+              </children>
+            </VBox>
+
+            <VBox spacing="6.0" styleClass="ai-chat-section ai-chat-section-reflection">
+              <children>
+                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                  <children>
+                    <Label styleClass="ai-chat-section-title" text="Reflection" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="reflectionProviderLabel" styleClass="ai-chat-provider"
+                      text="Provider: not specified" wrapText="true" />
+                  </children>
+                </HBox>
+                <Label fx:id="reflectionLabel" styleClass="ai-chat-reflection" text="-"
+                  wrapText="true" />
+              </children>
+            </VBox>
+
+            <Label fx:id="metricsLabel" styleClass="ai-chat-metrics" text="-" wrapText="true" />
+          </children>
+          <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+          </padding>
+        </VBox>
+      </content>
+    </ScrollPane>
+
+    <HBox alignment="CENTER" spacing="12.0" styleClass="ai-chat-nav-row">
+      <children>
+        <Button fx:id="previousButton" onAction="#onPreviousResult" styleClass="ai-chat-nav-btn"
+          text="← Previous" />
+        <Button fx:id="nextButton" onAction="#onNextResult" styleClass="ai-chat-nav-btn"
+          text="Next →" />
+      </children>
+    </HBox>
+  </children>
+  <padding>
+    <Insets bottom="20.0" left="24.0" right="24.0" top="20.0" />
+  </padding>
+</VBox>

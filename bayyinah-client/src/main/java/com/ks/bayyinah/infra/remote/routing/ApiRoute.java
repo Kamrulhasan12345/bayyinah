@@ -36,6 +36,10 @@ public enum ApiRoute {
   HALAQAH_JOIN_ROOM("/api/halaqah/join"),
   HALAQAH_LEAVE_ROOM("/api/halaqah/leave"),
 
+  // AI routes (AI API)
+  AI_RECOMMEND("/v2/recommend"),
+  AI_RECOMMEND_REFLECT("/v2/recommend-with-reflection"),
+
   // External Quran API routes (quran API)
   QURAN_CHAPTERS("/chapters"),
   QURAN_CHAPTER_BY_ID("/chapters/{id}"),

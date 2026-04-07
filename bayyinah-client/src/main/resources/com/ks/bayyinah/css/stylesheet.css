@@ -65,6 +65,28 @@
 .settings-warning-text,
 .settings-save-btn,
 .settings-saved-hint,
+.home-root,
+.home-hero,
+.home-search-row,
+.home-search-field,
+.home-search-button,
+.home-scroll,
+.home-sections,
+.home-section,
+.home-section-title,
+.home-section-summary,
+.home-continue-container,
+.home-continue-card,
+.home-card-title,
+.home-card-meta,
+.home-card-translation,
+.home-empty-state,
+.home-bookmarks-grid,
+.home-bookmark-card,
+.home-bookmark-reference,
+.home-surah-grid,
+.home-surah-card,
+.home-surah-name,
 .bookmarks-root,
 .bookmarks-title,
 .bookmarks-summary,
@@ -476,6 +498,145 @@
 	-fx-background-color: #eff6ff;
 }
 
+.home-root {
+	-fx-background-color: #f8fafc;
+}
+
+.home-hero {
+	-fx-background-color: linear-gradient(to right, #ffffff, #f8fbff);
+	-fx-background-radius: 14;
+	-fx-border-color: #e2e8f0;
+	-fx-border-radius: 14;
+	-fx-border-width: 1;
+	-fx-padding: 16 18;
+}
+
+.home-search-row {
+	-fx-alignment: center;
+}
+
+.home-search-field {
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 8;
+	-fx-border-color: #d6dbe8;
+	-fx-border-radius: 8;
+	-fx-padding: 8 10;
+	-fx-font-size: 13px;
+	-fx-min-height: 38;
+}
+
+.home-search-field:focused {
+	-fx-border-color: #3b82f6;
+	-fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.18), 8, 0.4, 0, 0);
+}
+
+.home-search-button {
+	-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);
+	-fx-text-fill: #ffffff;
+	-fx-background-radius: 8;
+	-fx-padding: 8 16;
+	-fx-font-family: "Inter Bold";
+	-fx-cursor: hand;
+}
+
+.home-search-button:hover {
+	-fx-background-color: linear-gradient(to right, #1e40af, #1d4ed8);
+}
+
+.home-scroll {
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+}
+
+.home-scroll > .viewport {
+	-fx-background-color: transparent;
+}
+
+.home-scroll .corner {
+	-fx-background-color: transparent;
+}
+
+.home-sections {
+	-fx-fill-width: true;
+}
+
+.home-section {
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 12;
+	-fx-border-color: #dbe3ef;
+	-fx-border-radius: 12;
+	-fx-border-width: 1;
+	-fx-padding: 12 14;
+}
+
+.home-section-title {
+	-fx-text-fill: #0f172a;
+	-fx-font-size: 16px;
+	-fx-font-family: "Inter Bold";
+}
+
+.home-section-summary {
+	-fx-text-fill: #475569;
+	-fx-font-size: 12px;
+	-fx-font-weight: normal;
+}
+
+.home-continue-card,
+.home-bookmark-card,
+.home-surah-card {
+	-fx-background-color: #f8fafc;
+	-fx-background-radius: 10;
+	-fx-border-color: #e2e8f0;
+	-fx-border-radius: 10;
+	-fx-border-width: 1;
+	-fx-padding: 10 12;
+	-fx-cursor: hand;
+}
+
+.home-continue-card:hover,
+.home-bookmark-card:hover,
+.home-surah-card:hover {
+	-fx-border-color: #8eb4ff;
+	-fx-effect: dropshadow(gaussian, rgba(56, 118, 255, 0.16), 10, 0.24, 0, 2);
+}
+
+.home-card-title,
+.home-surah-name {
+	-fx-text-fill: #0f172a;
+	-fx-font-size: 13px;
+	-fx-font-family: "Inter Bold";
+}
+
+.home-card-meta,
+.home-bookmark-reference {
+	-fx-text-fill: #1e40af;
+	-fx-font-size: 12px;
+	-fx-font-family: "Inter";
+}
+
+.home-card-translation {
+	-fx-text-fill: #334155;
+	-fx-font-size: 13px;
+	-fx-font-weight: normal;
+	-fx-line-spacing: 2;
+}
+
+.home-card-arabic,
+.home-bookmark-arabic,
+.home-surah-arabic {
+	-fx-text-fill: #1e293b;
+	-fx-font-size: 20px;
+	-fx-font-family:
+		"Al Qalam Quran Majeed", "Al Qalam Quran Majeed 1",
+		"Al Qalam Quran Majeed 2", "Traditional Arabic", "Arabic Typesetting";
+}
+
+.home-empty-state {
+	-fx-text-fill: #64748b;
+	-fx-font-size: 12px;
+	-fx-padding: 8 0;
+}
+
 .bookmarks-root,
 .reading-progress-root {
 	-fx-background-color: #f8fafc;
@@ -584,6 +745,187 @@
 	-fx-text-fill: #64748b;
 	-fx-font-size: 12px;
 	-fx-padding: 18;
+}
+
+.ai-chat-root {
+	-fx-background-color: #f8fafc;
+}
+
+.ai-chat-title {
+	-fx-text-fill: #0f172a;
+	-fx-font-size: 24px;
+	-fx-font-family: "Inter Bold";
+}
+
+.ai-chat-subtitle {
+	-fx-text-fill: #475569;
+	-fx-font-size: 12px;
+	-fx-font-weight: normal;
+}
+
+.ai-chat-input-row {
+	-fx-alignment: center-left;
+}
+
+.ai-chat-input {
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 8;
+	-fx-border-color: #d6dbe8;
+	-fx-border-radius: 8;
+	-fx-padding: 8 10;
+	-fx-font-family: "Inter";
+}
+
+.ai-chat-input:focused {
+	-fx-border-color: #3b82f6;
+	-fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.18), 8, 0.4, 0, 0);
+}
+
+.ai-chat-send-btn {
+	-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);
+	-fx-text-fill: #ffffff;
+	-fx-background-radius: 8;
+	-fx-padding: 8 18;
+	-fx-font-family: "Inter Bold";
+	-fx-cursor: hand;
+}
+
+.ai-chat-send-btn:hover {
+	-fx-background-color: linear-gradient(to right, #1e40af, #1d4ed8);
+}
+
+.ai-chat-status {
+	-fx-text-fill: #334155;
+	-fx-font-size: 12px;
+	-fx-font-weight: 600;
+	-fx-font-family: "Inter";
+}
+
+.ai-chat-scroll {
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+}
+
+.ai-chat-scroll > .viewport {
+	-fx-background-color: transparent;
+}
+
+.ai-chat-scroll .corner {
+	-fx-background-color: transparent;
+}
+
+.ai-chat-card {
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 12;
+	-fx-border-color: #dbe3ef;
+	-fx-border-radius: 12;
+	-fx-border-width: 1;
+}
+
+.ai-chat-section {
+	-fx-background-radius: 10;
+	-fx-border-radius: 10;
+	-fx-border-width: 1;
+	-fx-padding: 10 12;
+}
+
+.ai-chat-section-arabic {
+	-fx-background-color: #f8fafc;
+	-fx-border-color: #e2e8f0;
+}
+
+.ai-chat-section-translation {
+	-fx-background-color: #f8fbff;
+	-fx-border-color: #dbeafe;
+}
+
+.ai-chat-section-reflection {
+	-fx-background-color: #fff7ed;
+	-fx-border-color: #fed7aa;
+}
+
+.ai-chat-section-title {
+	-fx-text-fill: #334155;
+	-fx-font-size: 11px;
+	-fx-font-family: "Inter Bold";
+}
+
+.ai-chat-verse-link {
+	-fx-text-fill: #1d4ed8;
+	-fx-font-size: 13px;
+	-fx-font-family: "Inter Bold";
+	-fx-border-color: transparent;
+	-fx-padding: 0;
+}
+
+.ai-chat-verse-link:hover {
+	-fx-text-fill: #1e40af;
+}
+
+.ai-chat-index {
+	-fx-text-fill: #1e3a8a;
+	-fx-font-size: 12px;
+	-fx-font-family: "Inter Bold";
+}
+
+.ai-chat-prompt,
+.ai-chat-emotions,
+.ai-chat-metrics {
+	-fx-text-fill: #334155;
+	-fx-font-size: 13px;
+	-fx-font-weight: normal;
+	-fx-font-family: "Inter";
+}
+
+.ai-chat-provider {
+	-fx-text-fill: #9a3412;
+	-fx-font-size: 11px;
+	-fx-font-family: "Inter Bold";
+	-fx-background-color: #ffedd5;
+	-fx-background-radius: 999;
+	-fx-padding: 3 8;
+}
+
+.ai-chat-translation {
+	-fx-text-fill: #1e3a8a;
+	-fx-font-size: 14px;
+	-fx-font-family: "Inter";
+	-fx-line-spacing: 2;
+}
+
+.ai-chat-reflection {
+	-fx-text-fill: #7c2d12;
+	-fx-font-size: 14px;
+	-fx-font-family: "Inter";
+	-fx-font-style: italic;
+	-fx-line-spacing: 3;
+}
+
+.ai-chat-arabic {
+	-fx-text-fill: #1e293b;
+	-fx-font-size: 22px;
+	-fx-font-family:
+		"Al Qalam Quran Majeed", "Al Qalam Quran Majeed 1",
+		"Al Qalam Quran Majeed 2", "Traditional Arabic", "Arabic Typesetting";
+}
+
+.ai-chat-nav-row {
+	-fx-alignment: center;
+}
+
+.ai-chat-nav-btn {
+	-fx-background-color: #ffffff;
+	-fx-text-fill: #1e3a8a;
+	-fx-border-color: #bfdbfe;
+	-fx-border-radius: 8;
+	-fx-background-radius: 8;
+	-fx-padding: 7 14;
+	-fx-font-family: "Inter Bold";
+	-fx-cursor: hand;
+}
+
+.ai-chat-nav-btn:hover {
+	-fx-background-color: #eff6ff;
 }
 
 .placeholder-view {

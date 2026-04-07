@@ -41,7 +41,9 @@ public class ConfigManager {
             new QuranConfig(quranDbPath, "http://localhost:8080"),
             new UserConfig(userDbPath, "http://localhost:8080"),
             new ApiConfig(10, 30, 3, 5000),
-            "http://localhost:8080");
+            "http://localhost:8080",
+            "https://kamrulhasan12345-bayyinah-ai.hf.space"
+        );
 
         yamlMapper.writeValue(configFile, mainConfig);
       } else {
