@@ -13,42 +13,57 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane fx:id="meetingRootSplit" dividerPositions="0.6555071315372424" styleClass="meeting-root" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.MeetingViewController">
+<SplitPane fx:id="meetingRootSplit" dividerPositions="0.6555071315372424" styleClass="meeting-root"
+   stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/null"
+   xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="com.ks.bayyinah.controller.MeetingViewController">
    <items>
       <fx:include fx:id="chaptersView" source="ChaptersView.fxml" />
       <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="meeting-right-scroll">
          <content>
             <VBox spacing="12.0" styleClass="meeting-right-content">
                <children>
-                  <Label fx:id="statusLabel" styleClass="meeting-status-pill" text="Configure your room to start." wrapText="true" />
+                  <Label fx:id="statusLabel" styleClass="meeting-status-pill"
+                     text="Configure your room to start." wrapText="true" />
 
-                  <VBox fx:id="entryPane" alignment="CENTER" spacing="18.0" styleClass="meeting-entry-root">
+                  <VBox fx:id="entryPane" alignment="CENTER" spacing="18.0"
+                     styleClass="meeting-entry-root">
                      <children>
                         <Label styleClass="meeting-title" text="Collaborative Halaqah" />
-                        <Label styleClass="meeting-subtitle" text="Create a room as leader or join with a room code." />
+                        <Label styleClass="meeting-subtitle"
+                           text="Create a room as leader or join with a room code." />
                         <FlowPane alignment="CENTER" hgap="18.0" vgap="18.0">
                            <children>
                               <VBox spacing="12.0" styleClass="meeting-card" HBox.hgrow="ALWAYS">
                                  <children>
                                     <Label styleClass="meeting-card-title" text="Create Room" />
-                                    <Label styleClass="meeting-card-subtitle" text="You will connect automatically as leader." />
-                                    <TextField fx:id="createDisplayNameField" promptText="Display name" />
+                                    <Label styleClass="meeting-card-subtitle"
+                                       text="You will connect automatically as leader." />
+                                    <TextField fx:id="createDisplayNameField"
+                                       promptText="Display name" styleClass="meeting-input" />
                                     <HBox alignment="CENTER_LEFT" spacing="8.0">
                                        <children>
-                                          <Label text="Max participants" />
-                                          <Spinner fx:id="maxParticipantsSpinner" editable="true" prefWidth="120.0" />
+                                          <Label styleClass="meeting-field-label"
+                                             text="Max participants" />
+                                          <Spinner fx:id="maxParticipantsSpinner" editable="true"
+                                             prefWidth="120.0" styleClass="meeting-spinner" />
                                        </children>
                                     </HBox>
-                                    <Button fx:id="createRoomButton" onAction="#onCreateRoom" styleClass="meeting-primary-btn" text="Create Room" />
+                                    <Button fx:id="createRoomButton" onAction="#onCreateRoom"
+                                       styleClass="meeting-primary-btn" text="Create Room" />
                                  </children>
                               </VBox>
                               <VBox spacing="12.0" styleClass="meeting-card" HBox.hgrow="ALWAYS">
                                  <children>
                                     <Label styleClass="meeting-card-title" text="Join Room" />
-                                    <Label styleClass="meeting-card-subtitle" text="Use a room code from the leader." />
-                                    <TextField fx:id="joinCodeField" promptText="Room code" />
-                                    <TextField fx:id="joinDisplayNameField" promptText="Display name" />
-                                    <Button fx:id="joinRoomButton" onAction="#onJoinRoom" styleClass="meeting-secondary-btn" text="Join Room" />
+                                    <Label styleClass="meeting-card-subtitle"
+                                       text="Use a room code from the leader." />
+                                    <TextField fx:id="joinCodeField" promptText="Room code"
+                                       styleClass="meeting-input" />
+                                    <TextField fx:id="joinDisplayNameField"
+                                       promptText="Display name" styleClass="meeting-input" />
+                                    <Button fx:id="joinRoomButton" onAction="#onJoinRoom"
+                                       styleClass="meeting-secondary-btn" text="Join Room" />
                                  </children>
                               </VBox>
                            </children>
@@ -56,52 +71,74 @@
                      </children>
                   </VBox>
 
-                  <VBox fx:id="roomPane" managed="false" spacing="12.0" styleClass="meeting-room-content" visible="false">
+                  <VBox fx:id="roomPane" managed="false" spacing="12.0"
+                     styleClass="meeting-room-content" visible="false">
                      <children>
                         <VBox spacing="6.0" styleClass="meeting-meta-panel">
                            <children>
                               <Label styleClass="meeting-section-title" text="Meeting" />
-                              <Label fx:id="roomCodeMetaLabel" styleClass="meeting-meta-line" text="Room: -" />
-                              <Label fx:id="roleMetaLabel" styleClass="meeting-meta-line" text="Role: Participant" />
-                              <Label fx:id="leaderMetaLabel" styleClass="meeting-meta-line" text="Leader: -" />
-                              <Label fx:id="participantCountMetaLabel" styleClass="meeting-meta-line" text="Participants: 0" />
-                              <Label fx:id="meetingStateMetaLabel" styleClass="meeting-meta-line" text="State: ENTRY" />
-                              <Label fx:id="connectionStateMetaLabel" styleClass="meeting-meta-line" text="Connection: Offline" />
-                              <Label fx:id="timerMetaLabel" styleClass="meeting-meta-line" text="Timer: 00:00" />
-                              <Label fx:id="currentVerseLabel" styleClass="meeting-verse-focus" text="Current focus: Surah 1, Ayah 1" />
+                              <Label fx:id="roomCodeMetaLabel" styleClass="meeting-meta-line"
+                                 text="Room: -" />
+                              <Label fx:id="roleMetaLabel" styleClass="meeting-meta-line"
+                                 text="Role: Participant" />
+                              <Label fx:id="leaderMetaLabel" styleClass="meeting-meta-line"
+                                 text="Leader: -" />
+                              <Label fx:id="participantCountMetaLabel"
+                                 styleClass="meeting-meta-line" text="Participants: 0" />
+                              <Label fx:id="meetingStateMetaLabel" styleClass="meeting-meta-line"
+                                 text="State: ENTRY" />
+                              <Label fx:id="connectionStateMetaLabel" styleClass="meeting-meta-line"
+                                 text="Connection: Offline" />
+                              <Label fx:id="timerMetaLabel" styleClass="meeting-meta-line"
+                                 text="Timer: 00:00" />
+                              <Label fx:id="currentVerseLabel" styleClass="meeting-verse-focus"
+                                 text="Current focus: Surah 1, Ayah 1" />
                            </children>
                         </VBox>
-                        <VBox fx:id="leaderControlsPane" spacing="8.0" styleClass="meeting-leader-panel">
+                        <VBox fx:id="leaderControlsPane" spacing="8.0"
+                           styleClass="meeting-leader-panel">
                            <children>
                               <Label styleClass="meeting-section-title" text="Leader Controls" />
                               <HBox spacing="8.0">
                                  <children>
-                                    <TextField fx:id="surahField" promptText="Surah" />
-                                    <TextField fx:id="ayahField" promptText="Ayah" />
-                                    <Button fx:id="broadcastVerseButton" onAction="#onBroadcastVerse" styleClass="meeting-secondary-btn" text="Sync Verse" />
+                                    <TextField fx:id="surahField" promptText="Surah"
+                                       styleClass="meeting-input" />
+                                    <TextField fx:id="ayahField" promptText="Ayah"
+                                       styleClass="meeting-input" />
+                                    <Button fx:id="broadcastVerseButton"
+                                       onAction="#onBroadcastVerse"
+                                       styleClass="meeting-secondary-btn" text="Sync Verse" />
                                  </children>
                               </HBox>
                            </children>
                         </VBox>
                         <Label styleClass="meeting-section-title" text="Participants" />
-                        <ListView fx:id="participantsListView" prefHeight="180.0" />
+                        <ListView fx:id="participantsListView" prefHeight="180.0"
+                           styleClass="meeting-list-view" />
                         <Label styleClass="meeting-section-title" text="Chat" />
-                        <ListView fx:id="chatListView" prefHeight="220.0" />
+                        <ListView fx:id="chatListView" prefHeight="220.0"
+                           styleClass="meeting-list-view" />
                         <HBox spacing="8.0">
                            <children>
-                              <TextField fx:id="chatInputField" onAction="#onSendChat" promptText="Send a message" HBox.hgrow="ALWAYS" />
-                              <Button fx:id="sendChatButton" onAction="#onSendChat" styleClass="meeting-secondary-btn" text="Send" />
+                              <TextField fx:id="chatInputField" onAction="#onSendChat"
+                                 promptText="Send a message" styleClass="meeting-input"
+                                 HBox.hgrow="ALWAYS" />
+                              <Button fx:id="sendChatButton" onAction="#onSendChat"
+                                 styleClass="meeting-secondary-btn" text="Send" />
                            </children>
                         </HBox>
                         <VBox spacing="8.0" styleClass="meeting-right-controls">
                            <children>
                               <HBox spacing="8.0">
                                  <children>
-                                    <ToggleButton fx:id="muteToggleButton" onAction="#onToggleMute" styleClass="meeting-secondary-btn" text="Mute" />
-                                    <Button fx:id="leaveRoomButton" onAction="#onLeaveRoom" styleClass="meeting-danger-btn" text="Leave Room" />
+                                    <ToggleButton fx:id="muteToggleButton" onAction="#onToggleMute"
+                                       styleClass="meeting-secondary-btn" text="Mute" />
+                                    <Button fx:id="leaveRoomButton" onAction="#onLeaveRoom"
+                                       styleClass="meeting-danger-btn" text="Leave Room" />
                                  </children>
                               </HBox>
-                              <Label fx:id="connectionHintLabel" styleClass="meeting-subtle-text" text="Disconnected" />
+                              <Label fx:id="connectionHintLabel" styleClass="meeting-subtle-text"
+                                 text="Disconnected" />
                            </children>
                         </VBox>
                      </children>

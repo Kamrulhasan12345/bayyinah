@@ -7,6 +7,8 @@ import com.ks.bayyinah.infra.hybrid.service.UserPreferenceService;
 import com.ks.bayyinah.infra.local.database.DbAsync;
 import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
 import com.ks.bayyinah.ui.ToastManager;
+import com.ks.bayyinah.ui.theme.ThemeManager;
+import com.ks.bayyinah.ui.theme.ThemeMode;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -105,7 +107,8 @@ public class SettingsController {
       return;
     }
 
-    final String theme = coalesce(themeCombo.getValue(), "light");
+    final String theme = ThemeMode.fromPreference(coalesce(themeCombo.getValue(), "light")).getPreferenceValue();
+    themeCombo.setValue(theme);
     final int fontSize = fontSizeSpinner.getValue();
     final int defaultTranslation = selectedDefaultTranslationId;
     final String language = coalesce(languageCombo.getValue(), "en");
@@ -184,7 +187,8 @@ public class SettingsController {
     lastSavedLabel.setText("No pending save in this session.");
 
     themeCombo.setItems(FXCollections.observableArrayList("light", "dark", "sepia"));
-    themeCombo.setEditable(true);
+    themeCombo.setEditable(false);
+    themeCombo.valueProperty().addListener((obs, oldValue, newValue) -> applyThemePreview(newValue));
 
     languageCombo.setItems(FXCollections.observableArrayList("en", "ar", "ur", "bn", "tr", "id"));
     languageCombo.setEditable(true);
@@ -248,7 +252,7 @@ public class SettingsController {
   }
 
   private void applyPreferenceValues(Map<String, String> values) {
-    themeCombo.setValue(values.get(KEY_THEME));
+    themeCombo.setValue(ThemeMode.fromPreference(values.get(KEY_THEME)).getPreferenceValue());
     fontSizeSpinner.getValueFactory().setValue(parseInt(values.get(KEY_FONT_SIZE), 16));
     selectedDefaultTranslationId = parseInt(values.get(KEY_DEFAULT_TRANSLATION), 20);
     languageCombo.setValue(values.get(KEY_LANGUAGE));
@@ -263,7 +267,7 @@ public class SettingsController {
   }
 
   private void applyDefaults() {
-    themeCombo.setValue("light");
+    themeCombo.setValue(ThemeMode.LIGHT.getPreferenceValue());
     fontSizeSpinner.getValueFactory().setValue(16);
     selectedDefaultTranslationId = 20;
     languageCombo.setValue("en");
@@ -404,6 +408,14 @@ public class SettingsController {
     } catch (Exception e) {
       return fallback;
     }
+  }
+
+  private void applyThemePreview(String themePreference) {
+    if (themeCombo == null || themeCombo.getScene() == null) {
+      return;
+    }
+
+    ThemeManager.getInstance().applyTheme(themeCombo.getScene(), themePreference);
   }
 
   private record TranslationOption(int id, String label, boolean available) {

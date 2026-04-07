@@ -14,7 +14,14 @@ import org.kordamp.ikonli.javafx.FontIcon;
 public class ToastNotification extends VBox {
 
   private static final double TOAST_WIDTH = 350;
-  private static final double TOAST_HEIGHT = 80;
+  private static final String CLASS_TOAST_PLAIN = "toast-plain";
+  private static final String CLASS_TOAST_COLORED = "toast-colored";
+  private static final String CLASS_TOAST_INFO = "toast-info";
+  private static final String CLASS_TOAST_SUCCESS = "toast-success";
+  private static final String CLASS_TOAST_WARNING = "toast-warning";
+  private static final String CLASS_TOAST_ERROR = "toast-error";
+  private static final String CLASS_TOAST_CRITICAL = "toast-critical";
+  private static final String CLASS_TOAST_DEBUG = "toast-debug";
 
   private final Label titleLabel;
   private final Label messageLabel;
@@ -38,40 +45,39 @@ public class ToastNotification extends VBox {
     this.setPadding(new Insets(15));
     this.setSpacing(5);
     this.setAlignment(Pos.CENTER_LEFT);
+    this.getStyleClass().add("toast-notification");
 
     this.showBackgroundColor = showBackgroundColor != null ? showBackgroundColor : true;
 
     // Apply severity styling
     applySeverityStyle(severity);
 
-    // Title
-    String textBackgroundStyle = !this.showBackgroundColor ? "-fx-text-fill: #000000; " : "-fx-text-fill: #FFFFFF; ";
     titleLabel = new Label(title);
-    titleLabel.setStyle(
-        "-fx-font-family: 'Inter Bold'; " +
-            "-fx-font-size: 14px; " + textBackgroundStyle);
+    titleLabel.getStyleClass().add("toast-title");
+    titleLabel.getStyleClass().add(this.showBackgroundColor ? "toast-title-on-accent" : "toast-title-plain");
 
     HBox.setHgrow(titleLabel, Priority.ALWAYS);
 
     // Message
     messageLabel = new Label(message);
     messageLabel.setWrapText(true);
-    messageLabel.setStyle(
-        "-fx-font-size: 12px; " +
-            textBackgroundStyle +
-            "-fx-opacity: 0.9;" +
-            "-fx-font-family: 'Inter'");
+    messageLabel.getStyleClass().add("toast-message");
+    messageLabel.getStyleClass().add(this.showBackgroundColor ? "toast-message-on-accent" : "toast-message-plain");
 
     // Icon (optional)
     FontIcon icon = new FontIcon(iconLiteral != null ? iconLiteral : getIconForSeverity(severity));
+    if (iconLiteral == null) {
+      icon.getStyleClass().add(this.showBackgroundColor ? "toast-icon-on-accent" : getPlainIconStyleClass(severity));
+    }
 
     Region spacer = new Region();
     HBox.setHgrow(spacer, Priority.ALWAYS);
 
-    FontIcon crossIcon = new FontIcon(!this.showBackgroundColor ? "mdi2c-close:16:#9E9E9E" : "mdi2c-close:16:#FFFFFF");
+    FontIcon crossIcon = new FontIcon("mdi2c-close:16");
+    crossIcon.getStyleClass().add(this.showBackgroundColor ? "toast-close-icon-on-accent" : "toast-close-icon");
+    crossIcon.getStyleClass().add("toast-close-icon-button");
 
     crossIcon.setOnMouseClicked(e -> hide());
-    crossIcon.setStyle(crossIcon.getStyle() + "-fx-cursor: hand;");
     crossIcon.setOpacity(0.7); // Slightly faded for better aesthetics
     crossIcon.setOnMouseEntered(e -> crossIcon.setOpacity(1.0)); // Highlight on hover
     crossIcon.setOnMouseExited(e -> crossIcon.setOpacity(0.7)); // Restore opacity when not hovered
@@ -96,37 +102,59 @@ public class ToastNotification extends VBox {
    * Apply style based on severity
    */
   private void applySeverityStyle(ToastSeverity severity) {
-    String baseStyle = "-fx-background-radius: 8px; " +
-        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2); ";
-    String backgroundColor = "#FFFFFF"; // Default white background
+    this.getStyleClass().removeAll(
+        CLASS_TOAST_PLAIN,
+        CLASS_TOAST_COLORED,
+        CLASS_TOAST_INFO,
+        CLASS_TOAST_SUCCESS,
+        CLASS_TOAST_WARNING,
+        CLASS_TOAST_ERROR,
+        CLASS_TOAST_CRITICAL,
+        CLASS_TOAST_DEBUG);
 
-    if (showBackgroundColor) {
-      switch (severity) {
-        case INFO:
-          backgroundColor = "#2196F3";
-          break;
-        case SUCCESS:
-          backgroundColor = "#4CAF50";
-          break;
-        case WARNING:
-          backgroundColor = "#FF9800";
-          break;
-        case ERROR:
-          backgroundColor = "#F44336";
-          break;
-        case CRITICAL:
-          backgroundColor = "#B71C1C";
-          break;
-        case DEBUG:
-          backgroundColor = "#9E9E9E";
-          break;
-        default:
-          backgroundColor = "#FFFFFF";
-          break;
-      }
+    if (!showBackgroundColor) {
+      this.getStyleClass().add(CLASS_TOAST_PLAIN);
+      return;
     }
 
-    this.setStyle(baseStyle + "-fx-background-color: " + backgroundColor + ";");
+    this.getStyleClass().add(CLASS_TOAST_COLORED);
+    this.getStyleClass().add(getColoredSeverityStyleClass(severity));
+  }
+
+  private String getColoredSeverityStyleClass(ToastSeverity severity) {
+    switch (severity) {
+      case INFO:
+        return CLASS_TOAST_INFO;
+      case SUCCESS:
+        return CLASS_TOAST_SUCCESS;
+      case WARNING:
+        return CLASS_TOAST_WARNING;
+      case ERROR:
+        return CLASS_TOAST_ERROR;
+      case CRITICAL:
+        return CLASS_TOAST_CRITICAL;
+      case DEBUG:
+      default:
+        return CLASS_TOAST_DEBUG;
+    }
+  }
+
+  private String getPlainIconStyleClass(ToastSeverity severity) {
+    switch (severity) {
+      case INFO:
+        return "toast-icon-info";
+      case SUCCESS:
+        return "toast-icon-success";
+      case WARNING:
+        return "toast-icon-warning";
+      case ERROR:
+        return "toast-icon-error";
+      case CRITICAL:
+        return "toast-icon-critical";
+      case DEBUG:
+      default:
+        return "toast-icon-debug";
+    }
   }
 
   /**
@@ -135,23 +163,19 @@ public class ToastNotification extends VBox {
   private String getIconForSeverity(ToastSeverity severity) {
     switch (severity) {
       case INFO:
-        return !this.showBackgroundColor ? "mdi2i-information-outline:20:#2196F3"
-            : "mdi2i-information-outline:20:#FFFFFF";
+        return "mdi2i-information-outline:20";
       case SUCCESS:
-        return !this.showBackgroundColor ? "mdi2c-check-circle-outline:20:#4CAF50"
-            : "mdi2c-check-circle-outline:20:#FFFFFF";
+        return "mdi2c-check-circle-outline:20";
       case WARNING:
-        return !this.showBackgroundColor ? "mdi2a-alert-outline:20:#FF9800" : "mdi2a-alert-outline:20:#FFFFFF";
+        return "mdi2a-alert-outline:20";
       case ERROR:
-        return !this.showBackgroundColor ? "mdi2c-close-circle-outline:20:#F44336"
-            : "mdi2c-close-circle-outline:20:#FFFFFF";
+        return "mdi2c-close-circle-outline:20";
       case CRITICAL:
-        return !this.showBackgroundColor ? "mdi2a-alert-octagram:20:#B71C1C" : "mdi2a-alert-octagram:20:#FFFFFF";
+        return "mdi2a-alert-octagram:20";
       case DEBUG:
-        return !this.showBackgroundColor ? "mdi2b-bug-outline:20:#9E9E9E" : "mdi2b-bug-outline:20:#FFFFFF";
+        return "mdi2b-bug-outline:20";
       default:
-        return !this.showBackgroundColor ? "mdi2h-help-circle-outline:20:#9E9E9E"
-            : "mdi2h-help-circle-outline:20:#FFFFFF";
+        return "mdi2h-help-circle-outline:20";
     }
   }
 
@@ -220,6 +244,6 @@ public class ToastNotification extends VBox {
    */
   public void enableClickToDismiss() {
     this.setOnMouseClicked(e -> hide());
-    this.setStyle(this.getStyle() + "-fx-cursor: hand;");
+    this.getStyleClass().add("toast-clickable");
   }
 }

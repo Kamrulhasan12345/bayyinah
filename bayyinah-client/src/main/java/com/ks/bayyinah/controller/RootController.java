@@ -64,7 +64,7 @@ public class RootController {
       scrollContainer.setFitToHeight(true);
       scrollContainer.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
       scrollContainer.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-      scrollContainer.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+      scrollContainer.getStyleClass().add("auth-overlay-scroll-container");
       scrollContainer.getStyleClass().add("auth-overlay-scroll");
       scrollContainer.setOnMouseClicked(e -> e.consume());
       

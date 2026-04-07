@@ -230,3 +230,105 @@
 	-fx-text-fill: #6b7280;
 	-fx-font-family: "Inter";
 }
+
+/* Theme token overrides (light-first green palette). */
+
+.reader-page {
+	-fx-background-color: linear-gradient(
+		to bottom,
+		-app-bg-base,
+		-app-bg-subtle
+	);
+}
+
+.reader-hero,
+.reader-toolbar,
+.ayah-card {
+	-fx-background-color: -app-bg-pane;
+	-fx-border-color: -app-border-default;
+}
+
+.chapter-name-simple,
+.ayah-number {
+	-fx-text-fill: -app-text-secondary;
+}
+
+.chapter-name-translated,
+.chapter-meta,
+.ayah-translation-meta {
+	-fx-text-fill: -app-text-muted;
+}
+
+.chapter-name-arabic,
+.ayah-arabic-text,
+.ayah-translation-text {
+	-fx-text-fill: -app-text-primary;
+}
+
+.toolbar-label {
+	-fx-text-fill: -app-text-secondary;
+}
+
+.reader-secondary-btn {
+	-fx-background-color: -app-bg-muted;
+	-fx-border-color: -app-border-default;
+	-fx-text-fill: -app-text-secondary;
+}
+
+.reader-secondary-btn:hover,
+.ayah-card:hover {
+	-fx-background-color: -app-bg-hover;
+}
+
+.ayah-bookmark {
+	-fx-icon-color: -app-text-secondary;
+}
+
+.ayah-sync-btn {
+	-fx-text-fill: -app-link;
+	-fx-background-color: -app-accent-soft;
+	-fx-border-color: -app-accent-border;
+}
+
+.ayah-sync-btn:hover {
+	-fx-background-color: -app-accent-soft-2;
+}
+
+.ayah-audio-btn {
+	-fx-text-fill: -app-success-text;
+	-fx-background-color: -app-success-bg;
+	-fx-border-color: -app-success-border;
+}
+
+.ayah-audio-btn:hover {
+	-fx-background-color: -app-accent-soft;
+}
+
+.ayah-audio-btn:disabled {
+	-fx-background-color: -app-neutral-bg;
+	-fx-border-color: -app-neutral-border;
+	-fx-text-fill: -app-neutral-text;
+}
+
+.ayah-audio-btn.active {
+	-fx-text-fill: -app-text-on-accent;
+	-fx-background-color: -app-accent;
+	-fx-border-color: -app-accent-strong;
+}
+
+/* Reader text contrast fix: keep verse labels from inheriting generic dark list label color. */
+.verse-list .list-cell .label {
+	-fx-text-fill: -app-text-secondary;
+}
+
+.verse-list .list-cell .ayah-arabic-text {
+	-fx-text-fill: -app-text-primary;
+}
+
+.verse-list .list-cell .ayah-translation-text {
+	-fx-text-fill: -app-text-secondary;
+}
+
+.verse-list .list-cell .ayah-translation-meta {
+	-fx-text-fill: -app-text-muted;
+}

@@ -260,10 +260,6 @@ public class SearchResultsController {
 
     card.getChildren().add(matchLabel);
 
-    // Hover effect
-    card.setOnMouseEntered(e -> card.setStyle("-fx-background-color: #f5f5f5; -fx-cursor: hand;"));
-    card.setOnMouseExited(e -> card.setStyle("-fx-background-color: white;"));
-
     return card;
   }
 
@@ -300,10 +296,6 @@ public class SearchResultsController {
 
     card.getChildren().addAll(nameLabel, arabicLabel, infoLabel);
 
-    // Hover effect
-    card.setOnMouseEntered(e -> card.setStyle("-fx-background-color: #f5f5f5; -fx-cursor: hand;"));
-    card.setOnMouseExited(e -> card.setStyle("-fx-background-color: white;"));
-
     return card;
   }
 
@@ -322,7 +314,7 @@ public class SearchResultsController {
 
       // Odd indices are highlighted (between **)
       if (i % 2 == 1) {
-        text.setStyle("-fx-font-weight: bold; -fx-fill: #FF9800;");
+        text.getStyleClass().add("search-highlight");
       } else {
         text.getStyleClass().add("highlighted-context");
       }

@@ -25,6 +25,9 @@ import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.controller.RootController;
 import com.ks.bayyinah.error.GlobalExceptionHandler;
 import com.ks.bayyinah.ui.ToastManager;
+import com.ks.bayyinah.ui.theme.LightPaletteVariant;
+import com.ks.bayyinah.ui.theme.ThemeManager;
+import com.ks.bayyinah.ui.theme.ThemeMode;
 
 import fr.brouillard.oss.cssfx.CSSFX;
 import tools.jackson.databind.ObjectMapper;
@@ -35,6 +38,7 @@ import tools.jackson.databind.ObjectMapper;
 public class App extends Application {
 
   private static final boolean ENABLE_STARTUP_SAMPLE_TOASTS = false;
+  private static final String KEY_THEME = "theme";
 
   private static Scene scene;
 
@@ -68,6 +72,10 @@ public class App extends Application {
       return;
     }
     scene = new Scene(loadRootFXML("fxml/RootLayout"), 1200, 700);
+
+    ThemeManager themeManager = ThemeManager.getInstance();
+    themeManager.setActiveLightVariant(LightPaletteVariant.FOREST_DEEP);
+    themeManager.applyTheme(scene, resolveInitialThemePreference());
 
     stage.setScene(scene);
     stage.setTitle("Bayyinah");
@@ -183,6 +191,22 @@ public class App extends Application {
 
     appContext.setRemoteUserQueryService(remoteUserQueryService);
     appContext.setAuthSessionQueryService(authSessionQueryService);
+  }
+
+  private String resolveInitialThemePreference() {
+    if (appContext == null || appContext.getUserPreferenceService() == null) {
+      return ThemeMode.LIGHT.getPreferenceValue();
+    }
+
+    try {
+      UserPreference pref = appContext.getUserPreferenceService().getPreference(KEY_THEME);
+      if (pref == null || pref.getValue() == null || pref.getValue().isBlank()) {
+        return ThemeMode.LIGHT.getPreferenceValue();
+      }
+      return pref.getValue();
+    } catch (Exception e) {
+      return ThemeMode.LIGHT.getPreferenceValue();
+    }
   }
 
   public static void main(String[] args) {
