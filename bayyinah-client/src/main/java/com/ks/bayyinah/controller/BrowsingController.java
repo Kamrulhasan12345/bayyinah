@@ -5,6 +5,7 @@ import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.core.dto.ChapterView;
 import com.ks.bayyinah.infra.local.database.DbAsync;
 import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
+import com.ks.bayyinah.infra.local.query.LocalQuranSearchQueryService;
 import com.ks.bayyinah.ui.ToastManager;
 import java.io.IOException;
 
@@ -199,6 +200,40 @@ public class BrowsingController {
       partialChapterView = true;
     } catch (IOException e) {
       e.printStackTrace();
+    }
+  }
+
+  public void showSearchResults(String query) {
+    if (query == null || query.isBlank()) {
+      return;
+    }
+
+    setContentMode(ContentMode.READER);
+    applySidebarVisibility(true);
+
+    if (railNavigationController != null) {
+      railNavigationController.activateReaderTab();
+    }
+
+    try {
+      FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/SearchResults.fxml"));
+      Node view = loader.load();
+
+      Object controller = loader.getController();
+      if (controller instanceof SearchResultsController searchResultsController) {
+        searchResultsController.setBrowsingController(this);
+        searchResultsController.setQuranQueryService(LocalQuranQueryService.getInstance());
+        searchResultsController.setSearchService(LocalQuranSearchQueryService.getInstance());
+        searchResultsController.initialize(query.trim());
+      }
+
+      contentArea.getChildren().setAll(view);
+      contentArea.getChildren().add(loadingOverlay);
+      currentShownChapterId = -1;
+      partialChapterView = true;
+    } catch (IOException e) {
+      e.printStackTrace();
+      ToastManager.getInstance().showError("Search", "Failed to load search results view.");
     }
   }
 
