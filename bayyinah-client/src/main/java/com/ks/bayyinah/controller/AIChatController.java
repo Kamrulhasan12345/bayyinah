@@ -257,12 +257,15 @@ public class AIChatController {
 
   private String formatMetrics(VerseResponse verse) {
     return String.format(Locale.US,
-        "Relevance %.2f | Semantic %.2f | Distance %.2f",
-        verse.relevanceScore(),
-        verse.semanticScore(),
-        verse.semanticDistance());
+        "Relevance %s | Semantic %s | Distance %s",
+        formatMetricValue(verse.relevanceScore()),
+        formatMetricValue(verse.semanticScore()),
+        formatMetricValue(verse.semanticDistance()));
   }
 
+  private String formatMetricValue(Float value) {
+    return value == null ? "n/a" : String.format(Locale.US, "%.2f", value);
+  }
   private String formatTranslation(VerseResponse verse) {
     String english = normalize(verse.translationEn());
     String urdu = normalize(verse.translationUr());
