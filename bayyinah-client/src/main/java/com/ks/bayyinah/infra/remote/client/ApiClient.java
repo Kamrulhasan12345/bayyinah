@@ -211,6 +211,44 @@ public class ApiClient {
         });
   }
 
+  public <Req, Res> CompletableFuture<Res> getAi(ApiRoute route, Class<Res> responseType, Object... pathParams) {
+    String url = routeResolver.resolveAi(route, pathParams);
+
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create(url))
+        .header("Content-Type", "application/json")
+        .timeout(Duration.ofSeconds(mainConfig.getApi().getRequestTimeoutSeconds()))
+        .GET()
+        .build();
+
+    return executeRequest(request, responseType)
+        .whenComplete((result, error) -> {
+          if (error != null) {
+            exceptionHandler.handleException(error, "GET AI " + route.getPath());
+          }
+        });
+  }
+
+  public <Req, Res> CompletableFuture<Res> postAi(ApiRoute route, Req body, Class<Res> responseType,
+      Object... pathParams) {
+    String url = routeResolver.resolveAi(route, pathParams);
+    String jsonBody = objectMapper.writeValueAsString(body);
+
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create(url))
+        .header("Content-Type", "application/json")
+        .timeout(Duration.ofSeconds(mainConfig.getApi().getRequestTimeoutSeconds()))
+        .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+        .build();
+
+    return executeRequest(request, responseType)
+        .whenComplete((result, error) -> {
+          if (error != null) {
+            exceptionHandler.handleException(error, "POST AI " + route.getPath());
+          }
+        });
+  }
+
   private <Req, Res> CompletableFuture<Res> executeRequest(HttpRequest request, Class<Res> responseType) {
     return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
         .thenApply(response -> handleResponse(response, responseType));

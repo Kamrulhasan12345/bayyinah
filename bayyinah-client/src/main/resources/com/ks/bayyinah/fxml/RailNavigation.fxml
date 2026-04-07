@@ -6,11 +6,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox alignment="TOP_CENTER" maxWidth="72.0" minWidth="72.0" prefWidth="72.0" spacing="14.0" styleClass="rail-root" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.RailNavigationController">
+<VBox alignment="TOP_CENTER" maxWidth="72.0" minWidth="72.0" prefWidth="72.0" spacing="14.0"
+   styleClass="rail-root" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="com.ks.bayyinah.controller.RailNavigationController">
    <children>
       <StackPane fx:id="logoBtn" focusTraversable="true" styleClass="rail-button">
          <children>
-            <FontIcon iconLiteral="mdi2b-book-open-variant" iconSize="21" styleClass="rail-logo-icon" />
+            <FontIcon iconLiteral="mdi2b-book-open-variant" iconSize="21"
+               styleClass="rail-logo-icon" />
          </children>
       </StackPane>
       <Region VBox.vgrow="ALWAYS" />
@@ -19,22 +22,31 @@
          <children>
             <StackPane fx:id="readerBtn" focusTraversable="true" styleClass="rail-button">
                <children>
-                  <FontIcon iconLiteral="mdi2b-book-open-page-variant-outline" iconSize="18" styleClass="rail-icon" />
+                  <FontIcon iconLiteral="mdi2b-book-open-page-variant-outline" iconSize="18"
+                     styleClass="rail-icon" />
                </children>
             </StackPane>
             <StackPane fx:id="bookmarksBtn" focusTraversable="true" styleClass="rail-button">
                <children>
-                  <FontIcon iconLiteral="mdi2b-bookmark-outline" iconSize="18" styleClass="rail-icon" />
+                  <FontIcon iconLiteral="mdi2b-bookmark-outline" iconSize="18"
+                     styleClass="rail-icon" />
                </children>
             </StackPane>
             <StackPane fx:id="progressBtn" focusTraversable="true" styleClass="rail-button">
                <children>
-                  <FontIcon iconLiteral="mdi2c-chart-line-variant" iconSize="18" styleClass="rail-icon" />
+                  <FontIcon iconLiteral="mdi2c-chart-line-variant" iconSize="18"
+                     styleClass="rail-icon" />
                </children>
             </StackPane>
             <StackPane fx:id="meetingBtn" focusTraversable="true" styleClass="rail-button">
                <children>
-                  <FontIcon iconLiteral="mdi2a-account-group-outline" iconSize="18" styleClass="rail-icon" />
+                  <FontIcon iconLiteral="mdi2a-account-group-outline" iconSize="18"
+                     styleClass="rail-icon" />
+               </children>
+            </StackPane>
+            <StackPane fx:id="aiChatBtn" focusTraversable="true" styleClass="rail-button">
+               <children>
+                  <FontIcon iconLiteral="mdi2r-robot-outline" iconSize="18" styleClass="rail-icon" />
                </children>
             </StackPane>
          </children>
@@ -46,12 +58,14 @@
          <children>
             <StackPane fx:id="peopleBtn" focusTraversable="true" styleClass="rail-button">
                <children>
-                  <FontIcon iconLiteral="mdi2a-account-circle-outline" iconSize="18" styleClass="rail-icon" />
+                  <FontIcon iconLiteral="mdi2a-account-circle-outline" iconSize="18"
+                     styleClass="rail-icon" />
                </children>
             </StackPane>
             <StackPane fx:id="authBtn" focusTraversable="true" styleClass="rail-button">
                <children>
-                  <FontIcon fx:id="authIcon" iconLiteral="mdi2l-login" iconSize="18" styleClass="rail-icon" />
+                  <FontIcon fx:id="authIcon" iconLiteral="mdi2l-login" iconSize="18"
+                     styleClass="rail-icon" />
                </children>
             </StackPane>
             <StackPane fx:id="settingsBtn" focusTraversable="true" styleClass="rail-button">

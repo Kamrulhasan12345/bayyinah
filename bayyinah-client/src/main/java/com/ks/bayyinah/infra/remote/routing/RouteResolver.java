@@ -18,11 +18,21 @@ public class RouteResolver {
     return baseUrl + route.getPath();
   }
 
+  public String resolveAi(ApiRoute route) {
+    String baseUrl = config.getAiApiUrl();
+    return baseUrl + route.getPath();
+  }
+
   /**
    * Resolve full URL with path parameters
    */
   public String resolve(ApiRoute route, Object... params) {
     String baseUrl = getBaseUrl(route);
+    return baseUrl + route.format(params);
+  }
+
+  public String resolveAi(ApiRoute route, Object... params) {
+    String baseUrl = config.getAiApiUrl();
     return baseUrl + route.format(params);
   }
 

@@ -10,6 +10,7 @@ public class MainConfig {
   private UserConfig user;
   private ApiConfig api;
   private String apiUrl;
+  private String aiApiUrl;
 
   public void loadFallbacksAsNeeded() {
     this.apiUrl = (this.apiUrl != null) ? this.apiUrl : "http://localhost:8080";
@@ -22,6 +23,7 @@ public class MainConfig {
             System.getProperty("user.home") + "/.bayyinah/user.db",
             this.apiUrl);
     this.api = (this.api != null) ? this.api : new ApiConfig(10, 30, 3, 5000);
+    this.aiApiUrl = (this.aiApiUrl != null) ? this.aiApiUrl : "https://kamrulhasan12345-bayyinah-ai.hf.space";
   }
 
   public String getQuranApiUrl() {

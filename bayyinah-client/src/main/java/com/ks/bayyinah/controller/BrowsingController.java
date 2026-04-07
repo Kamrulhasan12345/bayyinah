@@ -3,6 +3,9 @@ package com.ks.bayyinah.controller;
 import com.ks.bayyinah.App;
 import com.ks.bayyinah.context.AppContext;
 import com.ks.bayyinah.core.dto.ChapterView;
+import com.ks.bayyinah.infra.local.database.DbAsync;
+import com.ks.bayyinah.infra.local.query.LocalQuranQueryService;
+import com.ks.bayyinah.ui.ToastManager;
 import java.io.IOException;
 
 import javafx.fxml.FXML;
@@ -51,8 +54,10 @@ public class BrowsingController {
   private VBox loadingOverlay;
   private ContentMode contentMode = ContentMode.READER;
   private MeetingViewController activeMeetingController;
+  private AIChatController activeAiChatController;
   private ChaptersController activeChaptersController;
   private Node cachedMeetingView;
+  private Node cachedAiChatView;
 
   public void setRootController(RootController rootController) {
     this.rootController = rootController;
@@ -130,6 +135,7 @@ public class BrowsingController {
       railNavigationController.setOnBookmarksClicked(this::showBookmarks);
       railNavigationController.setOnReadingProgressClicked(this::showReadingProgress);
       railNavigationController.setOnMeetingClicked(this::showMeeting);
+      railNavigationController.setOnAiChatClicked(this::showAiChat);
       railNavigationController.setOnSettingsClicked(this::showSettings);
       railNavigationController.setOnLoginClicked(() -> {
         if (rootController != null) {
@@ -310,6 +316,45 @@ public class BrowsingController {
     }
   }
 
+  private void showAiChat() {
+    setContentMode(ContentMode.AUXILIARY);
+    applySidebarVisibility(false);
+
+    if (sidebarController != null) {
+      sidebarController.clearSelection();
+    }
+
+    try {
+      if (cachedAiChatView == null || activeAiChatController == null) {
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/AIChatView.fxml"));
+        cachedAiChatView = loader.load();
+
+        Object controller = loader.getController();
+        if (controller instanceof AIChatController aiChatController) {
+          aiChatController.setAppContext(appContext);
+          aiChatController.setBrowsingController(this);
+          aiChatController.initializeAiChat();
+          activeAiChatController = aiChatController;
+        }
+      } else {
+        activeAiChatController.setAppContext(appContext);
+        activeAiChatController.setBrowsingController(this);
+      }
+
+      contentArea.getChildren().setAll(cachedAiChatView);
+      contentArea.getChildren().add(loadingOverlay);
+      currentShownChapterId = -1;
+      partialChapterView = true;
+      if (railNavigationController != null) {
+        railNavigationController.activateAiChatTab();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+      cachedAiChatView = null;
+      activeAiChatController = null;
+    }
+  }
+
   private void loadSimpleView(String fxmlPath, boolean showSidebar) {
     setContentMode(ContentMode.AUXILIARY);
     applySidebarVisibility(showSidebar);
@@ -341,6 +386,28 @@ public class BrowsingController {
 
   public void showChapter(ChapterView chapter, Integer startVerse, Integer endVerse, Integer translationId) {
     showChapter(chapter, startVerse, endVerse, translationId, null);
+  }
+
+  public void navigateToVerseFromAi(int surahNumber, int ayahNumber) {
+    if (surahNumber <= 0 || ayahNumber <= 0) {
+      return;
+    }
+
+    DbAsync.runWithUi(
+        () -> LocalQuranQueryService.getInstance().getChapter(surahNumber, "en"),
+        chapterView -> {
+          if (chapterView != null && chapterView.isPresent()) {
+            showChapterAndFocusAyah(chapterView.get(), ayahNumber);
+            ToastManager.getInstance().showInfo("Navigating",
+                "Opening Surah " + surahNumber + ", Ayah " + ayahNumber + ".");
+            return;
+          }
+
+          ToastManager.getInstance().showWarning("Navigation error",
+              "Unable to open Surah " + surahNumber + ", Ayah " + ayahNumber + ".");
+        },
+        error -> ToastManager.getInstance().showError("Navigation error",
+            "Failed to open Surah " + surahNumber + ", Ayah " + ayahNumber + ": " + error.getMessage()));
   }
 
   private void showChapter(ChapterView chapter, Integer startVerse, Integer endVerse, Integer translationId,

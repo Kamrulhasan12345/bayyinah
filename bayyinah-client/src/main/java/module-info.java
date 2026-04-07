@@ -33,6 +33,7 @@ module com.ks.bayyinah {
   opens com.ks.bayyinah.infra.remote.dto.auth to tools.jackson.databind;
   opens com.ks.bayyinah.infra.remote.dto.sync to tools.jackson.databind;
   opens com.ks.bayyinah.infra.remote.dto.stomp to tools.jackson.databind;
+  opens com.ks.bayyinah.infra.remote.dto.recsys to tools.jackson.databind;
   opens com.ks.bayyinah.infra.remote.client to spring.core, spring.beans, spring.context, tools.jackson.databind;
 
   exports com.ks.bayyinah.controller;
