@@ -18,6 +18,7 @@ public class LocalQuranReadRepository implements QuranReadRepository {
     int activeReciterId = resolveActiveReciterId();
     try {
       try (var connection = DatabaseManager.getQuranConnection();
+      // FIXME: technical debt? i mean this DISTINCT thing could be a technical debt
           var statement = connection.prepareStatement(
               "SELECT DISTINCT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
                   +
