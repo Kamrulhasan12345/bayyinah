@@ -7,11 +7,6 @@ import { populateAudio } from './audio.js';
 import { populateTranslationMetadata, populateTranslationText } from './translations.js';
 import { formatDurationMs, parseArgs, parseNumberList, requireEnv, toDbPath } from './utils.js';
 
-declare const process: {
-  argv: string[];
-  env: Record<string, string | undefined>;
-};
-
 type Flags = {
   dbPath: string;
   drop: boolean;
