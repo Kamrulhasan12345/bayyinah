@@ -420,17 +420,23 @@ public class ChaptersController {
     }
 
     try {
-      Path localPath = Path.of(verseView.getAudioLocalPath());
-      if (localPath.isAbsolute()) {
-        return localPath.normalize();
-      }
-
       String audioRootPath = resolveAudioRootPath();
       if (audioRootPath == null || audioRootPath.isBlank()) {
         return null;
       }
 
-      return Path.of(audioRootPath).resolve(localPath).normalize();
+      Path audioRoot = Path.of(audioRootPath).toAbsolutePath().normalize();
+      Path localPath = Path.of(verseView.getAudioLocalPath());
+      if (localPath.isAbsolute()) {
+        return null;
+      }
+
+      Path resolvedPath = audioRoot.resolve(localPath).normalize();
+      if (!resolvedPath.startsWith(audioRoot)) {
+        return null;
+      }
+
+      return resolvedPath;
     } catch (Exception ignored) {
       return null;
     }
