@@ -3,7 +3,7 @@ import { createSchema, dropAll, openDb, withTransaction } from './db.js';
 import { populateChapters } from './chapters.js';
 import { populateChaptersI18n } from './chapters_i18n.js';
 import { populateVerses } from './verses.js';
-import { populateAudio } from './audio.ts';
+import { populateAudio } from './audio.js';
 import { populateTranslationMetadata, populateTranslationText } from './translations.js';
 import { formatDurationMs, parseArgs, parseNumberList, requireEnv, toDbPath } from './utils.js';
 
