@@ -178,6 +178,35 @@
 	-fx-background-color: #bae6fd;
 }
 
+.ayah-audio-btn {
+	-fx-font-size: 10px;
+	-fx-text-fill: #14532d;
+	-fx-font-family: "Inter Bold";
+	-fx-background-color: #dcfce7;
+	-fx-border-color: #86efac;
+	-fx-background-radius: 999;
+	-fx-border-radius: 999;
+	-fx-padding: 2 8;
+	-fx-cursor: hand;
+}
+
+.ayah-audio-btn:hover {
+	-fx-background-color: #bbf7d0;
+}
+
+.ayah-audio-btn:disabled {
+	-fx-background-color: #f3f4f6;
+	-fx-border-color: #e5e7eb;
+	-fx-text-fill: #9ca3af;
+	-fx-cursor: default;
+}
+
+.ayah-audio-btn.active {
+	-fx-text-fill: #ffffff;
+	-fx-background-color: #166534;
+	-fx-border-color: #14532d;
+}
+
 .ayah-arabic-text {
 	-fx-font-size: 28px;
 	-fx-font-family:

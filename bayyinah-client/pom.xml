@@ -28,6 +28,11 @@
             <version>21</version>
         </dependency>
         <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>21</version>
+        </dependency>
+        <dependency>
             <groupId>com.ks.bayyinah</groupId>
             <artifactId>bayyinah-core</artifactId>
             <version>1.0-SNAPSHOT</version>

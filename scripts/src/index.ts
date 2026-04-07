@@ -3,6 +3,7 @@ import { createSchema, dropAll, openDb, withTransaction } from './db.js';
 import { populateChapters } from './chapters.js';
 import { populateChaptersI18n } from './chapters_i18n.js';
 import { populateVerses } from './verses.js';
+import { populateAudio } from './audio.js';
 import { populateTranslationMetadata, populateTranslationText } from './translations.js';
 import { formatDurationMs, parseArgs, parseNumberList, requireEnv, toDbPath } from './utils.js';
 
@@ -11,14 +12,29 @@ type Flags = {
   drop: boolean;
   perPage: number;
   translationIds: number[];
+  chapterIds: number[];
   chapterLangs: string[];
   chaptersI18nNamesOnly: boolean;
+  audioRecitationId: number | null;
+  audioDir: string;
+  audioBaseUrl: string;
   skipChapters: boolean;
   skipChaptersI18n: boolean;
   skipVerses: boolean;
+  skipAudio: boolean;
   skipTranslations: boolean;
   skipTranslationText: boolean;
 };
+
+function parseBooleanFlag(value: string | undefined): boolean {
+  if (!value) return false;
+  const normalized = value.trim().toLowerCase();
+  return normalized === '1' || normalized === 'true';
+}
+
+function normalizeChapterIds(values: number[]): number[] {
+  return [...new Set(values.map((v) => Math.trunc(v)).filter((v) => v >= 1 && v <= 114))];
+}
 
 function getFlags(): Flags {
   const args = parseArgs(process.argv.slice(2));
@@ -30,28 +46,54 @@ function getFlags(): Flags {
   const translationIds = parseNumberList((args.translations as string | undefined) ?? process.env.TRANSLATION_IDS).filter(
     (n) => n > 0
   );
+  const chapterIds = normalizeChapterIds(
+    parseNumberList((args.chapters as string | undefined) ?? process.env.CHAPTER_IDS)
+  );
 
   const chapterLangsRaw =
     ((args['chapter-langs'] as string | undefined) ?? process.env.CHAPTER_LANGS ?? 'en').trim();
   const chapterLangs = chapterLangsRaw
     .split(',')
-    .map((v) => v.trim())
+    .map((v: string) => v.trim())
     .filter(Boolean);
 
   const chaptersI18nNamesOnlyEnv = (process.env.CHAPTERS_I18N_NAMES_ONLY ?? '').trim();
   const chaptersI18nNamesOnly =
     Boolean(args['chapters-i18n-names-only']) || chaptersI18nNamesOnlyEnv === '1' || chaptersI18nNamesOnlyEnv === 'true';
 
+  const audioRecitationRaw = Number(
+    (args['audio-recitation'] as string | undefined) ?? process.env.AUDIO_RECITATION_ID ?? ''
+  );
+  const audioRecitationId =
+    Number.isFinite(audioRecitationRaw) && audioRecitationRaw > 0 ? Math.trunc(audioRecitationRaw) : null;
+
+  const skipAudio =
+    Boolean(args['skip-audio']) ||
+    parseBooleanFlag(process.env.SKIP_AUDIO) ||
+    audioRecitationId == null;
+
+  const audioDirRaw = ((args['audio-dir'] as string | undefined) ?? process.env.AUDIO_DIR ?? '../data/audio').trim();
+  const audioDir = audioDirRaw.length > 0 ? audioDirRaw.replaceAll('\\', '/') : '../data/audio';
+
+  const audioBaseUrlRaw =
+    ((args['audio-base-url'] as string | undefined) ?? process.env.AUDIO_BASE_URL ?? 'https://verses.quran.com/').trim();
+  const audioBaseUrl = audioBaseUrlRaw.length > 0 ? audioBaseUrlRaw : 'https://verses.quran.com/';
+
   return {
     dbPath,
     drop,
     perPage,
     translationIds,
+    chapterIds,
     chapterLangs,
     chaptersI18nNamesOnly,
+    audioRecitationId,
+    audioDir,
+    audioBaseUrl,
     skipChapters: Boolean(args['skip-chapters']),
     skipChaptersI18n: Boolean(args['skip-chapters-i18n']),
     skipVerses: Boolean(args['skip-verses']),
+    skipAudio,
     skipTranslations: Boolean(args['skip-translations']),
     skipTranslationText: Boolean(args['skip-translation-text']),
   };
@@ -108,8 +150,24 @@ async function main() {
   }
 
   if (!flags.skipVerses) {
-    const { count } = await populateVerses(db, client, { perPage: flags.perPage });
+    const { count } = await populateVerses(db, client, {
+      perPage: flags.perPage,
+      chapterIds: flags.chapterIds,
+    });
     console.log(`verses: inserted/updated ${count}`);
+  }
+
+  if (!flags.skipAudio) {
+    const { count, downloaded, reused, failedDownloads, missingVerses } = await populateAudio(db, client, {
+      recitationId: flags.audioRecitationId as number,
+      perPage: flags.perPage,
+      chapterIds: flags.chapterIds,
+      audioDir: flags.audioDir,
+      audioBaseUrl: flags.audioBaseUrl,
+    });
+    console.log(
+      `verse_audio: inserted/updated ${count} (downloaded=${downloaded}, reused=${reused}, failed=${failedDownloads}, missing_verses=${missingVerses})`
+    );
   }
 
   if (!flags.skipTranslations) {

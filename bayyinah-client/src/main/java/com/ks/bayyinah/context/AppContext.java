@@ -10,6 +10,7 @@ import com.ks.bayyinah.infra.remote.query.RemoteAIQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteHalaqahQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteSyncQueryService;
 import com.ks.bayyinah.infra.remote.query.RemoteUserQueryService;
+import com.ks.bayyinah.infra.media.VerseAudioPlaybackManager;
 import com.ks.bayyinah.infra.webrtc.orchestrator.HalaqahSignalingOrchestrator;
 
 import lombok.Data;
@@ -36,6 +37,7 @@ public class AppContext {
   private HalaqahSignalingOrchestrator signalingOrchestrator;
   private StompWebSocketClient stompWebSocketClient;
   private ObjectMapper objectMapper;
+  private VerseAudioPlaybackManager verseAudioPlaybackManager;
 
   private AppContext() {
     // Private constructor to prevent instantiation

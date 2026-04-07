@@ -36,11 +36,13 @@ public class ConfigManager {
         System.err.println("Config file not found at: " + configFile.getAbsolutePath());
         String quranDbPath = Path.of(System.getProperty("user.home"), ".bayyinah", "quran.db").toString();
         String userDbPath = Path.of(System.getProperty("user.home"), ".bayyinah", "user.db").toString();
+        String audioRootPath = Path.of(System.getProperty("user.home"), ".bayyinah", "audio").toString();
 
         mainConfig = new MainConfig(
             new QuranConfig(quranDbPath, "http://localhost:8080"),
             new UserConfig(userDbPath, "http://localhost:8080"),
             new ApiConfig(10, 30, 3, 5000),
+          new AudioConfig(audioRootPath, 2),
             "http://localhost:8080",
             "https://kamrulhasan12345-bayyinah-ai.hf.space"
         );
