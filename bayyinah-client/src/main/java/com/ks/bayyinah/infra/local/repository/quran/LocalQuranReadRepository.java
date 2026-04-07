@@ -18,9 +18,8 @@ public class LocalQuranReadRepository implements QuranReadRepository {
     int activeReciterId = resolveActiveReciterId();
     try {
       try (var connection = DatabaseManager.getQuranConnection();
-      // FIXME: technical debt? i mean this DISTINCT thing could be a technical debt
           var statement = connection.prepareStatement(
-              "SELECT DISTINCT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
+              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
                   +
                   "FROM verses v " +
                   "LEFT JOIN verse_audio va ON v.id = va.verse_id AND va.recitation_id = ? " +
@@ -64,7 +63,7 @@ public class LocalQuranReadRepository implements QuranReadRepository {
     try {
       try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
-              "SELECT DISTINCT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
+              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
                   +
                   "FROM verses v " +
                   "LEFT JOIN verse_audio va ON v.id = va.verse_id AND va.recitation_id = ? " +
@@ -109,7 +108,7 @@ public class LocalQuranReadRepository implements QuranReadRepository {
     try {
       try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
-              "SELECT DISTINCT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
+              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
                   +
                   "FROM verses v " +
                   "LEFT JOIN verse_audio va ON v.id = va.verse_id AND va.recitation_id = ? " +
@@ -158,7 +157,7 @@ public class LocalQuranReadRepository implements QuranReadRepository {
     try {
       try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
-              "SELECT DISTINCT c.id as chapter_id, c.name_simple, c.name_arabic, c.verse_count, c.revelation_place, t.translated_name, t.full_text, t.short_text, t.id as i18n_id"
+              "SELECT c.id as chapter_id, c.name_simple, c.name_arabic, c.verse_count, c.revelation_place, t.translated_name, t.full_text, t.short_text, t.id as i18n_id"
                   +
                   " FROM chapters c " +
                   "LEFT JOIN chapters_i18n t ON c.id = t.chapter_id AND t.lang_code = ? " +
@@ -200,7 +199,7 @@ public class LocalQuranReadRepository implements QuranReadRepository {
     try {
       try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
-              "SELECT DISTINCT c.id as chapter_id, c.name_simple, c.name_arabic, c.verse_count, c.revelation_place, t.translated_name, t.full_text, t.short_text, t.id as i18n_id"
+              "SELECT c.id as chapter_id, c.name_simple, c.name_arabic, c.verse_count, c.revelation_place, t.translated_name, t.full_text, t.short_text, t.id as i18n_id"
                   +
                   " FROM chapters c " +
                   "LEFT JOIN chapters_i18n t ON c.id = t.chapter_id AND t.lang_code = ? " +
@@ -243,7 +242,7 @@ public class LocalQuranReadRepository implements QuranReadRepository {
     try {
       try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
-              "SELECT DISTINCT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
+              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
                   +
                   "FROM verses v " +
                   "LEFT JOIN verse_audio va ON v.id = va.verse_id AND va.recitation_id = ? " +
@@ -293,7 +292,7 @@ public class LocalQuranReadRepository implements QuranReadRepository {
     try {
       try (var connection = DatabaseManager.getQuranConnection();
           var statement = connection.prepareStatement(
-              "SELECT DISTINCT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
+              "SELECT v.id as verse_id, v.surah_id, v.verse_number, v.verse_key, v.text_uthmani, v.text_indopak, t.id as t_id, t.translation_id, t.text, va.recitation_id as va_recitation_id, va.source_url as va_source_url, va.local_path as va_local_path, va.format as va_format "
                   +
                   "FROM verses v " +
                   "LEFT JOIN verse_audio va ON v.id = va.verse_id AND va.recitation_id = ? " +
