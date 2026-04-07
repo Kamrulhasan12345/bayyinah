@@ -5,39 +5,41 @@ import { DatabaseSync } from 'node:sqlite';
 export type Db = DatabaseSync;
 
 export function openDb(dbPath: string): Db {
-  if (dbPath !== ':memory:') {
-    const dir = path.dirname(dbPath);
-    mkdirSync(dir, { recursive: true });
-  }
+	if (dbPath !== ':memory:') {
+		const dir = path.dirname(dbPath);
+		mkdirSync(dir, { recursive: true });
+	}
 
-  const db = new DatabaseSync(dbPath);
-  db.exec('PRAGMA journal_mode = WAL;');
-  db.exec('PRAGMA synchronous = NORMAL;');
-  db.exec('PRAGMA foreign_keys = ON;');
-  db.exec('PRAGMA temp_store = MEMORY;');
-  return db;
+	const db = new DatabaseSync(dbPath);
+	db.exec('PRAGMA journal_mode = WAL;');
+	db.exec('PRAGMA synchronous = NORMAL;');
+	db.exec('PRAGMA foreign_keys = ON;');
+	db.exec('PRAGMA temp_store = MEMORY;');
+	return db;
 }
 
 export function withTransaction<T>(db: Db, fn: () => T): T {
-  db.exec('BEGIN;');
-  try {
-    const result = fn();
-    db.exec('COMMIT;');
-    return result;
-  } catch (err) {
-    try {
-      db.exec('ROLLBACK;');
-    } catch {
-      // ignore
-    }
-    throw err;
-  }
+	db.exec('BEGIN;');
+	try {
+		const result = fn();
+		db.exec('COMMIT;');
+		return result;
+	} catch (err) {
+		try {
+			db.exec('ROLLBACK;');
+		} catch {
+			// ignore
+		}
+		throw err;
+	}
 }
 
 export function dropAll(db: Db) {
-  db.exec(`
+	db.exec(`
 		DROP TABLE IF EXISTS chapters_i18n;
 		DROP TABLE IF EXISTS translation_text;
+		DROP TABLE IF EXISTS verse_audio;
+		DROP TABLE IF EXISTS audio_recitations;
 		DROP TABLE IF EXISTS translations;
 		DROP TABLE IF EXISTS verses;
 		DROP TABLE IF EXISTS chapters;
@@ -45,7 +47,7 @@ export function dropAll(db: Db) {
 }
 
 export function createSchema(db: Db) {
-  db.exec(`
+	db.exec(`
 		CREATE TABLE IF NOT EXISTS chapters (
 			id INTEGER PRIMARY KEY,
 			name_simple TEXT,
@@ -77,6 +79,30 @@ export function createSchema(db: Db) {
 		);
 
 		CREATE INDEX IF NOT EXISTS idx_verses_surah_verse ON verses(surah_id, verse_number);
+
+		CREATE TABLE IF NOT EXISTS audio_recitations (
+			id INTEGER PRIMARY KEY,
+			reciter_name TEXT,
+			style TEXT,
+			translated_name TEXT
+		);
+
+		CREATE TABLE IF NOT EXISTS verse_audio (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			verse_id INTEGER NOT NULL,
+			recitation_id INTEGER NOT NULL,
+			verse_key TEXT,
+			source_url TEXT,
+			local_path TEXT,
+			format TEXT,
+			FOREIGN KEY(verse_id) REFERENCES verses(id),
+			FOREIGN KEY(recitation_id) REFERENCES audio_recitations(id)
+		);
+
+		CREATE UNIQUE INDEX IF NOT EXISTS uq_verse_audio ON verse_audio(verse_id, recitation_id);
+		CREATE INDEX IF NOT EXISTS idx_verse_audio_verse ON verse_audio(verse_id);
+		CREATE INDEX IF NOT EXISTS idx_verse_audio_recitation ON verse_audio(recitation_id);
+		CREATE INDEX IF NOT EXISTS idx_verse_audio_verse_key ON verse_audio(verse_key);
 
 		CREATE TABLE IF NOT EXISTS translations (
 			id INTEGER PRIMARY KEY,

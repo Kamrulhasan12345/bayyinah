@@ -5,7 +5,9 @@
 	"main": "index.js",
 	"scripts": {
 		"generate": "node --env-file=.env --import=tsx src/index.ts",
-		"clean": "node --input-type=module -e \"import { rmSync } from 'node:fs'; rmSync('../data/quran.db', { force: true });\""
+		"generate:audio:fatihah": "node --env-file=.env --import=tsx src/index.ts --db ../data/quran-audio-test.db --drop --chapters 1 --skip-chapters-i18n --skip-translations --skip-translation-text --audio-recitation 2",
+		"clean": "node --input-type=module -e \"import { rmSync } from 'node:fs'; rmSync('../data/quran.db', { force: true });\"",
+		"clean:audio-test": "node --input-type=module -e \"import { rmSync } from 'node:fs'; rmSync('../data/quran-audio-test.db', { force: true }); rmSync('../data/audio', { force: true, recursive: true });\""
 	},
 	"devDependencies": {
 		"@types/node": "^25.2.0",

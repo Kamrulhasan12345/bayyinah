@@ -10,6 +10,12 @@ type VerseRow = {
   textIndopak?: string;
 };
 
+function normalizeChapterIds(chapterIds: number[] | undefined): number[] {
+  const normalized = [...new Set((chapterIds ?? []).map((v) => Math.trunc(v)).filter((v) => v >= 1 && v <= 114))];
+  if (normalized.length > 0) return normalized;
+  return Array.from({ length: 114 }, (_v, i) => i + 1);
+}
+
 async function fetchAllVersesByChapter(client: QuranClient, chapterId: number, perPage: number) {
   const verses: VerseRow[] = [];
   let page = 1;
@@ -33,7 +39,7 @@ async function fetchAllVersesByChapter(client: QuranClient, chapterId: number, p
   return verses;
 }
 
-export async function populateVerses(db: Db, client: QuranClient, opts: { perPage: number }) {
+export async function populateVerses(db: Db, client: QuranClient, opts: { perPage: number; chapterIds?: number[] }) {
   const insert = db.prepare(
     `INSERT INTO verses(id, surah_id, verse_number, verse_key, text_uthmani, text_indopak)
 		 VALUES(?, ?, ?, ?, ?, ?)
@@ -46,7 +52,8 @@ export async function populateVerses(db: Db, client: QuranClient, opts: { perPag
   );
 
   let total = 0;
-  for (let chapterId = 1; chapterId <= 114; chapterId++) {
+  const chapterIds = normalizeChapterIds(opts.chapterIds);
+  for (const chapterId of chapterIds) {
     const verses = await fetchAllVersesByChapter(client, chapterId, opts.perPage);
     const inserted = withTransaction(db, () => {
       let count = 0;
