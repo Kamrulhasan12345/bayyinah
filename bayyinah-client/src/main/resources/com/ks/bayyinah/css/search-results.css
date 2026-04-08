@@ -70,7 +70,7 @@
 
 .search-button {
 	-fx-font-size: 14px;
-		-fx-font-family: "Inter Bold";
+	-fx-font-family: "Inter Bold";
 	-fx-padding: 12px 30px;
 	-fx-background-color: #4285f4;
 	-fx-text-fill: white;
@@ -218,4 +218,90 @@
 	-fx-font-weight: normal;
 	-fx-text-fill: #666;
 	-fx-padding: 0 12px;
+}
+
+/* Theme token overrides (light-first green palette). */
+
+.search-results-page {
+	-fx-background-color: -app-bg-base;
+}
+
+.search-header,
+.pagination-box {
+	-fx-background-color: -app-bg-pane;
+	-fx-effect: dropshadow(gaussian, -app-shadow-color, 5, 0, 0, 2);
+}
+
+.search-field {
+	-fx-border-color: -app-border-default;
+	-fx-background-color: -app-bg-pane;
+	-fx-text-fill: -app-text-primary;
+}
+
+.search-field:focused {
+	-fx-border-color: -app-focus-ring;
+}
+
+.search-button {
+	-fx-background-color: linear-gradient(
+		to right,
+		-app-accent,
+		-app-accent-strong
+	);
+	-fx-text-fill: -app-text-on-accent;
+}
+
+.search-button:hover {
+	-fx-background-color: linear-gradient(
+		to right,
+		-app-accent-strong,
+		-app-accent
+	);
+}
+
+.result-count,
+.match-indicator,
+.highlighted-context,
+.chapter-info,
+.chapter-translated-name,
+.no-results-title,
+.no-results-subtitle,
+.page-info {
+	-fx-text-fill: -app-text-muted;
+}
+
+.search-result-card {
+	-fx-background-color: -app-bg-pane;
+	-fx-effect: dropshadow(gaussian, -app-shadow-color, 4, 0, 0, 1);
+}
+
+.search-result-card:hover {
+	-fx-background-color: -app-bg-hover;
+	-fx-effect: dropshadow(gaussian, -app-shadow-color, 8, 0, 0, 2);
+}
+
+.verse-reference,
+.search-highlight {
+	-fx-fill: -app-link;
+	-fx-text-fill: -app-link;
+	-fx-font-weight: bold;
+}
+
+.arabic-text,
+.chapter-name-arabic,
+.chapter-name,
+.translation-text {
+	-fx-fill: -app-text-secondary;
+	-fx-text-fill: -app-text-secondary;
+}
+
+.pagination-button {
+	-fx-background-color: -app-bg-pane;
+	-fx-border-color: -app-border-default;
+	-fx-text-fill: -app-text-secondary;
+}
+
+.pagination-button:hover {
+	-fx-background-color: -app-bg-hover;
+	-fx-border-color: -app-focus-ring;
 }

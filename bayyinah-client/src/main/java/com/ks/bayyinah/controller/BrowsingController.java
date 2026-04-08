@@ -91,12 +91,12 @@ public class BrowsingController {
     spinner.setMaxSize(50, 50);
 
     Label loadingLabel = new Label("Loading...");
-    loadingLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #666; -fx-font-family: \"Inter\"");
+    loadingLabel.getStyleClass().add("loading-overlay-label");
 
     loadingOverlay = new VBox(15);
     loadingOverlay.setAlignment(Pos.CENTER);
     loadingOverlay.getChildren().addAll(spinner, loadingLabel);
-    loadingOverlay.setStyle("-fx-background-color: rgba(255, 255, 255, 0.9);");
+    loadingOverlay.getStyleClass().add("loading-overlay");
     loadingOverlay.setVisible(false);
     loadingOverlay.setManaged(false);
 

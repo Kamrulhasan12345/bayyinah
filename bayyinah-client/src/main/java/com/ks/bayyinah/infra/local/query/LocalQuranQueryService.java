@@ -7,9 +7,11 @@ import com.ks.bayyinah.core.repository.*;
 import com.ks.bayyinah.infra.local.repository.quran.*;
 import java.util.HashSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class LocalQuranQueryService implements QuranQueryService {
@@ -20,6 +22,7 @@ public class LocalQuranQueryService implements QuranQueryService {
   private TranslationRepository translationRepository; // Local repository for translation metadata
   private ChapterI18NRepository chapterI18NRepository; // Local repository for chapter internationalization
   private QuranReadRepository quranReadRepository; // Local repository for Quran read operations
+  private LocalAudioRecitationRepository audioRecitationRepository;
 
   public LocalQuranQueryService() {
     // Initialize local data sources (e.g., database connections, DAOs, etc.)
@@ -29,6 +32,7 @@ public class LocalQuranQueryService implements QuranQueryService {
     this.translationRepository = new LocalTranslationRepository();
     this.chapterI18NRepository = new LocalChapterI18NRepository();
     this.quranReadRepository = new LocalQuranReadRepository();
+    this.audioRecitationRepository = new LocalAudioRecitationRepository();
   }
 
   // ensure thread-safety to prevent race-conditions
@@ -140,5 +144,16 @@ public class LocalQuranQueryService implements QuranQueryService {
 
   public Set<Integer> getTranslationIdsWithAvailableText() {
     return new HashSet<>(translationTextRepository.findDistinctTranslationIdsWithTexts());
+  }
+
+  public List<AudioRecitation> getAvailableRecitations() {
+    return audioRecitationRepository.findAllRecitations();
+  }
+
+  public Map<Integer, Integer> getRecitationAudioCoverageByChapter(int chapterId, Integer startVerse, Integer endVerse) {
+    if (chapterId <= 0) {
+      return new HashMap<>();
+    }
+    return audioRecitationRepository.countAvailableAudioByRecitation(chapterId, startVerse, endVerse);
   }
 }

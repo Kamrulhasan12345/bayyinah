@@ -1153,3 +1153,675 @@
 	-fx-font-size: 12px;
 	-fx-font-weight: normal;
 }
+
+/* Theme token overrides (light-first unified palette). */
+
+.auth-modal-card {
+	-fx-background-color: -app-bg-pane;
+	-fx-border-color: -app-border-default;
+	-fx-effect: dropshadow(gaussian, -app-shadow-color, 24, 0.2, 0, 8);
+}
+
+.browsing-split-pane {
+	-fx-background-color: -app-bg-subtle;
+}
+
+.rail-host {
+	-fx-background-color: -app-bg-pane;
+}
+
+.rail-button:hover {
+	-fx-background-color: -app-bg-hover;
+}
+
+.rail-button:focused {
+	-fx-background-color: -app-accent-soft;
+}
+
+.rail-button-active {
+	-fx-background-color: -app-accent-soft;
+}
+
+.rail-icon {
+	-fx-icon-color: -app-text-muted;
+}
+
+.rail-button-active .rail-icon,
+.rail-logo-icon {
+	-fx-icon-color: -app-text-secondary;
+}
+
+.rail-tooltip {
+	-fx-background-color: -app-text-primary;
+	-fx-text-fill: -app-text-on-accent;
+}
+
+.browsing-split-pane > .split-pane-divider > .vertical-grabber {
+	-fx-background-color: linear-gradient(
+		to bottom,
+		-app-divider-start,
+		-app-divider-end
+	);
+}
+
+.browsing-split-pane > .split-pane-divider:hover > .vertical-grabber {
+	-fx-background-color: linear-gradient(
+		to bottom,
+		-app-accent-soft,
+		-app-accent-border
+	);
+	-fx-effect: dropshadow(gaussian, -app-focus-shadow, 6, 0.4, 0, 0);
+}
+
+.browsing-split-pane > .split-pane-divider:pressed > .vertical-grabber {
+	-fx-background-color: linear-gradient(
+		to bottom,
+		-app-accent,
+		-app-accent-strong
+	);
+}
+
+.sidebar-root {
+	-fx-background-color: -app-bg-muted;
+	-fx-border-color: -app-border-default;
+}
+
+.sidebar-title,
+.chapter-name-simple {
+	-fx-text-fill: -app-text-primary;
+}
+
+.sidebar-search-field,
+.home-search-field,
+.ai-chat-input {
+	-fx-background-color: -app-bg-pane;
+	-fx-border-color: -app-border-default;
+}
+
+.sidebar-search-field:focused,
+.home-search-field:focused,
+.ai-chat-input:focused {
+	-fx-border-color: -app-focus-ring;
+	-fx-effect: dropshadow(gaussian, -app-focus-shadow, 8, 0.4, 0, 0);
+}
+
+.sidebar-search-icon,
+.sidebar-icon,
+.chapter-meta,
+.settings-saved-hint,
+.home-section-summary,
+.bookmarks-summary,
+.reading-progress-summary,
+.placeholder-subtitle,
+.meeting-subtitle,
+.meeting-card-subtitle,
+.meeting-subtle-text {
+	-fx-text-fill: -app-text-muted;
+}
+
+.sidebar-icon:hover {
+	-fx-icon-color: -app-text-primary;
+}
+
+.sidebar-username,
+.chapter-name-arabic,
+.chapter-name-translated,
+.settings-label,
+.home-card-translation,
+.progress-meta,
+.ai-chat-status,
+.ai-chat-prompt,
+.ai-chat-emotions,
+.ai-chat-metrics,
+.meeting-header-meta,
+.meeting-meta-line {
+	-fx-text-fill: -app-text-secondary;
+}
+
+.chapters-list .scroll-bar .track,
+.chapters-list .scroll-bar .thumb,
+.chapters-list .scroll-bar .increment-button,
+.chapters-list .scroll-bar .decrement-button,
+.chapters-list .scroll-bar .increment-arrow,
+.chapters-list .scroll-bar .decrement-arrow {
+	-fx-background-color: -app-scroll-thumb;
+}
+
+.chapters-list .list-cell:filled:hover {
+	-fx-background-color: -app-bg-hover;
+}
+
+.chapters-list .list-cell:filled:selected,
+.chapters-list .list-cell:filled:selected:focused {
+	-fx-background-color: linear-gradient(
+		to right,
+		-app-accent-soft,
+		-app-accent-soft-2
+	);
+	-fx-border-color: -app-accent-border;
+}
+
+.chapter-sidebar-row,
+.home-section,
+.bookmark-row,
+.progress-row,
+.meeting-card,
+.meeting-meta-panel,
+.meeting-leader-panel,
+.meeting-right-controls {
+	-fx-background-color: -app-bg-pane;
+	-fx-border-color: -app-border-default;
+}
+
+.chapters-list .list-cell:filled:hover .chapter-sidebar-row {
+	-fx-background-color: -app-bg-pane;
+	-fx-border-color: -app-accent-soft;
+}
+
+.chapters-list .list-cell:filled:selected .chapter-sidebar-row,
+.chapters-list .list-cell:filled:selected:focused .chapter-sidebar-row {
+	-fx-background-color: -app-bg-pane;
+	-fx-border-color: -app-accent-border;
+	-fx-effect: dropshadow(gaussian, -app-focus-shadow, 8, 0.3, 0, 1);
+}
+
+.chapter-badge {
+	-fx-fill: linear-gradient(to bottom, -app-accent, -app-accent-strong);
+}
+
+.chapter-id {
+	-fx-text-fill: -app-text-on-accent;
+}
+
+.settings-root {
+	-fx-background-color: -app-bg-pane;
+	-fx-border-color: -app-border-default;
+}
+
+.settings-title,
+.settings-section-title,
+.home-section-title,
+.bookmarks-title,
+.reading-progress-title,
+.placeholder-title,
+.meeting-title,
+.meeting-card-title,
+.meeting-section-title {
+	-fx-text-fill: -app-text-primary;
+}
+
+.settings-mode {
+	-fx-background-color: -app-accent-soft;
+	-fx-text-fill: -app-link;
+}
+
+.settings-save-btn,
+.home-search-button,
+.ai-chat-send-btn,
+.meeting-primary-btn {
+	-fx-background-color: linear-gradient(
+		to right,
+		-app-accent,
+		-app-accent-strong
+	);
+	-fx-text-fill: -app-text-on-accent;
+}
+
+.settings-save-btn:hover,
+.home-search-button:hover,
+.ai-chat-send-btn:hover,
+.meeting-primary-btn:hover {
+	-fx-background-color: linear-gradient(
+		to right,
+		-app-accent-strong,
+		-app-accent
+	);
+}
+
+.settings-download-btn,
+.ai-chat-nav-btn,
+.meeting-secondary-btn {
+	-fx-background-color: -app-bg-pane;
+	-fx-text-fill: -app-link;
+	-fx-border-color: -app-accent-border;
+}
+
+.settings-download-btn:hover,
+.ai-chat-nav-btn:hover,
+.meeting-secondary-btn:hover {
+	-fx-background-color: -app-accent-soft;
+}
+
+.home-root,
+.bookmarks-root,
+.reading-progress-root,
+.ai-chat-root,
+.placeholder-view {
+	-fx-background-color: -app-bg-base;
+}
+
+.home-hero {
+	-fx-background-color: linear-gradient(
+		to right,
+		-app-bg-pane,
+		-app-accent-soft-2
+	);
+	-fx-border-color: -app-border-default;
+}
+
+.home-continue-card,
+.home-bookmark-card,
+.home-surah-card,
+.ai-chat-section-arabic,
+.meeting-room-content,
+.meeting-header {
+	-fx-background-color: -app-bg-muted;
+	-fx-border-color: -app-border-default;
+}
+
+.home-continue-card:hover,
+.home-bookmark-card:hover,
+.home-surah-card:hover,
+.bookmarks-list .list-cell:filled:hover .bookmark-row,
+.reading-progress-list .list-cell:filled:hover .progress-row {
+	-fx-border-color: -app-accent-border;
+	-fx-effect: dropshadow(gaussian, -app-focus-shadow, 10, 0.24, 0, 2);
+}
+
+.home-card-title,
+.home-surah-name,
+.bookmark-surah,
+.progress-surah {
+	-fx-text-fill: -app-text-primary;
+}
+
+.home-card-meta,
+.home-bookmark-reference,
+.bookmark-key,
+.progress-percent,
+.ai-chat-verse-link,
+.ai-chat-index,
+.ai-chat-translation,
+.meeting-verse-focus {
+	-fx-text-fill: -app-link;
+}
+
+.ai-chat-verse-link:hover {
+	-fx-text-fill: -app-link-hover;
+}
+
+.home-card-arabic,
+.home-bookmark-arabic,
+.home-surah-arabic,
+.bookmark-arabic,
+.progress-arabic,
+.ai-chat-arabic {
+	-fx-text-fill: -app-text-secondary;
+}
+
+.home-empty-state,
+.bookmarks-empty,
+.reading-progress-empty {
+	-fx-text-fill: -app-text-muted;
+}
+
+.progress-row-bar > .track {
+	-fx-background-color: -app-neutral-border;
+}
+
+.progress-row-bar > .bar {
+	-fx-background-color: linear-gradient(
+		to right,
+		-app-accent,
+		-app-accent-strong
+	);
+}
+
+.ai-chat-card {
+	-fx-background-color: -app-bg-pane;
+	-fx-border-color: -app-border-default;
+}
+
+.ai-chat-section-translation {
+	-fx-background-color: -app-accent-soft-2;
+	-fx-border-color: -app-accent-soft;
+}
+
+.ai-chat-section-reflection {
+	-fx-background-color: -app-warning-bg;
+	-fx-border-color: -app-warning-border;
+}
+
+.ai-chat-section-title {
+	-fx-text-fill: -app-text-secondary;
+}
+
+.ai-chat-provider,
+.settings-warning-box {
+	-fx-background-color: -app-warning-bg;
+	-fx-border-color: -app-warning-border;
+}
+
+.settings-warning-text,
+.ai-chat-provider,
+.ai-chat-reflection {
+	-fx-text-fill: -app-warning-text;
+}
+
+.meeting-root,
+.meeting-root > .split-pane-divider {
+	-fx-background-color: -app-bg-subtle;
+}
+
+.meeting-status-pill,
+.meeting-header-pill {
+	-fx-background-color: -app-neutral-bg;
+	-fx-text-fill: -app-text-primary;
+}
+
+.meeting-entry-root {
+	-fx-background-color: -app-bg-overlay-soft;
+}
+
+.meeting-danger-btn {
+	-fx-background-color: -app-danger-bg;
+	-fx-text-fill: -app-danger-text;
+	-fx-border-color: -app-danger-border;
+}
+
+.meeting-secondary-btn:selected,
+.meeting-secondary-btn:selected:hover {
+	-fx-background-color: -app-accent-soft;
+	-fx-border-color: -app-accent-border;
+	-fx-text-fill: -app-link;
+}
+
+.meeting-field-label {
+	-fx-text-fill: -app-text-secondary;
+	-fx-font-size: 12px;
+	-fx-font-family: "Inter Bold";
+}
+
+.meeting-input {
+	-fx-background-color: -app-bg-elevated;
+	-fx-border-color: -app-border-default;
+	-fx-border-radius: 8;
+	-fx-background-radius: 8;
+	-fx-text-fill: -app-text-primary;
+	-fx-prompt-text-fill: -app-text-muted;
+}
+
+.meeting-input:focused {
+	-fx-border-color: -app-focus-ring;
+	-fx-effect: dropshadow(gaussian, -app-focus-shadow, 6, 0.35, 0, 0);
+}
+
+.meeting-spinner,
+.meeting-spinner > .text-field {
+	-fx-background-color: -app-bg-elevated;
+	-fx-border-color: -app-border-default;
+	-fx-border-radius: 8;
+	-fx-background-radius: 8;
+	-fx-text-fill: -app-text-primary;
+}
+
+.meeting-spinner > .text-field:focused,
+.meeting-spinner:focused {
+	-fx-border-color: -app-focus-ring;
+	-fx-effect: dropshadow(gaussian, -app-focus-shadow, 6, 0.35, 0, 0);
+}
+
+.meeting-spinner .increment-arrow,
+.meeting-spinner .decrement-arrow {
+	-fx-background-color: -app-text-muted;
+}
+
+.meeting-spinner .increment-arrow-button,
+.meeting-spinner .decrement-arrow-button {
+	-fx-background-color: -app-bg-muted;
+	-fx-border-color: -app-border-default;
+}
+
+.meeting-spinner .increment-arrow-button:hover,
+.meeting-spinner .decrement-arrow-button:hover {
+	-fx-background-color: -app-bg-hover;
+}
+
+.meeting-list-view {
+	-fx-background-color: -app-bg-elevated;
+	-fx-control-inner-background: -app-bg-elevated;
+	-fx-border-color: -app-border-default;
+	-fx-border-radius: 8;
+	-fx-background-radius: 8;
+}
+
+.meeting-list-view .list-cell {
+	-fx-background-color: transparent;
+	-fx-text-fill: -app-text-primary;
+}
+
+.meeting-list-view .list-cell:filled:hover {
+	-fx-background-color: -app-bg-hover;
+}
+
+.meeting-list-view .list-cell:filled:selected,
+.meeting-list-view .list-cell:filled:selected:focused {
+	-fx-background-color: -app-accent-soft;
+	-fx-text-fill: -app-text-primary;
+}
+
+.meeting-list-view .corner,
+.meeting-list-view .scroll-bar:vertical,
+.meeting-list-view .scroll-bar:horizontal {
+	-fx-background-color: transparent;
+}
+
+.meeting-right-scroll > .viewport {
+	-fx-background-color: linear-gradient(
+		to bottom,
+		-app-bg-base,
+		-app-bg-subtle
+	);
+}
+
+/* Settings surface/input/dropdown theming fixes. */
+
+.settings-page-scroll {
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+}
+
+.settings-page-scroll > .viewport,
+.settings-page-scroll .corner {
+	-fx-background-color: -app-bg-base;
+}
+
+.settings-root .text-field,
+.settings-root .combo-box-base,
+.settings-root .spinner,
+.settings-root .spinner > .text-field {
+	-fx-background-color: -app-bg-elevated;
+	-fx-border-color: -app-border-default;
+	-fx-text-fill: -app-text-primary;
+}
+
+.settings-root .text-field:focused,
+.settings-root .combo-box-base:focused,
+.settings-root .spinner:focused,
+.settings-root .spinner > .text-field:focused {
+	-fx-border-color: -app-focus-ring;
+	-fx-effect: dropshadow(gaussian, -app-focus-shadow, 6, 0.35, 0, 0);
+}
+
+.settings-root .combo-box-base .list-cell,
+.settings-root .spinner .text-field,
+.settings-root .check-box {
+	-fx-text-fill: -app-text-primary;
+}
+
+.settings-root .combo-box-base .arrow,
+.settings-root .spinner .increment-arrow,
+.settings-root .spinner .decrement-arrow {
+	-fx-background-color: -app-text-muted;
+}
+
+.settings-root .combo-box-base .arrow-button,
+.settings-root .spinner .increment-arrow-button,
+.settings-root .spinner .decrement-arrow-button {
+	-fx-background-color: -app-bg-muted;
+	-fx-border-color: -app-border-default;
+}
+
+.settings-root .combo-box-base .arrow-button:hover,
+.settings-root .spinner .increment-arrow-button:hover,
+.settings-root .spinner .decrement-arrow-button:hover {
+	-fx-background-color: -app-bg-hover;
+}
+
+.combo-box-popup > .list-view {
+	-fx-background-color: -app-bg-elevated;
+	-fx-border-color: -app-border-default;
+	-fx-background-insets: 0;
+	-fx-padding: 2;
+}
+
+.combo-box-popup > .list-view .list-cell {
+	-fx-background-color: transparent;
+	-fx-text-fill: -app-text-primary;
+}
+
+.combo-box-popup > .list-view .list-cell:filled:hover {
+	-fx-background-color: -app-bg-hover;
+}
+
+.combo-box-popup > .list-view .list-cell:filled:selected,
+.combo-box-popup > .list-view .list-cell:filled:selected:focused {
+	-fx-background-color: -app-accent-soft;
+	-fx-text-fill: -app-text-primary;
+}
+
+/* Global control theming for dark/light/sepia parity. */
+
+.combo-box-base,
+.spinner,
+.spinner > .text-field {
+	-fx-background-color: -app-bg-elevated;
+	-fx-border-color: -app-border-default;
+	-fx-border-radius: 8;
+	-fx-background-radius: 8;
+	-fx-text-fill: -app-text-primary;
+}
+
+.combo-box-base:focused,
+.spinner:focused,
+.spinner > .text-field:focused {
+	-fx-border-color: -app-focus-ring;
+	-fx-effect: dropshadow(gaussian, -app-focus-shadow, 6, 0.35, 0, 0);
+}
+
+.combo-box-base .list-cell,
+.spinner .text-field {
+	-fx-text-fill: -app-text-primary;
+}
+
+.combo-box-base .arrow,
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+	-fx-background-color: -app-text-muted;
+}
+
+.combo-box-base .arrow-button,
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+	-fx-background-color: -app-bg-muted;
+	-fx-border-color: -app-border-default;
+}
+
+.combo-box-base .arrow-button:hover,
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+	-fx-background-color: -app-bg-hover;
+}
+
+.combo-box-popup > .list-view .scroll-bar .track,
+.combo-box-popup > .list-view .scroll-bar .thumb,
+.combo-box-popup > .list-view .scroll-bar .increment-button,
+.combo-box-popup > .list-view .scroll-bar .decrement-button,
+.combo-box-popup > .list-view .scroll-bar .increment-arrow,
+.combo-box-popup > .list-view .scroll-bar .decrement-arrow {
+	-fx-background-color: -app-scroll-thumb;
+	-fx-background-insets: 0;
+}
+
+/* SplitPane "slider" visual parity in all themes. */
+.meeting-root > .split-pane-divider {
+	-fx-background-color: transparent;
+	-fx-padding: 0 4 0 4;
+}
+
+.meeting-root > .split-pane-divider > .vertical-grabber,
+.meeting-root > .split-pane-divider > .horizontal-grabber {
+	-fx-background-insets: 0;
+	-fx-background-radius: 999;
+	-fx-background-color: linear-gradient(
+		to bottom,
+		-app-divider-start,
+		-app-divider-end
+	);
+	-fx-min-width: 4;
+	-fx-pref-width: 4;
+	-fx-max-width: 6;
+}
+
+.meeting-root > .split-pane-divider:hover > .vertical-grabber,
+.meeting-root > .split-pane-divider:hover > .horizontal-grabber {
+	-fx-background-color: linear-gradient(
+		to bottom,
+		-app-accent-soft,
+		-app-accent-border
+	);
+	-fx-effect: dropshadow(gaussian, -app-focus-shadow, 6, 0.4, 0, 0);
+}
+
+.meeting-root > .split-pane-divider:pressed > .vertical-grabber,
+.meeting-root > .split-pane-divider:pressed > .horizontal-grabber {
+	-fx-background-color: linear-gradient(
+		to bottom,
+		-app-accent,
+		-app-accent-strong
+	);
+}
+
+/* Scroll "slider" thumb parity for scroll panes/lists in dark mode. */
+.scroll-pane .scroll-bar .track,
+.scroll-pane .scroll-bar .thumb,
+.scroll-pane .scroll-bar .increment-button,
+.scroll-pane .scroll-bar .decrement-button,
+.scroll-pane .scroll-bar .increment-arrow,
+.scroll-pane .scroll-bar .decrement-arrow,
+.list-view .scroll-bar .track,
+.list-view .scroll-bar .thumb,
+.list-view .scroll-bar .increment-button,
+.list-view .scroll-bar .decrement-button,
+.list-view .scroll-bar .increment-arrow,
+.list-view .scroll-bar .decrement-arrow {
+	-fx-background-color: -app-scroll-thumb;
+	-fx-background-insets: 0;
+}
+
+/* JavaFX Slider control fallback styling (for future/additional screens). */
+.slider .track {
+	-fx-background-color: -app-neutral-border;
+	-fx-background-radius: 999;
+	-fx-pref-height: 4;
+}
+
+.slider .thumb {
+	-fx-background-color: -app-accent;
+	-fx-background-radius: 999;
+	-fx-padding: 7;
+}
+
+.slider:hover .thumb {
+	-fx-background-color: -app-accent-strong;
+}
