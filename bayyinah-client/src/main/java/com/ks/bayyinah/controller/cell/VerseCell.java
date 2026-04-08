@@ -20,20 +20,27 @@ public class VerseCell extends ListCell<VerseView> {
   private final Consumer<VerseView> onVerseSyncRequested;
   private final Consumer<VerseView> onVerseAudioRequested;
   private final Predicate<VerseView> isVerseAudioActive;
+  private final Predicate<VerseView> isVerseAudioPaused;
 
   public VerseCell() {
-    this(null, null, null);
+    this(null, null, null, null);
   }
 
   public VerseCell(Consumer<VerseView> onVerseSyncRequested) {
-    this(onVerseSyncRequested, null, null);
+    this(onVerseSyncRequested, null, null, null);
   }
 
   public VerseCell(Consumer<VerseView> onVerseSyncRequested, Consumer<VerseView> onVerseAudioRequested,
       Predicate<VerseView> isVerseAudioActive) {
+    this(onVerseSyncRequested, onVerseAudioRequested, isVerseAudioActive, null);
+  }
+
+  public VerseCell(Consumer<VerseView> onVerseSyncRequested, Consumer<VerseView> onVerseAudioRequested,
+      Predicate<VerseView> isVerseAudioActive, Predicate<VerseView> isVerseAudioPaused) {
     this.onVerseSyncRequested = onVerseSyncRequested;
     this.onVerseAudioRequested = onVerseAudioRequested;
     this.isVerseAudioActive = isVerseAudioActive;
+    this.isVerseAudioPaused = isVerseAudioPaused;
   }
 
   @Override
@@ -59,7 +66,7 @@ public class VerseCell extends ListCell<VerseView> {
         }
       }
 
-      controller.bind(verse, onVerseSyncRequested, onVerseAudioRequested, isVerseAudioActive);
+      controller.bind(verse, onVerseSyncRequested, onVerseAudioRequested, isVerseAudioActive, isVerseAudioPaused);
       setGraphic(root);
     }
   }

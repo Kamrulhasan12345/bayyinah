@@ -3,7 +3,6 @@ package com.ks.bayyinah.controller;
 import com.ks.bayyinah.core.dto.VerseView;
 import com.ks.bayyinah.core.model.Translation;
 import com.ks.bayyinah.core.model.Verse;
-import com.ks.bayyinah.infra.hybrid.model.Bookmark;
 import com.ks.bayyinah.infra.hybrid.service.BookmarkService;
 import com.ks.bayyinah.infra.local.database.DbAsync;
 import com.ks.bayyinah.core.model.TranslationText;
@@ -13,6 +12,8 @@ import com.ks.bayyinah.infra.local.repository.quran.LocalTranslationRepository;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 
 import java.util.Map;
 import java.util.Optional;
@@ -45,23 +46,38 @@ public class VerseController {
   private FontIcon bookmarkBtn;
 
   @FXML
+  private HBox ayahCard;
+
+  @FXML
   private Button syncVerseBtn;
+
+  @FXML
+  private FontIcon syncVerseIcon;
 
   @FXML
   private Button audioPlayBtn;
 
+  @FXML
+  private FontIcon audioPlayIcon;
+
   private VerseView verse;
 
   public void bind(VerseView verse) {
-    bind(verse, null, null, null);
+    bind(verse, null, null, null, null);
   }
 
   public void bind(VerseView verse, Consumer<VerseView> onVerseSyncRequested) {
-    bind(verse, onVerseSyncRequested, null, null);
+    bind(verse, onVerseSyncRequested, null, null, null);
   }
 
   public void bind(VerseView verse, Consumer<VerseView> onVerseSyncRequested,
       Consumer<VerseView> onVerseAudioRequested, Predicate<VerseView> isVerseAudioActive) {
+    bind(verse, onVerseSyncRequested, onVerseAudioRequested, isVerseAudioActive, null);
+  }
+
+  public void bind(VerseView verse, Consumer<VerseView> onVerseSyncRequested,
+      Consumer<VerseView> onVerseAudioRequested, Predicate<VerseView> isVerseAudioActive,
+      Predicate<VerseView> isVerseAudioPaused) {
     this.verse = verse;
 
     Verse verseData = verse.getVerse();
@@ -117,7 +133,7 @@ public class VerseController {
     });
 
     configureVerseSyncButton(onVerseSyncRequested);
-    configureAudioPlayButton(onVerseAudioRequested, isVerseAudioActive);
+    configureAudioPlayButton(onVerseAudioRequested, isVerseAudioActive, isVerseAudioPaused);
   }
 
   private void configureVerseSyncButton(Consumer<VerseView> onVerseSyncRequested) {
@@ -135,6 +151,12 @@ public class VerseController {
       return;
     }
 
+    if (syncVerseIcon != null) {
+      syncVerseIcon.setIconLiteral("mdi2s-sync");
+      syncVerseIcon.setIconSize(14);
+    }
+    syncVerseBtn.setTooltip(new Tooltip("Sync this verse"));
+
     syncVerseBtn.setOnAction(event -> {
       if (verse != null && verse.getVerse() != null) {
         onVerseSyncRequested.accept(verse);
@@ -143,26 +165,39 @@ public class VerseController {
   }
 
   private void configureAudioPlayButton(Consumer<VerseView> onVerseAudioRequested,
-      Predicate<VerseView> isVerseAudioActive) {
+      Predicate<VerseView> isVerseAudioActive,
+      Predicate<VerseView> isVerseAudioPaused) {
     if (audioPlayBtn == null) {
       return;
     }
 
     audioPlayBtn.getStyleClass().remove("active");
+    audioPlayBtn.getStyleClass().remove("paused");
+    applyAyahPlaybackStyles(false, false);
 
     boolean hasAudio = verse != null && verse.getAudioLocalPath() != null && !verse.getAudioLocalPath().isBlank();
     if (!hasAudio) {
       audioPlayBtn.setDisable(true);
-      audioPlayBtn.setText("N/A");
+      audioPlayBtn.setText("");
+      updateAudioPlayIcon("mdi2c-close-circle-outline", 14);
+      audioPlayBtn.setTooltip(new Tooltip("Audio unavailable for this verse"));
       audioPlayBtn.setOnAction(null);
       return;
     }
 
     boolean active = isVerseAudioActive != null && isVerseAudioActive.test(verse);
+    boolean paused = active && isVerseAudioPaused != null && isVerseAudioPaused.test(verse);
     if (active && !audioPlayBtn.getStyleClass().contains("active")) {
       audioPlayBtn.getStyleClass().add("active");
     }
-    audioPlayBtn.setText(active ? "Stop" : "Play");
+    if (paused && !audioPlayBtn.getStyleClass().contains("paused")) {
+      audioPlayBtn.getStyleClass().add("paused");
+    }
+
+    updateAudioPlayIcon(active && !paused ? "mdi2p-pause" : "mdi2p-play", 14);
+    audioPlayBtn.setText("");
+    audioPlayBtn.setTooltip(new Tooltip(active && !paused ? "Pause recitation" : "Play from this verse"));
+    applyAyahPlaybackStyles(active, paused);
 
     boolean enabled = onVerseAudioRequested != null;
     audioPlayBtn.setDisable(!enabled);
@@ -182,6 +217,30 @@ public class VerseController {
       }
       onVerseAudioRequested.accept(this.verse);
     });
+  }
+
+  private void updateAudioPlayIcon(String iconLiteral, int iconSize) {
+    if (audioPlayIcon == null) {
+      return;
+    }
+    audioPlayIcon.setIconLiteral(iconLiteral);
+    audioPlayIcon.setIconSize(iconSize);
+  }
+
+  private void applyAyahPlaybackStyles(boolean active, boolean paused) {
+    if (ayahCard == null) {
+      return;
+    }
+
+    ayahCard.getStyleClass().removeAll("audio-active", "audio-paused");
+    if (!active) {
+      return;
+    }
+
+    ayahCard.getStyleClass().add("audio-active");
+    if (paused) {
+      ayahCard.getStyleClass().add("audio-paused");
+    }
   }
 
   private String buildTranslationMetadata(TranslationText translationText) {

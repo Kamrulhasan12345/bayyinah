@@ -111,8 +111,84 @@
 	-fx-cursor: hand;
 }
 
+.reader-icon-btn {
+	-fx-min-width: 34;
+	-fx-min-height: 34;
+	-fx-max-width: 34;
+	-fx-max-height: 34;
+	-fx-padding: 0;
+}
+
+.reader-icon-btn .ikonli-font-icon {
+	-fx-icon-color: #334155;
+}
+
+.reader-icon-btn.is-playing {
+	-fx-background-color: #dcfce7;
+	-fx-border-color: #86efac;
+}
+
+.reader-icon-btn.is-paused {
+	-fx-background-color: #dbeafe;
+	-fx-border-color: #93c5fd;
+}
+
+.reader-icon-btn.is-playing .ikonli-font-icon {
+	-fx-icon-color: #14532d;
+}
+
+.reader-icon-btn.is-paused .ikonli-font-icon {
+	-fx-icon-color: #1e3a8a;
+}
+
 .reader-secondary-btn:hover {
 	-fx-background-color: #eaf0f9;
+}
+
+.reciter-availability-badge {
+	-fx-padding: 4 9;
+	-fx-background-radius: 999;
+	-fx-border-radius: 999;
+	-fx-background-color: #f8fafc;
+	-fx-border-color: #e2e8f0;
+}
+
+.reciter-availability-label {
+	-fx-font-size: 11px;
+	-fx-font-family: "Inter Bold";
+	-fx-text-fill: #475569;
+}
+
+.reciter-availability-icon {
+	-fx-icon-color: #475569;
+}
+
+.reciter-availability-ok {
+	-fx-icon-color: #15803d;
+}
+
+.reciter-availability-partial {
+	-fx-icon-color: #b45309;
+}
+
+.reciter-availability-none {
+	-fx-icon-color: #b91c1c;
+}
+
+.reciter-option-label {
+	-fx-text-fill: #334155;
+}
+
+.reciter-option-icon-ok {
+	-fx-icon-color: #15803d;
+}
+
+.reciter-option-icon-partial {
+	-fx-icon-color: #b45309;
+}
+
+.reciter-option-icon-none {
+	-fx-icon-color: #b91c1c;
 }
 
 .verse-list {
@@ -140,6 +216,16 @@
 	-fx-border-color: #e3e8f1;
 	-fx-border-radius: 12;
 	-fx-padding: 14;
+}
+
+.ayah-card.audio-active {
+	-fx-background-color: #f0fdf4;
+	-fx-border-color: #22c55e;
+}
+
+.ayah-card.audio-paused {
+	-fx-background-color: #eff6ff;
+	-fx-border-color: #60a5fa;
 }
 
 .ayah-card:hover {
@@ -170,8 +256,16 @@
 	-fx-border-color: #bae6fd;
 	-fx-background-radius: 999;
 	-fx-border-radius: 999;
-	-fx-padding: 2 8;
+	-fx-padding: 0;
+	-fx-min-width: 30;
+	-fx-min-height: 30;
+	-fx-max-width: 30;
+	-fx-max-height: 30;
 	-fx-cursor: hand;
+}
+
+.ayah-sync-btn .ikonli-font-icon {
+	-fx-icon-color: #075985;
 }
 
 .ayah-sync-btn:hover {
@@ -186,8 +280,16 @@
 	-fx-border-color: #86efac;
 	-fx-background-radius: 999;
 	-fx-border-radius: 999;
-	-fx-padding: 2 8;
+	-fx-padding: 0;
+	-fx-min-width: 30;
+	-fx-min-height: 30;
+	-fx-max-width: 30;
+	-fx-max-height: 30;
 	-fx-cursor: hand;
+}
+
+.ayah-audio-btn .ikonli-font-icon {
+	-fx-icon-color: #14532d;
 }
 
 .ayah-audio-btn:hover {
@@ -201,10 +303,27 @@
 	-fx-cursor: default;
 }
 
+.ayah-audio-btn:disabled .ikonli-font-icon {
+	-fx-icon-color: #94a3b8;
+}
+
 .ayah-audio-btn.active {
 	-fx-text-fill: #ffffff;
 	-fx-background-color: #166534;
 	-fx-border-color: #14532d;
+}
+
+.ayah-audio-btn.active .ikonli-font-icon {
+	-fx-icon-color: #ffffff;
+}
+
+.ayah-audio-btn.paused {
+	-fx-background-color: #dbeafe;
+	-fx-border-color: #93c5fd;
+}
+
+.ayah-audio-btn.paused .ikonli-font-icon {
+	-fx-icon-color: #1e3a8a;
 }
 
 .ayah-arabic-text {
@@ -275,6 +394,56 @@
 	-fx-text-fill: -app-text-secondary;
 }
 
+.reader-icon-btn .ikonli-font-icon {
+	-fx-icon-color: -app-text-secondary;
+}
+
+.reader-icon-btn.is-playing {
+	-fx-background-color: -app-success-bg;
+	-fx-border-color: -app-success-border;
+}
+
+.reader-icon-btn.is-paused {
+	-fx-background-color: -app-info-bg;
+	-fx-border-color: -app-info-border;
+}
+
+.reader-icon-btn.is-playing .ikonli-font-icon {
+	-fx-icon-color: -app-success-text;
+}
+
+.reader-icon-btn.is-paused .ikonli-font-icon {
+	-fx-icon-color: -app-info-text;
+}
+
+.reciter-availability-badge {
+	-fx-background-color: -app-bg-muted;
+	-fx-border-color: -app-border-default;
+}
+
+.reciter-availability-label {
+	-fx-text-fill: -app-text-secondary;
+}
+
+.reciter-option-label {
+	-fx-text-fill: -app-text-secondary;
+}
+
+.reciter-option-icon-ok,
+.reciter-availability-ok {
+	-fx-icon-color: -app-success-text;
+}
+
+.reciter-option-icon-partial,
+.reciter-availability-partial {
+	-fx-icon-color: -app-warning-text;
+}
+
+.reciter-option-icon-none,
+.reciter-availability-none {
+	-fx-icon-color: -app-danger-text;
+}
+
 .reader-secondary-btn:hover,
 .ayah-card:hover {
 	-fx-background-color: -app-bg-hover;
@@ -290,6 +459,10 @@
 	-fx-border-color: -app-accent-border;
 }
 
+.ayah-sync-btn .ikonli-font-icon {
+	-fx-icon-color: -app-link;
+}
+
 .ayah-sync-btn:hover {
 	-fx-background-color: -app-accent-soft-2;
 }
@@ -298,6 +471,10 @@
 	-fx-text-fill: -app-success-text;
 	-fx-background-color: -app-success-bg;
 	-fx-border-color: -app-success-border;
+}
+
+.ayah-audio-btn .ikonli-font-icon {
+	-fx-icon-color: -app-success-text;
 }
 
 .ayah-audio-btn:hover {
@@ -310,10 +487,37 @@
 	-fx-text-fill: -app-neutral-text;
 }
 
+.ayah-audio-btn:disabled .ikonli-font-icon {
+	-fx-icon-color: -app-neutral-text;
+}
+
 .ayah-audio-btn.active {
 	-fx-text-fill: -app-text-on-accent;
 	-fx-background-color: -app-accent;
 	-fx-border-color: -app-accent-strong;
+}
+
+.ayah-audio-btn.active .ikonli-font-icon {
+	-fx-icon-color: -app-text-on-accent;
+}
+
+.ayah-audio-btn.paused {
+	-fx-background-color: -app-info-bg;
+	-fx-border-color: -app-info-border;
+}
+
+.ayah-audio-btn.paused .ikonli-font-icon {
+	-fx-icon-color: -app-info-text;
+}
+
+.ayah-card.audio-active {
+	-fx-background-color: -app-accent-soft-2;
+	-fx-border-color: -app-accent;
+}
+
+.ayah-card.audio-paused {
+	-fx-background-color: -app-info-bg;
+	-fx-border-color: -app-info-border;
 }
 
 /* Reader text contrast fix: keep verse labels from inheriting generic dark list label color. */

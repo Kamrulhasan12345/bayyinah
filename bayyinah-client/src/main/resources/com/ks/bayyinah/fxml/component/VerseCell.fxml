@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<HBox maxHeight="1.7976931348623157E308" spacing="20.0" styleClass="ayah-card"
+<HBox fx:id="ayahCard" maxHeight="1.7976931348623157E308" spacing="20.0" styleClass="ayah-card"
    stylesheets="@../../css/chapters-reader.css" xmlns="http://javafx.com/javafx/null"
    xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.VerseController">
    <children>
@@ -25,9 +25,19 @@
             <FontIcon fx:id="bookmarkBtn" iconLiteral="mdi2b-bookmark-outline" iconSize="28"
                styleClass="ayah-bookmark" />
             <Button fx:id="audioPlayBtn" mnemonicParsing="false" styleClass="ayah-audio-btn"
-               text="Play" />
+               text="">
+               <graphic>
+                  <FontIcon fx:id="audioPlayIcon" iconLiteral="mdi2p-play" iconSize="14"
+                     styleClass="ayah-audio-btn-icon" />
+               </graphic>
+            </Button>
             <Button fx:id="syncVerseBtn" managed="false" mnemonicParsing="false"
-               styleClass="ayah-sync-btn" text="Sync" visible="false" />
+               styleClass="ayah-sync-btn" text="" visible="false">
+               <graphic>
+                  <FontIcon fx:id="syncVerseIcon" iconLiteral="mdi2s-sync" iconSize="14"
+                     styleClass="ayah-sync-btn-icon" />
+               </graphic>
+            </Button>
          </children>
       </VBox>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0"
