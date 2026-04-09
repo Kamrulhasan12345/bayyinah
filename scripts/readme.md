@@ -25,16 +25,16 @@ Create `.env` (copy from `.env.example`) and set required values.
 
 ## Environment variables
 
-| Variable | Required | Description |
-| --- | --- | --- |
-| `QURAN_CLIENT_ID` | yes | Quran API client id |
-| `QURAN_CLIENT_SECRET` | yes | Quran API client secret |
-| `TRANSLATION_IDS` | depends | Required unless `--skip-translation-text` is used |
-| `CHAPTER_IDS` | no | Optional subset (comma separated) |
-| `AUDIO_RECITATION_ID` | no | Audio reciter id; if missing, audio stage is skipped |
-| `AUDIO_DIR` | no | Audio output root (default `../data/audio`) |
-| `AUDIO_BASE_URL` | no | Base URL for relative audio paths |
-| `SKIP_AUDIO` | no | Set to `1` or `true` to force audio skip |
+| Variable              | Required | Description                                          |
+| --------------------- | -------- | ---------------------------------------------------- |
+| `QURAN_CLIENT_ID`     | yes      | Quran API client id                                  |
+| `QURAN_CLIENT_SECRET` | yes      | Quran API client secret                              |
+| `TRANSLATION_IDS`     | depends  | Required unless `--skip-translation-text` is used    |
+| `CHAPTER_IDS`         | no       | Optional subset (comma separated)                    |
+| `AUDIO_RECITATION_ID` | no       | Audio reciter id; if missing, audio stage is skipped |
+| `AUDIO_DIR`           | no       | Audio output root (default `../data/audio`)          |
+| `AUDIO_BASE_URL`      | no       | Base URL for relative audio paths                    |
+| `SKIP_AUDIO`          | no       | Set to `1` or `true` to force audio skip             |
 
 ## Commands
 

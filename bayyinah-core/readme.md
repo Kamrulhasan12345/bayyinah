@@ -19,13 +19,13 @@ Shared domain and query contract module for Bayyinah.
 
 ## Package map
 
-| Package | Responsibility |
-| --- | --- |
-| `com.ks.bayyinah.core.model` | Domain models |
-| `com.ks.bayyinah.core.dto` | Read models and pagination DTOs |
-| `com.ks.bayyinah.core.repository` | Repository contracts |
-| `com.ks.bayyinah.core.query` | Query service interfaces |
-| `com.ks.bayyinah.core.exception` | Shared exceptions |
+| Package                           | Responsibility                  |
+| --------------------------------- | ------------------------------- |
+| `com.ks.bayyinah.core.model`      | Domain models                   |
+| `com.ks.bayyinah.core.dto`        | Read models and pagination DTOs |
+| `com.ks.bayyinah.core.repository` | Repository contracts            |
+| `com.ks.bayyinah.core.query`      | Query service interfaces        |
+| `com.ks.bayyinah.core.exception`  | Shared exceptions               |
 
 ## Build and test
 

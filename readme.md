@@ -4,13 +4,13 @@ Bayyinah is a multi-module Quran learning platform with a JavaFX desktop client,
 
 ## Project layout
 
-| Path | Purpose |
-| --- | --- |
-| `bayyinah-core/` | Shared domain models and query contracts |
+| Path               | Purpose                                                  |
+| ------------------ | -------------------------------------------------------- |
+| `bayyinah-core/`   | Shared domain models and query contracts                 |
 | `bayyinah-client/` | JavaFX desktop app (offline-first + realtime meeting UI) |
-| `bayyinah-server/` | Spring Boot API, auth, and STOMP signaling for meetings |
-| `data/` | Generated SQLite database and audio files |
-| `scripts/` | TypeScript pipeline that builds data artifacts |
+| `bayyinah-server/` | Spring Boot API, auth, and STOMP signaling for meetings  |
+| `data/`            | Generated SQLite database and audio files                |
+| `scripts/`         | TypeScript pipeline that builds data artifacts           |
 
 ## Prerequisites
 
