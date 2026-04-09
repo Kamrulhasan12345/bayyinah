@@ -337,6 +337,7 @@ public class BrowsingController {
         }
       } else {
         activeMeetingController.setAppContext(appContext);
+        activeMeetingController.onTabActivated();
       }
 
       contentArea.getChildren().setAll(cachedMeetingView);

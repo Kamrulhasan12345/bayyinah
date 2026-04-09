@@ -39,11 +39,11 @@ public class ConfigManager {
         String audioRootPath = Path.of(System.getProperty("user.home"), ".bayyinah", "audio").toString();
 
         mainConfig = new MainConfig(
-            new QuranConfig(quranDbPath, "http://localhost:8080"),
-            new UserConfig(userDbPath, "http://localhost:8080"),
+            new QuranConfig(quranDbPath, "https://bayyinah-nvoz.onrender.com"),
+            new UserConfig(userDbPath, "https://bayyinah-nvoz.onrender.com"),
             new ApiConfig(10, 30, 3, 5000),
           new AudioConfig(audioRootPath, 2),
-            "http://localhost:8080",
+            "https://bayyinah-nvoz.onrender.com",
             "https://kamrulhasan12345-bayyinah-ai.hf.space"
         );
 

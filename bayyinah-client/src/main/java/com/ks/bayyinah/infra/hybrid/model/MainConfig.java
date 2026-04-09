@@ -17,7 +17,7 @@ public class MainConfig {
   private static final int DEFAULT_ACTIVE_RECITER_ID = 2;
 
   public void loadFallbacksAsNeeded() {
-    this.apiUrl = (this.apiUrl != null) ? this.apiUrl : "http://localhost:8080";
+    this.apiUrl = (this.apiUrl != null) ? this.apiUrl : "https://bayyinah-nvoz.onrender.com";
     this.quran = (this.quran != null) ? this.quran
         : new QuranConfig(
             System.getProperty("user.home") + "/.bayyinah/quran.db",
