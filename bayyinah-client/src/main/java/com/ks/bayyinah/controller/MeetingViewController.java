@@ -53,6 +53,9 @@ import java.util.concurrent.CompletableFuture;
  */
 public class MeetingViewController {
 
+  private static final String AUTH_REQUIRED_MESSAGE =
+      "Sign in with a registered account to create or join realtime halaqah rooms.";
+
   @FXML
   private VBox entryPane;
 
@@ -221,27 +224,15 @@ public class MeetingViewController {
       return;
     }
 
-    User currentUser = appContext.getAuthSessionQueryService() != null
-        ? appContext.getAuthSessionQueryService().getCurrentUser()
-        : null;
-
-    this.localUserId = currentUser != null && currentUser.getServerId() != null
-        ? String.valueOf(currentUser.getServerId())
-        : null;
-
-    localDisplayName = currentUser != null ? currentUser.getDisplayName() : "Participant";
-
-    createDisplayNameField.setText(localDisplayName);
-    joinDisplayNameField.setText(localDisplayName);
-
-    if (this.localUserId == null || this.localUserId.isBlank() || appContext.getTokenManager() == null) {
-      setWarningStatus("Sign in with a registered account to create or join realtime halaqah rooms.");
-      disableEntryActions(true);
+    if (!refreshAuthState(true)) {
       return;
     }
 
-    disableEntryActions(false);
     setStatus("Ready. Create a room or join with a code.");
+  }
+
+  public void onTabActivated() {
+    refreshAuthState(false);
   }
 
   @FXML
@@ -779,10 +770,47 @@ public class MeetingViewController {
   }
 
   private boolean ensureAuthenticated() {
-    if (localUserId == null || localUserId.isBlank() || appContext == null || appContext.getTokenManager() == null) {
+    if (!refreshAuthState(false)) {
       setWarningStatus("Sign in with a registered account to continue.");
       return false;
     }
+    return true;
+  }
+
+  private boolean refreshAuthState(boolean showWarningToastIfMissing) {
+    User currentUser = appContext != null && appContext.getAuthSessionQueryService() != null
+        ? appContext.getAuthSessionQueryService().getCurrentUser()
+        : null;
+
+    this.localUserId = currentUser != null && currentUser.getServerId() != null
+        ? String.valueOf(currentUser.getServerId())
+        : null;
+
+    localDisplayName = currentUser != null ? currentUser.getDisplayName() : "Participant";
+
+    if (createDisplayNameField != null) {
+      createDisplayNameField.setText(localDisplayName);
+    }
+    if (joinDisplayNameField != null) {
+      joinDisplayNameField.setText(localDisplayName);
+    }
+
+    boolean authenticated = localUserId != null
+        && !localUserId.isBlank()
+        && appContext != null
+        && appContext.getTokenManager() != null;
+
+    if (!authenticated) {
+      disableEntryActions(true);
+      if (showWarningToastIfMissing) {
+        setWarningStatus(AUTH_REQUIRED_MESSAGE);
+      } else if (meetingState == MeetingState.ENTRY || meetingState == MeetingState.CONNECTING) {
+        setStatus(AUTH_REQUIRED_MESSAGE);
+      }
+      return false;
+    }
+
+    disableEntryActions(meetingState == MeetingState.CONNECTING);
     return true;
   }
 

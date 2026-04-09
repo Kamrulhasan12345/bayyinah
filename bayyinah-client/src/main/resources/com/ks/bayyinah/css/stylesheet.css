@@ -29,6 +29,13 @@
 .overlay,
 .auth-modal-root,
 .auth-modal-card,
+.auth-brand-label,
+.auth-heading-label,
+.auth-input,
+.auth-primary-btn,
+.auth-nav-label,
+.auth-nav-link,
+.auth-form-message,
 .browsing-split-pane,
 .rail-host,
 .rail-root,
@@ -137,7 +144,7 @@
 }
 
 .overlay {
-	-fx-background-color: rgba(0, 0, 0, 0.5);
+	-fx-background-color: -app-bg-overlay-soft;
 }
 
 .auth-modal-root {
@@ -147,19 +154,107 @@
 .auth-overlay-scroll {
 	-fx-fit-to-width: true;
 	-fx-padding: 20;
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
 }
 
-.auth-overlay-scroll > .viewport {
+.auth-overlay-scroll > .viewport,
+.auth-overlay-scroll-container,
+.auth-overlay-scroll-container > .viewport {
 	-fx-background-color: transparent;
+	-fx-border-color: transparent;
 }
 
 .auth-modal-card {
-	-fx-background-color: #ffffff;
+	-fx-background-color: -app-bg-pane;
 	-fx-background-radius: 14;
-	-fx-border-color: #e5e7eb;
+	-fx-border-color: -app-border-default;
 	-fx-border-radius: 14;
 	-fx-border-width: 1;
-	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 24, 0.2, 0, 8);
+	-fx-effect: dropshadow(gaussian, -app-shadow-color, 24, 0.2, 0, 8);
+}
+
+.auth-brand-label {
+	-fx-font-family: "Inter Bold";
+	-fx-font-size: 26px;
+	-fx-text-fill: -app-text-primary;
+}
+
+.auth-heading-label {
+	-fx-font-size: 17px;
+	-fx-text-fill: -app-text-secondary;
+}
+
+.auth-input {
+	-fx-background-color: -app-bg-elevated;
+	-fx-border-color: -app-border-default;
+	-fx-border-radius: 8;
+	-fx-background-radius: 8;
+	-fx-text-fill: -app-text-primary;
+	-fx-prompt-text-fill: -app-text-muted;
+}
+
+.auth-input:focused {
+	-fx-border-color: -app-focus-ring;
+	-fx-effect: dropshadow(gaussian, -app-focus-shadow, 8, 0.4, 0, 0);
+}
+
+.auth-input.auth-input-invalid,
+.auth-input.auth-input-invalid:focused {
+	-fx-border-color: -app-danger-border;
+	-fx-background-color: -app-danger-bg;
+	-fx-effect: dropshadow(gaussian, -app-danger-border, 8, 0.25, 0, 0);
+}
+
+.auth-primary-btn {
+	-fx-background-color: -app-accent;
+	-fx-text-fill: -app-text-on-accent;
+	-fx-background-radius: 8;
+	-fx-border-radius: 8;
+	-fx-font-family: "Inter Bold";
+	-fx-font-size: 13px;
+	-fx-padding: 10 14;
+	-fx-cursor: hand;
+}
+
+.auth-primary-btn:hover {
+	-fx-background-color: -app-accent-strong;
+}
+
+.auth-primary-btn:focused {
+	-fx-effect: dropshadow(gaussian, -app-focus-shadow, 8, 0.4, 0, 0);
+}
+
+.auth-primary-btn:disabled {
+	-fx-opacity: 0.78;
+}
+
+.auth-nav-label {
+	-fx-text-fill: -app-text-secondary;
+}
+
+.auth-nav-link {
+	-fx-text-fill: -app-link;
+	-fx-border-color: transparent;
+}
+
+.auth-nav-link:hover {
+	-fx-text-fill: -app-link-hover;
+}
+
+.auth-nav-link:focused {
+	-fx-border-color: -app-focus-ring;
+	-fx-border-radius: 6;
+	-fx-border-width: 1;
+}
+
+.auth-form-message {
+	-fx-background-color: -app-danger-bg;
+	-fx-border-color: -app-danger-border;
+	-fx-text-fill: -app-danger-text;
+	-fx-background-radius: 8;
+	-fx-border-radius: 8;
+	-fx-padding: 8 10;
 }
 
 .list-view .scroll-bar:vertical {
@@ -1155,12 +1250,6 @@
 }
 
 /* Theme token overrides (light-first unified palette). */
-
-.auth-modal-card {
-	-fx-background-color: -app-bg-pane;
-	-fx-border-color: -app-border-default;
-	-fx-effect: dropshadow(gaussian, -app-shadow-color, 24, 0.2, 0, 8);
-}
 
 .browsing-split-pane {
 	-fx-background-color: -app-bg-subtle;

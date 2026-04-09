@@ -6,27 +6,46 @@
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 
-<VBox xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.LoginController" styleClass="auth-modal-root" stylesheets="@../css/stylesheet.css">
+<VBox xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="com.ks.bayyinah.controller.LoginController" styleClass="auth-modal-root"
+   stylesheets="@../css/stylesheet.css">
    <children>
-   <VBox alignment="CENTER" maxWidth="450.0" spacing="40.0" styleClass="auth-modal-card">
+      <VBox alignment="CENTER" maxWidth="450.0" spacing="40.0" styleClass="auth-modal-card">
          <children>
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Bayyinah" textAlignment="CENTER" />
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Login" textAlignment="CENTER" />
+            <ImageView fitHeight="150.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/wordmark.png" />
+               </image>
+            </ImageView>
+            <Label alignment="CENTER" maxWidth="1.7976931348623157E308"
+               styleClass="auth-heading-label" text="Login" textAlignment="CENTER" />
             <VBox alignment="CENTER" spacing="20.0">
                <children>
-                  <TextField fx:id="usernameField" promptText="Username" />
-                  <PasswordField fx:id="passwordField" promptText="Password" />
-                  <Button fx:id="loginBtn" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#login" text="Login" textAlignment="CENTER" />
+                  <TextField fx:id="usernameField" promptText="Username" styleClass="auth-input" />
+                  <PasswordField fx:id="passwordField" promptText="Password" styleClass="auth-input" />
+                  <Button fx:id="loginBtn" alignment="CENTER" contentDisplay="CENTER"
+                     defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                     onAction="#login" styleClass="auth-primary-btn" text="Login"
+                     textAlignment="CENTER" />
+                  <Label fx:id="formMessageLabel" managed="false" maxWidth="1.7976931348623157E308"
+                     styleClass="auth-form-message" textAlignment="CENTER" visible="false"
+                     wrapText="true" />
                </children>
             </VBox>
             <HBox>
                <children>
-                  <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="New here?" HBox.hgrow="ALWAYS" />
-                  <Hyperlink fx:id="registerRedirect" alignment="CENTER" maxWidth="1.7976931348623157E308" onAction="#goToRegister" text="Register" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
+                     maxWidth="1.7976931348623157E308" styleClass="auth-nav-label" text="New here?"
+                     HBox.hgrow="ALWAYS" />
+                  <Hyperlink fx:id="registerRedirect" alignment="CENTER"
+                     maxWidth="1.7976931348623157E308" onAction="#goToRegister"
+                     styleClass="auth-nav-link" text="Register" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
          </children>

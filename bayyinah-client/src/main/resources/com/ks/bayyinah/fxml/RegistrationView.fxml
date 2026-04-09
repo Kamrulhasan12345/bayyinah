@@ -6,38 +6,59 @@
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 
-<VBox xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ks.bayyinah.controller.RegistrationController" styleClass="auth-modal-root" stylesheets="@../css/stylesheet.css">
+<VBox xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="com.ks.bayyinah.controller.RegistrationController" styleClass="auth-modal-root"
+   stylesheets="@../css/stylesheet.css">
    <children>
-   <VBox alignment="CENTER" maxWidth="450.0" spacing="40.0" styleClass="auth-modal-card">
+      <VBox alignment="CENTER" maxWidth="450.0" spacing="40.0" styleClass="auth-modal-card">
          <children>
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Bayyinah" textAlignment="CENTER" />
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Register" textAlignment="CENTER" />
+            <ImageView fitHeight="150.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/wordmark.png" />
+               </image>
+            </ImageView>
+            <Label alignment="CENTER" maxWidth="1.7976931348623157E308"
+               styleClass="auth-heading-label" text="Register" textAlignment="CENTER" />
             <VBox alignment="CENTER" spacing="20.0">
                <children>
-                  <TextField fx:id="usernameField" promptText="Username">
+                  <TextField fx:id="usernameField" promptText="Username" styleClass="auth-input">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                   </TextField>
-                  <TextField fx:id="emailField" promptText="Email" />
+                  <TextField fx:id="emailField" promptText="Email" styleClass="auth-input" />
                   <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" spacing="20.0">
                      <children>
-                        <TextField fx:id="firstNameField" maxWidth="1.7976931348623157E308" promptText="First Name" HBox.hgrow="ALWAYS" />
-                        <TextField fx:id="lastNameField" maxWidth="1.7976931348623157E308" promptText="Last Name" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="firstNameField" maxWidth="1.7976931348623157E308"
+                           promptText="First Name" styleClass="auth-input" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="lastNameField" maxWidth="1.7976931348623157E308"
+                           promptText="Last Name" styleClass="auth-input" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <PasswordField fx:id="passwordField" promptText="Password" />
-                  <Button fx:id="registerBtn" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#register" text="Register" textAlignment="CENTER" />
+                  <PasswordField fx:id="passwordField" promptText="Password" styleClass="auth-input" />
+                  <Button fx:id="registerBtn" alignment="CENTER" contentDisplay="CENTER"
+                     defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                     onAction="#register" styleClass="auth-primary-btn" text="Register"
+                     textAlignment="CENTER" />
+                  <Label fx:id="formMessageLabel" managed="false" maxWidth="1.7976931348623157E308"
+                     styleClass="auth-form-message" textAlignment="CENTER" visible="false"
+                     wrapText="true" />
                </children>
             </VBox>
             <HBox>
                <children>
-                  <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Already a user?" HBox.hgrow="ALWAYS" />
-                  <Hyperlink fx:id="loginRedirect" alignment="CENTER" maxWidth="1.7976931348623157E308" onAction="#goToLogin" text="Login" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
+                     maxWidth="1.7976931348623157E308" styleClass="auth-nav-label"
+                     text="Already a user?" HBox.hgrow="ALWAYS" />
+                  <Hyperlink fx:id="loginRedirect" alignment="CENTER"
+                     maxWidth="1.7976931348623157E308" onAction="#goToLogin"
+                     styleClass="auth-nav-link" text="Login" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
          </children>
