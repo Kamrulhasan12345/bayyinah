@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface NoteRepository extends JpaRepository<Note, Long> {
@@ -20,14 +21,14 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
       Integer surahNumber,
       Integer ayahNumber);
 
+  Optional<Note> findByIdAndUserId(Long id, Long userId);
+
   void deleteByUserIdAndId(Long userId, Long noteId);
 
   void deleteByUserId(Long userId);
 
-  // For sync
-  List<Note> findByUserIdAndUpdatedAtAfter(Long userId, LocalDateTime timestamp);
 
-  // Search
+  List<Note> findByUserIdAndUpdatedAtAfter(Long userId, LocalDateTime timestamp);
   List<Note> findByUserIdAndContentContainingIgnoreCase(Long userId, String query);
 
   long countByUserId(Long userId);
